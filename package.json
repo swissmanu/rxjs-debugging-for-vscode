@@ -9,6 +9,7 @@
   "categories": [
     "Other"
   ],
+  "publisher": "manuelalabor",
   "activationEvents": [
     "onCommand:rxjs-debugging-for-vs-code.helloWorld"
   ],
@@ -28,7 +29,8 @@
     "watch": "tsc -watch -p ./",
     "pretest": "yarn run compile && yarn run lint",
     "test": "node ./out/test/runTest.js",
-    "pretty": "prettier --write"
+    "pretty": "prettier --write",
+    "package": "vsce package --yarn"
   },
   "devDependencies": {
     "@types/glob": "^7.1.3",
@@ -44,6 +46,7 @@
     "mocha": "^8.1.3",
     "prettier": "^2.2.1",
     "typescript": "^4.0.2",
+    "vsce": "^1.85.0",
     "vscode-test": "^1.4.0"
   },
   "lint-staged": {

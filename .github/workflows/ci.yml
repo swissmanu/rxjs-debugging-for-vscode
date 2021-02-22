@@ -24,3 +24,15 @@ jobs:
       - run: yarn
       - run: yarn lint
       - run: yarn compile
+      - name: Package Snapshot
+        if: success() && matrix.os == 'ubuntu-latest'
+        run: yarn package
+        env:
+          VSCE_PAT: ${{ secrets.AZURE_ACCESS_TOKEN }}
+      - name: Upload Snapshot Artifact
+        if: success() && matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v2
+        with:
+          name: Extension Snapshot
+          path: '*.vsix'
+          retention-days: 10
