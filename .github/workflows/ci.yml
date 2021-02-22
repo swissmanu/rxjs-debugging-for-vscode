@@ -9,7 +9,21 @@ on:
       - main
 
 jobs:
-  build:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: Install Dependencies
+        run: yarn
+      - name: Lint Code
+        run: yarn lint
+
+  test:
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
@@ -21,16 +35,37 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: 10.x
-      - run: yarn
-      - run: yarn lint
-      - run: yarn compile
-      - name: Package Snapshot
-        if: success() && matrix.os == 'ubuntu-latest'
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Integration Test on Linux System
+        if: runner.os == 'Linux'
+        run: xvfb-run -a yarn test
+      - name: Integration Test on Non-Linux System
+        if: runner.os != 'Linux'
+        run: yarn test
+
+  snapshot:
+    needs:
+      - test
+      - lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 10.x
+      - name: Install Dependencies
+        run: yarn
+
+      - name: Create VSIX Package
         run: yarn package
         env:
           VSCE_PAT: ${{ secrets.AZURE_ACCESS_TOKEN }}
-      - name: Upload Snapshot Artifact
-        if: success() && matrix.os == 'ubuntu-latest'
+
+      - name: Upload VSIX as Snapshot Artifact
         uses: actions/upload-artifact@v2
         with:
           name: Extension Snapshot

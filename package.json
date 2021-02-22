@@ -23,12 +23,13 @@
     ]
   },
   "scripts": {
-    "vscode:prepublish": "yarn run compile",
+    "vscode:prepublish": "yarn compile",
     "compile": "tsc -p ./",
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
-    "pretest": "yarn run compile && yarn run lint",
-    "test": "node ./out/test/runTest.js",
+    "test": "yarn test:integration",
+    "pretest:integration": "yarn run compile",
+    "test:integration": "node ./out/integrationTest/runTest.js",
     "pretty": "prettier --write",
     "package": "vsce package --yarn"
   },
