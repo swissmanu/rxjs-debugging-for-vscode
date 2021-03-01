@@ -1,0 +1,25 @@
+{
+  "name": "testWorkspace",
+  "version": "0.0.1",
+  "main": "index.js",
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "start:browser": "webpack-dev-server"
+  },
+  "dependencies": {
+    "@types/stacktrace-js": "^2.0.3",
+    "html-webpack-plugin": "^4.5.0",
+    "isomorphic-ws": "^4.0.1",
+    "queueing-subject": "^0.3.4",
+    "rxjs": "^6.6.3",
+    "stacktrace-js": "^2.0.2",
+    "ts-loader": "^8.0.4",
+    "ts-node": "^9.0.0",
+    "typescript": "^4.0.3",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0",
+    "ws": "^7.3.1"
+  }
+}
