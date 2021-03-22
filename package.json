@@ -7,18 +7,71 @@
     "vscode": "^1.53.0"
   },
   "categories": [
-    "Other"
+    "Debuggers"
   ],
   "publisher": "manuelalabor",
   "activationEvents": [
-    "onCommand:rxjs-debugging-for-vs-code.helloWorld"
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onLanguage:typescriptreact",
+    "onLanguage:javascriptreact",
+    "onDebug"
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "breakpoints": [
+      {
+        "language": "typescript"
+      },
+      {
+        "language": "javascript"
+      },
+      {
+        "language": "typescriptreact"
+      },
+      {
+        "language": "typescriptreact"
+      }
+    ],
     "commands": [
       {
-        "command": "rxjs-debugging-for-vs-code.helloWorld",
-        "title": "Hello World"
+        "command": "rxjs-debugging-for-vs-code.command.debugRxJS",
+        "title": "%debug.rxjs%",
+        "icon": "$(debug)"
+      }
+    ],
+    "menus": {
+      "debug/callstack/context": [
+        {
+          "command": "rxjs-debugging-for-vs-code.command.debugRxJS",
+          "group": "navigation",
+          "when": "debugType == pwa-extensionHost && callStackItemType == 'session' || debugType == node-terminal && callStackItemType == 'session' || debugType == pwa-node && callStackItemType == 'session' || debugType == pwa-chrome && callStackItemType == 'session' || debugType == pwa-msedge && callStackItemType == 'session'"
+        }
+      ]
+    },
+    "debuggers": [
+      {
+        "type": "rxjs",
+        "label": "RxJS Debugger",
+        "program": "./out/debugAdapter/index.js",
+        "runtime": "node",
+        "configurationAttributes": {
+          "attach": {
+            "required": [
+              "processId"
+            ],
+            "properties": {
+              "processId": {
+                "type": [
+                  "number",
+                  "string"
+                ],
+                "default": "",
+                "description": ""
+              }
+            }
+          }
+        }
       }
     ]
   },
@@ -38,6 +91,7 @@
     "@types/mocha": "^8.0.0",
     "@types/node": "^14.0.27",
     "@types/vscode": "^1.53.0",
+    "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "eslint": "^7.9.0",
@@ -59,5 +113,8 @@
     "hooks": {
       "pre-commit": "lint-staged"
     }
+  },
+  "dependencies": {
+    "vscode-debugadapter": "^1.45.0"
   }
 }
