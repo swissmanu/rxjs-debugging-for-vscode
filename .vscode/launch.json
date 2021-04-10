@@ -10,7 +10,7 @@
       "type": "extensionHost",
       "request": "launch",
       "args": [
-        "--extensions-dir=${workspaceFolder}/.dependencies",
+        // "--extensions-dir=${workspaceFolder}/.dependencies",
         "--extensionDevelopmentPath=${workspaceFolder}",
         "${workspaceFolder}/example-workspaces/browser-and-server"
       ],

@@ -4,17 +4,27 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build and Watch Extension",
+      "label": "🧩 Extension: Build and Watch",
       "type": "npm",
       "script": "watch",
       "problemMatcher": "$tsc-watch",
       "isBackground": true,
       "presentation": {
-        "reveal": "never"
+        "reveal": "silent"
       },
       "group": {
         "kind": "build",
         "isDefault": true
+      }
+    },
+    {
+      "label": "📡 Runtime: Build and Watch",
+      "type": "npm",
+      "script": "runtime:watch",
+      "group": "build",
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "silent"
       }
     }
   ]
