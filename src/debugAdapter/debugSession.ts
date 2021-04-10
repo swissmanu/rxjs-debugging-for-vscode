@@ -1,6 +1,15 @@
+import * as fs from 'fs';
 import * as debugAdapter from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
 import { RxJSDebugConfigurationRequestArguments } from '../shared/types';
+import CDPClient from './cdpClient';
+
+
+const runtime = fs
+  .readFileSync(
+    '/Users/mal/git/private/mse-master-thesis/rxjs-debugger/out/runtime.node.js'
+  )
+  .toString();
 
 export class DebugSession extends debugAdapter.DebugSession {
   constructor() {
@@ -107,16 +116,31 @@ export class DebugSession extends debugAdapter.DebugSession {
     this.sendResponse(response);
   }
 
-  protected attachRequest(
+  protected async attachRequest(
     _response: DebugProtocol.AttachResponse,
     {
       cdpProxy,
     }: DebugProtocol.AttachRequestArguments &
       Partial<RxJSDebugConfigurationRequestArguments>
-  ): void {
+  ): Promise<void> {
     if (cdpProxy) {
-      // Connect to CDP Proxy
-      console.log('Connect to', cdpProxy);
+      try {
+        const client = new CDPClient(cdpProxy.host, cdpProxy.port);
+
+        await client.connect();
+        await Promise.all([
+          await client.request('Runtime', 'enable'),
+          await client.request('Runtime', 'addBinding', {
+            name: 'sendRxJsDebuggerTelemetry',
+          }),
+          await client.subscribe('Runtime', 'bindingCalled', (x) => {
+            console.log(x);
+          }),
+        ]);
+      } catch (e) {
+        console.log(e);
+        // TODO this.sendEvent
+      }
     }
   }
 }
