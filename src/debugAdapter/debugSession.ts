@@ -1,146 +1,113 @@
-import * as fs from 'fs';
 import * as debugAdapter from 'vscode-debugadapter';
 import { DebugProtocol } from 'vscode-debugprotocol';
+import { telemetryCDPBindingName } from '../shared/telemetry';
 import { RxJSDebugConfigurationRequestArguments } from '../shared/types';
 import CDPClient from './cdpClient';
-
-
-const runtime = fs
-  .readFileSync(
-    '/Users/mal/git/private/mse-master-thesis/rxjs-debugger/out/runtime.node.js'
-  )
-  .toString();
+import { ErrorCode, getErrorMessage } from './errors';
 
 export class DebugSession extends debugAdapter.DebugSession {
+  private cdpClient: CDPClient | undefined;
+
   constructor() {
     super();
   }
 
-  initializeRequest(
+  protected initializeRequest(
     response: DebugProtocol.InitializeResponse,
-    args: DebugProtocol.InitializeRequestArguments
+    _args: DebugProtocol.InitializeRequestArguments
   ): void {
-    // This default debug adapter does not support conditional breakpoints.
-    response.body!.supportsConditionalBreakpoints = false;
-
-    // This default debug adapter does not support hit conditional breakpoints.
-    response.body!.supportsHitConditionalBreakpoints = false;
-
-    // This default debug adapter does not support function breakpoints.
-    response.body!.supportsFunctionBreakpoints = false;
-
-    // This default debug adapter implements the 'configurationDone' request.
-    response.body!.supportsConfigurationDoneRequest = true;
-
-    // This default debug adapter does not support hovers based on the 'evaluate' request.
-    response.body!.supportsEvaluateForHovers = false;
-
-    // This default debug adapter does not support the 'stepBack' request.
-    response.body!.supportsStepBack = true;
-
-    // This default debug adapter does not support the 'setVariable' request.
-    response.body!.supportsSetVariable = false;
-
-    // This default debug adapter does not support the 'restartFrame' request.
-    response.body!.supportsRestartFrame = false;
-
-    // This default debug adapter does not support the 'stepInTargets' request.
-    response.body!.supportsStepInTargetsRequest = false;
-
-    // This default debug adapter does not support the 'gotoTargets' request.
-    response.body!.supportsGotoTargetsRequest = false;
-
-    // This default debug adapter does not support the 'completions' request.
-    response.body!.supportsCompletionsRequest = false;
-
-    // This default debug adapter does not support the 'restart' request.
-    response.body!.supportsRestartRequest = false;
-
-    // This default debug adapter does not support the 'exceptionOptions' attribute on the 'setExceptionBreakpoints' request.
-    response.body!.supportsExceptionOptions = false;
-
-    // This default debug adapter does not support the 'format' attribute on the 'variables', 'evaluate', and 'stackTrace' request.
-    response.body!.supportsValueFormattingOptions = false;
-
-    // This debug adapter does not support the 'exceptionInfo' request.
-    response.body!.supportsExceptionInfoRequest = false;
-
-    // This debug adapter does not support the 'TerminateDebuggee' attribute on the 'disconnect' request.
-    response.body!.supportTerminateDebuggee = false;
-
-    // This debug adapter does not support delayed loading of stack frames.
-    response.body!.supportsDelayedStackTraceLoading = false;
-
-    // This debug adapter does not support the 'loadedSources' request.
-    response.body!.supportsLoadedSourcesRequest = false;
-
-    // This debug adapter does not support the 'logMessage' attribute of the SourceBreakpoint.
+    // response.body!.supportsConfigurationDoneRequest = true;
+    // response.body!.supportsFunctionBreakpoints = true;
+    // response.body!.supportsConditionalBreakpoints = true;
+    // response.body!.supportsHitConditionalBreakpoints = true;
+    // response.body!.supportsEvaluateForHovers = true;
+    // exceptionBreakpointFilters?: ExceptionBreakpointsFilter[];
+    // response.body!.supportsStepBack = true;
+    // response.body!.supportsSetVariable = true;
+    // response.body!.supportsRestartFrame = true;
+    // response.body!.supportsGotoTargetsRequest = true;
+    // response.body!.supportsStepInTargetsRequest = true;
+    // response.body!.supportsCompletionsRequest = true;
+    // completionTriggerCharacters?: string[];
+    // response.body!.supportsModulesRequest = true;
+    // additionalModuleColumns?: ColumnDescriptor[];
+    // supportedChecksumAlgorithms?: ChecksumAlgorithm[];
+    // response.body!.supportsRestartRequest = true;
+    // response.body!.supportsExceptionOptions = true;
+    // response.body!.supportsValueFormattingOptions = true;
+    // response.body!.supportsExceptionInfoRequest = true;
+    // response.body!.supportTerminateDebuggee = true;
+    // response.body!.supportsDelayedStackTraceLoading = true;
+    // response.body!.supportsLoadedSourcesRequest = true;
     response.body!.supportsLogPoints = true;
-
-    // This debug adapter does not support the 'terminateThreads' request.
-    response.body!.supportsTerminateThreadsRequest = false;
-
-    // This debug adapter does not support the 'setExpression' request.
-    response.body!.supportsSetExpression = false;
-
-    // This debug adapter does not support the 'terminate' request.
-    response.body!.supportsTerminateRequest = false;
-
-    // This debug adapter does not support data breakpoints.
-    response.body!.supportsDataBreakpoints = true;
-
-    /** This debug adapter does not support the 'readMemory' request. */
-    response.body!.supportsReadMemoryRequest = false;
-
-    /** The debug adapter does not support the 'disassemble' request. */
-    response.body!.supportsDisassembleRequest = false;
-
-    /** The debug adapter does not support the 'cancel' request. */
-    response.body!.supportsCancelRequest = false;
-
-    /** The debug adapter does not support the 'breakpointLocations' request. */
-    response.body!.supportsBreakpointLocationsRequest = false;
-
-    /** The debug adapter does not support the 'clipboard' context value in the 'evaluate' request. */
-    response.body!.supportsClipboardContext = false;
-
-    /** The debug adapter does not support stepping granularities for the stepping requests. */
-    response.body!.supportsSteppingGranularity = false;
-
-    /** The debug adapter does not support the 'setInstructionBreakpoints' request. */
-    response.body!.supportsInstructionBreakpoints = false;
-
-    /** The debug adapter does not support 'filterOptions' on the 'setExceptionBreakpoints' request. */
-    response.body!.supportsExceptionFilterOptions = false;
+    // response.body!.supportsTerminateThreadsRequest = true;
+    // response.body!.supportsSetExpression = true;
+    // response.body!.supportsTerminateRequest = true;
+    // response.body!.supportsDataBreakpoints = true;
+    // response.body!.supportsReadMemoryRequest = true;
+    // response.body!.supportsDisassembleRequest = true;
+    // response.body!.supportsCancelRequest = true;
+    response.body!.supportsBreakpointLocationsRequest = true;
+    // response.body!.supportsClipboardContext = true;
+    // response.body!.supportsSteppingGranularity = true;
+    // response.body!.supportsInstructionBreakpoints = true;
+    // response.body!.supportsExceptionFilterOptions = true;
 
     this.sendResponse(response);
   }
 
   protected async attachRequest(
-    _response: DebugProtocol.AttachResponse,
+    response: DebugProtocol.AttachResponse,
     {
       cdpProxy,
     }: DebugProtocol.AttachRequestArguments &
       Partial<RxJSDebugConfigurationRequestArguments>
   ): Promise<void> {
-    if (cdpProxy) {
-      try {
-        const client = new CDPClient(cdpProxy.host, cdpProxy.port);
+    if (!cdpProxy) {
+      return this.sendErrorResponse(
+        response,
+        getErrorMessage(ErrorCode.NO_CDP_CONNECTION_INFORMATION)
+      );
+    }
 
-        await client.connect();
-        await Promise.all([
-          await client.request('Runtime', 'enable'),
-          await client.request('Runtime', 'addBinding', {
-            name: 'sendRxJsDebuggerTelemetry',
-          }),
-          await client.subscribe('Runtime', 'bindingCalled', (x) => {
-            console.log(x);
-          }),
-        ]);
-      } catch (e) {
-        console.log(e);
-        // TODO this.sendEvent
-      }
+    try {
+      this.cdpClient = new CDPClient(cdpProxy.host, cdpProxy.port);
+
+      await this.cdpClient.connect();
+      await Promise.all([
+        await this.cdpClient.request('Runtime', 'enable'),
+        await this.cdpClient.request('Runtime', 'addBinding', {
+          name: telemetryCDPBindingName,
+        }),
+        await this.cdpClient.subscribe('Runtime', 'bindingCalled', (x) => {
+          console.log(x);
+        }),
+      ]);
+
+      this.sendEvent({ event: 'initialized', type: 'event', seq: -1 });
+    } catch (e) {
+      this.cdpClient?.dispose();
+      this.sendErrorResponse(
+        response,
+        getErrorMessage(ErrorCode.COULD_NOT_ESTABLISH_AND_INITIALIZE_CDP)
+      );
     }
   }
+
+  // protected breakpointLocationsRequest(
+  //   response: DebugProtocol.BreakpointLocationsResponse,
+  //   args: DebugProtocol.BreakpointLocationsArguments,
+  //   request?: DebugProtocol.Request
+  // ): void {
+  //   response.body = { breakpoints: [{ line: 7, column: 4 }] };
+  //   this.sendResponse(response);
+  // }
+
+  // protected setBreakPointsRequest(
+  //   response: DebugProtocol.SetBreakpointsResponse,
+  //   args: DebugProtocol.SetBreakpointsArguments,
+  //   request?: DebugProtocol.Request
+  // ): void {
+  //   console.log(args);
+  // }
 }

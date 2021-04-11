@@ -1,3 +1,5 @@
+export const telemetryCDPBindingName = 'sendRxJsDebuggerTelemetry';
+
 export const enum TelemetryEventType {
   Completed = 'Completed',
   Error = 'Error',

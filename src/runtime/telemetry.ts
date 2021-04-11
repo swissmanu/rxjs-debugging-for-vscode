@@ -1,17 +1,13 @@
 import { Observable, OperatorFunction, Subscriber } from 'rxjs';
 import * as Telemetry from '../shared/telemetry';
 
-declare global {
-  function sendRxJsDebuggerTelemetry(data: string): void;
-}
-
 function sendTelemetry<K extends Telemetry.TelemetryEventType>(
   event: Telemetry.ITelemetryEvent<K>
 ) {
   // global.sendRxJsDebuggerTelemetry will be provided via CDP Runtime.addBinding eventually:
-  if (typeof global.sendRxJsDebuggerTelemetry === 'function') {
+  if (typeof global[Telemetry.telemetryCDPBindingName] === 'function') {
     const message = JSON.stringify(event);
-    global.sendRxJsDebuggerTelemetry(message);
+    global[Telemetry.telemetryCDPBindingName](message);
   }
 }
 
