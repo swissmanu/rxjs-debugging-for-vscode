@@ -28,15 +28,22 @@ export interface ITelemetryEvent<T extends TelemetryEventType> {
   source: ITelemetryEventSource;
 }
 
+export type TelemetryEvent = ITelemetryEvent<
+  | TelemetryEventType.Completed
+  | TelemetryEventType.Error
+  | TelemetryEventType.Next
+  | TelemetryEventType.Subscribe
+  | TelemetryEventType.Unsubscribe
+>;
+
 type TelemetryEventPattern<T> = {
-  [K in TelemetryEventType]: (data: ITelemetryEventData[K]) => T;
+  [K in TelemetryEventType]: (event: ITelemetryEvent<K>) => T;
 };
 
 export function match<T, K extends TelemetryEventType>(
   pattern: TelemetryEventPattern<T>
 ): (telemetryEvent: ITelemetryEvent<K>) => T {
   return (e) => {
-    const data = e.data as any; // TODO Fix This Typing!
-    return pattern[e.type](data);
+    return pattern[e.type](e as any); // TODO Improve Typing and get rid of any
   };
 }

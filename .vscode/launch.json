@@ -6,7 +6,7 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "RxJS Debugger: Extension",
+      "name": "🧩 Extension: Run",
       "type": "extensionHost",
       "request": "launch",
       "args": [
@@ -18,16 +18,7 @@
       // "preLaunchTask": "Build and Watch Extension"
     },
     {
-      "name": "RxJS Debugger: Debug Adapter",
-      "type": "node",
-      "request": "launch",
-      "cwd": "${workspaceFolder}",
-      "program": "${workspaceFolder}/src/debugAdapter/index.ts",
-      "args": ["--server=4712"],
-      "outFiles": ["${workspaceFolder}/out/**/*.js"]
-    },
-    {
-      "name": "RxJS Debugger: Extension Tests",
+      "name": "🧩 Extension: Test",
       "type": "extensionHost",
       "request": "launch",
       "args": [

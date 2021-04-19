@@ -5,6 +5,12 @@
   "tasks": [
     {
       "type": "npm",
+      "script": "start:node",
+      "label": "start node",
+      "isBackground": true
+    },
+    {
+      "type": "npm",
       "label": "webpack-dev-server",
       "script": "start:browser",
       "promptOnClose": true,

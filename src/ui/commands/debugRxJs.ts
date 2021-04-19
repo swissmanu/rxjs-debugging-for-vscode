@@ -1,9 +1,7 @@
 import * as vscode from 'vscode';
 import { Commands, registerCommand } from '.';
-import {
-  CDPProxyConnectionInformation,
-  createRxJSDebugConfiguration,
-} from '../../shared/types';
+import { CDPProxyConnectionInformation } from '../../shared/types';
+import Receiver from '../receiver';
 
 const JS_DEBUG_REQUEST_CDP_PROXY_COMMAND = 'extension.js-debug.requestCDPProxy';
 const SUPPORTED_DEBUG_SESSION_TYPES = [
@@ -36,13 +34,16 @@ export function registerDebugRxJS(context: vscode.ExtensionContext): void {
         }
 
         const info = await getCDPProxyConnectionInformation(sessionId);
-        vscode.window.showInformationMessage(JSON.stringify(info));
-
         if (info) {
-          vscode.debug.startDebugging(
-            undefined,
-            createRxJSDebugConfiguration(info, 4712)
-          );
+          try {
+            const receiver = new Receiver();
+            receiver.onTelemetryEvent(console.log);
+            receiver.attach(info.host, info.port);
+          } catch (e) {
+            vscode.window.showErrorMessage(
+              `Could not create receiver (${JSON.stringify(e)})`
+            );
+          }
         } else {
           vscode.window.showErrorMessage(
             'Could not acquire CDP proxy connection information.'

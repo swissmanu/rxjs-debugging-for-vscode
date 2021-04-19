@@ -14,25 +14,10 @@
     "onLanguage:typescript",
     "onLanguage:javascript",
     "onLanguage:typescriptreact",
-    "onLanguage:javascriptreact",
-    "onDebug"
+    "onLanguage:javascriptreact"
   ],
   "main": "./out/extension.js",
   "contributes": {
-    "breakpoints": [
-      {
-        "language": "typescript"
-      },
-      {
-        "language": "javascript"
-      },
-      {
-        "language": "typescriptreact"
-      },
-      {
-        "language": "typescriptreact"
-      }
-    ],
     "commands": [
       {
         "command": "rxjs-debugging-for-vs-code.command.debugRxJS",
@@ -48,32 +33,7 @@
           "when": "debugType == pwa-extensionHost && callStackItemType == 'session' || debugType == node-terminal && callStackItemType == 'session' || debugType == pwa-node && callStackItemType == 'session' || debugType == pwa-chrome && callStackItemType == 'session' || debugType == pwa-msedge && callStackItemType == 'session'"
         }
       ]
-    },
-    "debuggers": [
-      {
-        "type": "rxjs",
-        "label": "RxJS Debugger",
-        "program": "./out/debugAdapter/index.js",
-        "runtime": "node",
-        "configurationAttributes": {
-          "attach": {
-            "required": [
-              "processId"
-            ],
-            "properties": {
-              "processId": {
-                "type": [
-                  "number",
-                  "string"
-                ],
-                "default": "",
-                "description": ""
-              }
-            }
-          }
-        }
-      }
-    ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn compile",
@@ -127,7 +87,6 @@
     }
   },
   "dependencies": {
-    "vscode-debugadapter": "^1.45.0",
     "ws": "^7.4.4"
   }
 }

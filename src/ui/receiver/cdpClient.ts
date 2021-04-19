@@ -7,7 +7,7 @@ interface IFulfillRequest {
 }
 
 type Method = string;
-type SubscriptionCallback = (data: unknown) => void;
+type SubscriptionCallback = (data: Record<string, unknown>) => void;
 type MessageId = number;
 
 interface IProtocolCommand {
