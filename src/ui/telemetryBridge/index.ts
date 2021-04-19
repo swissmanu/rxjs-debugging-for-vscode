@@ -2,7 +2,7 @@ import { Disposable, Event, EventEmitter } from 'vscode';
 import * as Telemetry from '../../shared/telemetry';
 import CDPClient from './cdpClient';
 
-export default class Receiver implements Disposable {
+export default class TelemetryBridge implements Disposable {
   private cdpClient: CDPClient | undefined;
 
   private _onTelemetryEvent = new EventEmitter<Telemetry.TelemetryEvent>();
@@ -21,7 +21,7 @@ export default class Receiver implements Disposable {
       await Promise.all([
         await this.cdpClient.request('Runtime', 'enable'),
         await this.cdpClient.request('Runtime', 'addBinding', {
-          name: Telemetry.telemetryCDPBindingName,
+          name: Telemetry.telemetryRuntimeCDPBindingName,
         }),
         await this.cdpClient.subscribe(
           'Runtime',
@@ -35,9 +35,21 @@ export default class Receiver implements Disposable {
     }
   }
 
+  async enable(source: Telemetry.ITelemetryEventSource): Promise<void> {
+    return this.cdpClient?.request('Runtime', 'evaluate', {
+      expression: `${Telemetry.telemetryRuntimeBridgeName}.enable("${source.fileName}", ${source.lineNumber}, ${source.columnNumber});`,
+    });
+  }
+
+  async disable(source: Telemetry.ITelemetryEventSource): Promise<void> {
+    return this.cdpClient?.request('Runtime', 'evaluate', {
+      expression: `${Telemetry.telemetryRuntimeBridgeName}.disable("${source.fileName}", ${source.lineNumber}, ${source.columnNumber});`,
+    });
+  }
+
   private onBindingCalled = (parameters: Record<string, unknown>): void => {
     if (
-      parameters.name === Telemetry.telemetryCDPBindingName &&
+      parameters.name === Telemetry.telemetryRuntimeCDPBindingName &&
       typeof parameters.payload === 'string'
     ) {
       try {

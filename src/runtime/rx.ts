@@ -1,15 +1,6 @@
 import { Observable, OperatorFunction, Subscriber } from 'rxjs';
 import * as Telemetry from '../shared/telemetry';
-
-function sendTelemetry<K extends Telemetry.TelemetryEventType>(
-  event: Telemetry.ITelemetryEvent<K>
-) {
-  // global.sendRxJsDebuggerTelemetry will be provided via CDP Runtime.addBinding eventually:
-  if (typeof global[Telemetry.telemetryCDPBindingName] === 'function') {
-    const message = JSON.stringify(event);
-    global[Telemetry.telemetryCDPBindingName](message);
-  }
-}
+import TelemetryBridge from './telemetryBridge';
 
 export function operate<T, R>(
   init: (
@@ -44,13 +35,14 @@ export class TelemetrySubscriber<T> extends Subscriber<T> {
   private source: Promise<Telemetry.ITelemetryEventSource>;
 
   constructor(
+    private readonly telemetryBridge: TelemetryBridge,
     destination: Subscriber<any>,
     sourceLocation: Promise<StackTrace.StackFrame[]>
   ) {
     super(destination);
     this.source = sourceLocation.then(([, f]) => sourceFromStackFrame(f));
     this.source.then((source) => {
-      sendTelemetry({
+      telemetryBridge.forward({
         type: Telemetry.TelemetryEventType.Subscribe,
         source,
         data: undefined,
@@ -60,7 +52,7 @@ export class TelemetrySubscriber<T> extends Subscriber<T> {
 
   _next(value: T): void {
     this.source.then((source) =>
-      sendTelemetry({
+      this.telemetryBridge.forward({
         type: Telemetry.TelemetryEventType.Next,
         source,
         data: { value: JSON.stringify(value) },
@@ -71,7 +63,7 @@ export class TelemetrySubscriber<T> extends Subscriber<T> {
 
   _complete(): void {
     this.source.then((source) =>
-      sendTelemetry({
+      this.telemetryBridge.forward({
         type: Telemetry.TelemetryEventType.Completed,
         source,
         data: undefined,
@@ -83,7 +75,7 @@ export class TelemetrySubscriber<T> extends Subscriber<T> {
 
   _error(err: any): void {
     this.source.then((source) =>
-      sendTelemetry({
+      this.telemetryBridge.forward({
         type: Telemetry.TelemetryEventType.Error,
         source,
         data: { error: err ? JSON.stringify(err) : '' },
@@ -95,7 +87,7 @@ export class TelemetrySubscriber<T> extends Subscriber<T> {
 
   unsubscribe(): void {
     this.source.then((source) =>
-      sendTelemetry({
+      this.telemetryBridge.forward({
         type: Telemetry.TelemetryEventType.Unsubscribe,
         source,
         data: undefined,

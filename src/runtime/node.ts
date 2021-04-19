@@ -1,10 +1,14 @@
 import * as Module from 'module';
 import * as path from 'path';
 import * as StackTrace from 'stacktrace-js';
-import { operate, TelemetrySubscriber } from './telemetry';
+import * as Telemetry from '../shared/telemetry';
+import { operate, TelemetrySubscriber } from './rx';
+import TelemetryBridge from './telemetryBridge';
 
 const origLoad = (Module as any)._load;
 (Module as any)._load = fakeLoad;
+
+const telemetryBridge = new TelemetryBridge(defaultSend);
 
 function getAbsolutePath(relativePath: string, parentFileName: string): string {
   if (relativePath.startsWith('/') || /^(\w|@)/.test(relativePath)) {
@@ -39,7 +43,13 @@ function fakeLoad(
           return operate((source, subscriber) => {
             source
               .pipe(originalOperator.apply(originalThis, args))
-              .subscribe(new TelemetrySubscriber(subscriber, sourceLocation));
+              .subscribe(
+                new TelemetrySubscriber(
+                  telemetryBridge,
+                  subscriber,
+                  sourceLocation
+                )
+              );
           });
         },
       };
@@ -48,3 +58,13 @@ function fakeLoad(
   }
   return origLoad(request, parent, isMain);
 }
+
+function defaultSend(event: Telemetry.TelemetryEvent): void {
+  // global.sendRxJsDebuggerTelemetry will be provided via CDP Runtime.addBinding eventually:
+  if (typeof global[Telemetry.telemetryRuntimeCDPBindingName] === 'function') {
+    const message = JSON.stringify(event);
+    global[Telemetry.telemetryRuntimeCDPBindingName](message);
+  }
+}
+
+global[Telemetry.telemetryRuntimeBridgeName] = telemetryBridge;

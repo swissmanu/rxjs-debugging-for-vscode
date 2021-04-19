@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { Commands, registerCommand } from '.';
 import { CDPProxyConnectionInformation } from '../../shared/types';
-import Receiver from '../receiver';
+import TelemetryBridge from '../telemetryBridge';
 
 const JS_DEBUG_REQUEST_CDP_PROXY_COMMAND = 'extension.js-debug.requestCDPProxy';
 const SUPPORTED_DEBUG_SESSION_TYPES = [
@@ -36,9 +36,14 @@ export function registerDebugRxJS(context: vscode.ExtensionContext): void {
         const info = await getCDPProxyConnectionInformation(sessionId);
         if (info) {
           try {
-            const receiver = new Receiver();
+            const receiver = new TelemetryBridge();
             receiver.onTelemetryEvent(console.log);
-            receiver.attach(info.host, info.port);
+            await receiver.attach(info.host, info.port);
+            receiver.enable({
+              fileName: 'bla',
+              columnNumber: 1,
+              lineNumber: 2,
+            });
           } catch (e) {
             vscode.window.showErrorMessage(
               `Could not create receiver (${JSON.stringify(e)})`
