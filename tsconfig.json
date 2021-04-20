@@ -5,15 +5,19 @@
     "outDir": "out",
     "lib": ["es6"],
     "sourceMap": true,
-    "rootDir": "src",
     "esModuleInterop": true,
     "strict": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
+  "include": ["src/**/*"],
   "exclude": [
     "node_modules",
     ".vscode-test",
     "example-workspaces",
-    "src/runtime"
+    "src/runtime",
+    "src/**/*.test.ts",
+    "src/integrationTest"
   ]
 }

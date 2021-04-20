@@ -40,7 +40,7 @@
     "compile": "tsc -p ./",
     "lint": "eslint src --ext ts",
     "watch": "tsc -watch -p ./",
-    "test": "yarn test:integration",
+    "test": "jest",
     "pretest:integration": "yarn run compile",
     "test:integration": "node ./out/integrationTest/runTest.js",
     "pretty": "prettier --write",
@@ -53,7 +53,7 @@
     "@rollup/plugin-node-resolve": "^11.2.1",
     "@rollup/plugin-typescript": "^8.2.1",
     "@types/glob": "^7.1.3",
-    "@types/mocha": "^8.0.0",
+    "@types/jest": "^26.0.22",
     "@types/node": "^14.0.27",
     "@types/stacktrace-js": "^2.0.3",
     "@types/vscode": "^1.53.0",
@@ -64,17 +64,21 @@
     "eslint": "^7.9.0",
     "glob": "^7.1.6",
     "husky": "^5.1.0",
+    "jest": "^26.6.3",
     "lint-staged": "^10.5.4",
-    "mocha": "^8.1.3",
     "prettier": "^2.2.1",
     "rollup": "^2.44.0",
     "rollup-plugin-terser": "^7.0.2",
     "source-map": "^0.7.3",
     "stacktrace-js": "^2.0.2",
+    "ts-jest": "^26.5.5",
     "tslib": "^2.1.0",
     "typescript": "^4.2.3",
     "vsce": "^1.85.0",
     "vscode-test": "^1.4.0"
+  },
+  "prettier": {
+    "printWidth": 120
   },
   "lint-staged": {
     "*.{ts,js,json}": [
@@ -87,6 +91,8 @@
     }
   },
   "dependencies": {
+    "inversify": "^5.0.5",
+    "reflect-metadata": "^0.1.13",
     "ws": "^7.4.4"
   }
 }
