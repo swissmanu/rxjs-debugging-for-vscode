@@ -17,7 +17,13 @@
       "name": "Launch NodeJS",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/node.ts",
-      "runtimeArgs": ["-r", "ts-node/register", "-r", "/Users/mal/git/private/mse-master-thesis/rxjs-debugger/out/runtime.node.js", "--inspect"],
+      "runtimeArgs": [
+        "-r",
+        "ts-node/register",
+        "-r",
+        "/Users/mal/git/private/mse-master-thesis/rxjs-debugger/out/runtime.node.js",
+        "--inspect"
+      ]
       // "debugServer": 4711
     },
 

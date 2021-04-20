@@ -1,3 +1,5 @@
-import { exampleObservable } from "./observable";
+import { exampleObservable } from './observable';
 
-exampleObservable().subscribe((x) => console.log(x));
+exampleObservable().subscribe((x) => {
+  console.log(x);
+});
