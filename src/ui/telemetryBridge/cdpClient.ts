@@ -1,5 +1,11 @@
-import { Disposable } from 'vscode';
 import WebSocket from 'ws';
+import { IDisposable } from '../../shared/types';
+
+export const ICDPClientAddress = Symbol('ICDPClientAddress');
+export interface ICDPClientAddress {
+  host: string;
+  port: number;
+}
 
 interface IFulfillRequest {
   resolve: (result: any) => void; // TODO FIX any
@@ -33,12 +39,18 @@ interface IProtocolSuccess {
 type ProtocolMessage = IProtocolCommand | ProtocolResponse;
 type ProtocolResponse = IProtocolError | IProtocolSuccess;
 
+export interface ICDPClient extends IDisposable {
+  connect(): Promise<void>;
+  request(domain: string, method: string, params?: Record<string, unknown>): Promise<any>;
+  subscribe(domain: string, event: string, callback: SubscriptionCallback): Promise<any>;
+}
+
 /**
  * A client for the shared CDP connection of js-debug.
  *
  * @see https://github.com/microsoft/vscode-js-debug/blob/main/CDP_SHARE.md
  */
-export default class CDPClient implements Disposable {
+export default class CDPClient implements ICDPClient {
   private webSocket?: WebSocket;
 
   private lastMessageId = 0;
@@ -64,9 +76,7 @@ export default class CDPClient implements Disposable {
 
               this.pendingRequests.delete(response.id);
               if ('error' in response) {
-                pendingRequest.reject(
-                  new Error(JSON.stringify(response.error))
-                );
+                pendingRequest.reject(new Error(JSON.stringify(response.error)));
               } else if ('result' in response) {
                 pendingRequest.resolve(response.result);
               }
@@ -90,19 +100,11 @@ export default class CDPClient implements Disposable {
     return Promise.resolve();
   }
 
-  request(
-    domain: string,
-    method: string,
-    params?: Record<string, unknown>
-  ): Promise<any> {
+  request(domain: string, method: string, params?: Record<string, unknown>): Promise<any> {
     return this.send(`${domain}.${method}`, params);
   }
 
-  async subscribe(
-    domain: string,
-    event: string,
-    callback: SubscriptionCallback
-  ): Promise<any> {
+  async subscribe(domain: string, event: string, callback: SubscriptionCallback): Promise<any> {
     const domainAndEvent = `${domain}.${event}`;
 
     if (this.subscriptions.has(domainAndEvent)) {
@@ -121,10 +123,7 @@ export default class CDPClient implements Disposable {
     }
   }
 
-  private async send(
-    method: string,
-    params?: Record<string, unknown>
-  ): Promise<any> {
+  private async send(method: string, params?: Record<string, unknown>): Promise<any> {
     if (!this.webSocket) {
       throw new Error('WebSocket not initialized.');
     }

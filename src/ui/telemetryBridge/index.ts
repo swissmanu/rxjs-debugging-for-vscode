@@ -1,33 +1,47 @@
-import { Disposable, Event, EventEmitter } from 'vscode';
+import { inject, injectable } from 'inversify';
 import * as Telemetry from '../../shared/telemetry';
-import CDPClient from './cdpClient';
+import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
+import { ILogger } from '../logger';
+import { ICDPClient, ICDPClientAddress } from './cdpClient';
+import { ICDPClientProvider } from './cdpClientProvider';
 
-export default class TelemetryBridge implements Disposable {
-  private cdpClient: CDPClient | undefined;
+export const ITelemetryBridge = Symbol('ITelemetryBridge');
+
+export interface ITelemetryBridge extends IDisposable {
+  attach(): Promise<void>;
+  enable(source: Telemetry.ITelemetryEventSource): Promise<void>;
+  disable(source: Telemetry.ITelemetryEventSource): Promise<void>;
+  onTelemetryEvent: IEvent<Telemetry.TelemetryEvent>;
+}
+@injectable()
+export default class TelemetryBridge implements ITelemetryBridge {
+  private cdpClient: ICDPClient | undefined;
 
   private _onTelemetryEvent = new EventEmitter<Telemetry.TelemetryEvent>();
-  get onTelemetryEvent(): Event<Telemetry.TelemetryEvent> {
+  get onTelemetryEvent(): IEvent<Telemetry.TelemetryEvent> {
     return this._onTelemetryEvent.event;
   }
 
-  async attach(host: string, port: number): Promise<void> {
+  constructor(
+    @inject(ICDPClientAddress) private readonly cdpClientAddress: ICDPClientAddress,
+    @inject(ICDPClientProvider) private readonly cdpClientProvider: ICDPClientProvider,
+    @inject(ILogger) private readonly logger: ILogger
+  ) {}
+
+  async attach(): Promise<void> {
     if (this.cdpClient) {
       throw new Error('Cannot attach when already attached to CDP');
     }
 
     try {
-      this.cdpClient = new CDPClient(host, port);
+      this.cdpClient = this.cdpClientProvider.createCDPClient(this.cdpClientAddress);
       await this.cdpClient.connect();
       await Promise.all([
         await this.cdpClient.request('Runtime', 'enable'),
         await this.cdpClient.request('Runtime', 'addBinding', {
           name: Telemetry.telemetryRuntimeCDPBindingName,
         }),
-        await this.cdpClient.subscribe(
-          'Runtime',
-          'bindingCalled',
-          this.onBindingCalled
-        ),
+        await this.cdpClient.subscribe('Runtime', 'bindingCalled', this.onBindingCalled),
       ]);
     } catch (e) {
       this.dispose();
@@ -48,10 +62,7 @@ export default class TelemetryBridge implements Disposable {
   }
 
   private onBindingCalled = (parameters: Record<string, unknown>): void => {
-    if (
-      parameters.name === Telemetry.telemetryRuntimeCDPBindingName &&
-      typeof parameters.payload === 'string'
-    ) {
+    if (parameters.name === Telemetry.telemetryRuntimeCDPBindingName && typeof parameters.payload === 'string') {
       try {
         const json: Telemetry.TelemetryEvent = JSON.parse(parameters.payload); // TODO fix any cast?
         this._onTelemetryEvent.fire(json);
