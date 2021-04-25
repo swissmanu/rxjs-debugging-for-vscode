@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
 import * as Telemetry from '../../shared/telemetry';
 import { IDisposable } from '../../shared/types';
-import LogPointManager, { ILogPointManager } from '../logPointManager';
+import { ILogPointManager } from '../logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
 
 export const ISession = Symbol('Session');
@@ -15,7 +15,7 @@ export default class Session implements ISession {
   private disposables: Array<IDisposable> = [];
 
   constructor(
-    @inject(ILogPointManager) private readonly logPointManager: LogPointManager,
+    @inject(ILogPointManager) private readonly logPointManager: ILogPointManager,
     @inject(ITelemetryBridge) private readonly telemetryBridge: ITelemetryBridge
   ) {}
 
@@ -23,6 +23,7 @@ export default class Session implements ISession {
     this.disposables.push(this.logPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints));
     this.disposables.push(this.telemetryBridge.onTelemetryEvent(this.onTelemetryEvent));
     await this.telemetryBridge.attach();
+    await this.telemetryBridge.update(this.logPointManager.logPoints);
   }
 
   private onDidChangeLogPoints = (logPoints: ReadonlyArray<Telemetry.ITelemetryEventSource>): void => {
