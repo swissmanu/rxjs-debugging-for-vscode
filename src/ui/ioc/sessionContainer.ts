@@ -5,9 +5,10 @@ import DisposableContainer, { IDisposableContainer } from './disposableContainer
 
 export default function createSessionContainer(
   parent: interfaces.Container,
+  name: string,
   cdpClientAddress: ICDPClientAddress
 ): IDisposableContainer {
-  const container = new DisposableContainer();
+  const container = new DisposableContainer(name);
   container.parent = parent;
 
   container.bind<ICDPClientAddress>(ICDPClientAddress).toConstantValue(cdpClientAddress);

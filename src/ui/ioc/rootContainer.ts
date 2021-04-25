@@ -9,7 +9,7 @@ import DisposableContainer, { IDisposableContainer } from './disposableContainer
 import { ExtensionContext, RootContainer, VsCodeApi } from './types';
 
 export default function createRootContainer(extensionContext: vscode.ExtensionContext): IDisposableContainer {
-  const container = new DisposableContainer();
+  const container = new DisposableContainer('Root');
 
   container.bind<typeof vscode>(VsCodeApi).toConstantValue(vscode);
 
