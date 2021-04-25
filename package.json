@@ -36,6 +36,7 @@
     }
   },
   "scripts": {
+    "prepare": "husky install",
     "vscode:prepublish": "yarn compile",
     "compile": "tsc -p ./",
     "lint": "eslint src --ext ts",
@@ -63,7 +64,7 @@
     "devtools-protocol": "^0.0.869921",
     "eslint": "^7.9.0",
     "glob": "^7.1.6",
-    "husky": "^5.1.0",
+    "husky": "6.0.0",
     "jest": "^26.6.3",
     "lint-staged": "^10.5.4",
     "prettier": "^2.2.1",
