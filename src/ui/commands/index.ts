@@ -3,11 +3,13 @@ import { commands, Disposable } from 'vscode';
 export const enum Commands {
   DebugRxJS = 'rxjs-debugging-for-vs-code.command.debugRxJS',
   HelloWorld = 'rxjs-debugging-for-vs-code.command.helloWorld',
+  EnableLogPoint = 'rxjs-debugging-for-vs-code.command.enableLogPoint',
 }
 
 export interface ICommandTypes {
   [Commands.DebugRxJS]: (debugSessionId?: string) => void;
   [Commands.HelloWorld]: () => void;
+  [Commands.EnableLogPoint]: () => void;
 }
 
 /**
@@ -27,4 +29,11 @@ export function registerCommand<K extends keyof ICommandTypes>(
   ) => Thenable<ReturnType<ICommandTypes[K]>>
 ): Disposable {
   return ns.registerCommand(key, fn);
+}
+
+export function getMarkdownCommandWithArgs<K extends keyof ICommandTypes>(
+  key: K,
+  args: Parameters<ICommandTypes[K]>
+): string {
+  return `command:${key}?${encodeURIComponent(JSON.stringify(args))}`;
 }
