@@ -38,24 +38,20 @@ export class HoverProvider implements Disposable {
     position: Position,
     _token: CancellationToken
   ): Promise<Hover | undefined> {
-    if (
-      position.line === 7 &&
-      position.character >= 3 &&
-      position.character <= 7
-    ) {
+    if (position.line === 7 && position.character >= 3 && position.character <= 7) {
       const markdown = new MarkdownString(
         `RxJS Debugger\n---\n\n[$(bug) Add Operator Log Point](${getMarkdownCommandWithArgs(
           Commands.EnableLogPoint,
           []
-        )} "Add Log Point")`,
+        )} "Add Log Point") - [$(bug) Remove Operator Log Point](${getMarkdownCommandWithArgs(
+          Commands.DisableLogPoint,
+          []
+        )} "Remove Log Point")]`,
         true
       );
       markdown.isTrusted = true;
 
-      return new Hover(
-        markdown,
-        new Range(position, position.with(undefined, position.character + 1))
-      );
+      return new Hover(markdown, new Range(position, position.with(undefined, position.character + 1)));
     }
 
     return undefined;

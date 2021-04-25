@@ -1,6 +1,7 @@
 import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
 import { Commands, registerCommand } from '.';
+import { ILogPointManager } from '../logPointManager';
 
 export function registerLogPointManagementCommands(
   context: vscode.ExtensionContext,
@@ -10,20 +11,22 @@ export function registerLogPointManagementCommands(
 }
 
 function registerEnableLogPoint(context: vscode.ExtensionContext, container: interfaces.Container) {
+  const logPointManager = container.get<ILogPointManager>(ILogPointManager);
+
   context.subscriptions.push(
     registerCommand(vscode.commands, Commands.EnableLogPoint, async () => {
-      try {
-        // const sessionContainer = container.get<Container>(CurrentSession);
-        // const telemetryBridge = sessionContainer.get<ITelemetryBridge>(ITelemetryBridge);
-        // telemetryBridge.enable({
-        //   fileName:
-        //     '/Users/mal/git/private/mse-master-thesis/rxjs-debugger/example-workspaces/browser-and-server/src/observable.ts',
-        //   columnNumber: 4,
-        //   lineNumber: 8,
-        // });
-      } catch (e) {
-        vscode.window.showErrorMessage(e);
-      }
+      logPointManager.enable(
+        '/Users/mal/git/private/mse-master-thesis/rxjs-debugger/example-workspaces/browser-and-server/src/observable.ts',
+        4,
+        8
+      );
+    }),
+    registerCommand(vscode.commands, Commands.DisableLogPoint, async () => {
+      logPointManager.disable(
+        '/Users/mal/git/private/mse-master-thesis/rxjs-debugger/example-workspaces/browser-and-server/src/observable.ts',
+        4,
+        8
+      );
     })
   );
 }

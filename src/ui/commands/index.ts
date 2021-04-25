@@ -4,12 +4,14 @@ export const enum Commands {
   DebugRxJS = 'rxjs-debugging-for-vs-code.command.debugRxJS',
   HelloWorld = 'rxjs-debugging-for-vs-code.command.helloWorld',
   EnableLogPoint = 'rxjs-debugging-for-vs-code.command.enableLogPoint',
+  DisableLogPoint = 'rxjs-debugging-for-vs-code.command.disableLogPoint',
 }
 
 export interface ICommandTypes {
   [Commands.DebugRxJS]: (debugSessionId?: string) => void;
   [Commands.HelloWorld]: () => void;
   [Commands.EnableLogPoint]: () => void;
+  [Commands.DisableLogPoint]: () => void;
 }
 
 /**

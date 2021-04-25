@@ -2,6 +2,7 @@ import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
 import { ILogger } from '../logger';
 import ConsoleLogger from '../logger/consoleLogger';
+import LogPointManager, { ILogPointManager } from '../logPointManager';
 import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
 import { DefaultCDPClientProvider, ICDPClientProvider } from '../telemetryBridge/cdpClientProvider';
@@ -16,6 +17,8 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
   container.bind<interfaces.Container>(RootContainer).toConstantValue(container);
   container.bind<vscode.ExtensionContext>(ExtensionContext).toConstantValue(extensionContext);
   container.bind<ILogger>(ILogger).to(ConsoleLogger).inSingletonScope();
+
+  container.bind<ILogPointManager>(ILogPointManager).to(LogPointManager).inSingletonScope();
 
   container
     .bind<ISessionManager>(ISessionManager)
