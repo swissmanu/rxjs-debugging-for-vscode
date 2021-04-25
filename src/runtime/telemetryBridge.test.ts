@@ -25,7 +25,7 @@ describe('Runtime', () => {
         expect(send).not.toBeCalled();
       });
 
-      test('sends TelemetryEvent for a file which is enabled', () => {
+      test('sends TelemetryEvent for a file which was enabled using enable()', () => {
         telemetryBridge.enable('foo/bar.ts');
 
         const event: Telemetry.TelemetryEvent = {
@@ -39,6 +39,36 @@ describe('Runtime', () => {
         };
         telemetryBridge.forward(event);
         expect(send).toHaveBeenCalledWith(event);
+      });
+
+      test('sends TelemetryEvent for a file which was enabled using update()', () => {
+        telemetryBridge.enable('boing/flip.ts');
+        telemetryBridge.update([{ fileName: 'foo/bar.ts', lineNumber: 42, columnNumber: 84 }]);
+
+        const enabledEvent: Telemetry.TelemetryEvent = {
+          type: Telemetry.TelemetryEventType.Subscribe,
+          data: undefined,
+          source: {
+            fileName: 'foo/bar.ts',
+            lineNumber: 42,
+            columnNumber: 84,
+          },
+        };
+        const disabledEvent: Telemetry.TelemetryEvent = {
+          type: Telemetry.TelemetryEventType.Subscribe,
+          data: undefined,
+          source: {
+            fileName: 'boing/flip.ts',
+            lineNumber: 42,
+            columnNumber: 84,
+          },
+        };
+
+        telemetryBridge.forward(enabledEvent);
+        telemetryBridge.forward(disabledEvent);
+
+        expect(send).toHaveBeenCalledTimes(1);
+        expect(send).toHaveBeenCalledWith(enabledEvent);
       });
 
       test('does not send TelemetryEvent for a file which got disabled', () => {

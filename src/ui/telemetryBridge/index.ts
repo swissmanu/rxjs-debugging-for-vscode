@@ -9,8 +9,29 @@ export const ITelemetryBridge = Symbol('ITelemetryBridge');
 
 export interface ITelemetryBridge extends IDisposable {
   attach(): Promise<void>;
+
+  /**
+   * Enable one specific `ITelemetryEventSource` to the runtime.
+   *
+   * @param source
+   */
   enable(source: Telemetry.ITelemetryEventSource): Promise<void>;
+
+  /**
+   * Disable one specific `ITelemetryEventSource` in the runtime.
+   *
+   * @param source
+   */
   disable(source: Telemetry.ITelemetryEventSource): Promise<void>;
+
+  /**
+   * Send a list of `ITelemetryEventSource`s to the runtime. The runtime will replace currently enabled log point
+   * sources with this new list.
+   *
+   * @param sources
+   */
+  update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): Promise<void>;
+
   onTelemetryEvent: IEvent<Telemetry.TelemetryEvent>;
 }
 @injectable()
@@ -24,8 +45,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
 
   constructor(
     @inject(ICDPClientAddress) private readonly cdpClientAddress: ICDPClientAddress,
-    @inject(ICDPClientProvider) private readonly cdpClientProvider: ICDPClientProvider,
-    @inject(ILogger) private readonly logger: ILogger
+    @inject(ICDPClientProvider) private readonly cdpClientProvider: ICDPClientProvider
   ) {}
 
   async attach(): Promise<void> {
@@ -49,15 +69,30 @@ export default class TelemetryBridge implements ITelemetryBridge {
     }
   }
 
+  /**
+   * @inheritdoc
+   */
   async enable(source: Telemetry.ITelemetryEventSource): Promise<void> {
     return this.cdpClient?.request('Runtime', 'evaluate', {
       expression: `${Telemetry.telemetryRuntimeBridgeName}.enable("${source.fileName}", ${source.lineNumber}, ${source.columnNumber});`,
     });
   }
 
+  /**
+   * @inheritdoc
+   */
   async disable(source: Telemetry.ITelemetryEventSource): Promise<void> {
     return this.cdpClient?.request('Runtime', 'evaluate', {
       expression: `${Telemetry.telemetryRuntimeBridgeName}.disable("${source.fileName}", ${source.lineNumber}, ${source.columnNumber});`,
+    });
+  }
+
+  /**
+   * @inheritdoc
+   */
+  async update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): Promise<void> {
+    return this.cdpClient?.request('Runtime', 'evaluate', {
+      expression: `${Telemetry.telemetryRuntimeBridgeName}.update(${JSON.stringify(sources)});`,
     });
   }
 

@@ -67,6 +67,16 @@ describe('UI', () => {
       });
     });
 
+    describe('update()', () => {
+      test('sends a Runtime.evaluate request via the CDPClient', async () => {
+        const source: Telemetry.ITelemetryEventSource = { columnNumber: 1, fileName: 'foo', lineNumber: 2 };
+        await bridge.update([source]);
+        expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
+          expression: 'rxJsDebuggerTelemetryBridge.update([{"columnNumber":1,"fileName":"foo","lineNumber":2}]);',
+        });
+      });
+    });
+
     describe('onTelemetryEvent()', () => {
       test('is fired when the CDPClient register a call on the telemetry binding', async () => {
         const spy = jest.fn();
