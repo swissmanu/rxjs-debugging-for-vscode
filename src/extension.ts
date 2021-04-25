@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import * as vscode from 'vscode';
 import { registerDebugRxJS } from './ui/commands/debugRxJs';
 import { registerLogPointManagementCommands } from './ui/commands/logPointManagement';
@@ -7,6 +8,7 @@ import createRootContainer from './ui/ioc/rootContainer';
 
 export function activate(context: vscode.ExtensionContext): void {
   const rootContainer = createRootContainer(context);
+  context.subscriptions.push(rootContainer);
 
   registerDebugRxJS(context, rootContainer);
   registerLogPointManagementCommands(context, rootContainer);

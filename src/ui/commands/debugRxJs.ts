@@ -16,7 +16,7 @@ export function registerDebugRxJS(context: vscode.ExtensionContext, rootContaine
       }
 
       const sessionManager = rootContainer.get<ISessionManager>(ISessionManager);
-      const sessionContainer = await sessionManager.getSessionContainer(sessionId);
+      const sessionContainer = await sessionManager.createSessionContainer(sessionId);
 
       try {
         const telemetryBridge = sessionContainer.get<ITelemetryBridge>(ITelemetryBridge);

@@ -1,5 +1,6 @@
 import { Container, interfaces } from 'inversify';
 import { IDisposable } from '../../shared/types';
+import { ILogger } from '../logger';
 
 export interface IDisposableContainer extends interfaces.Container, IDisposable {}
 
@@ -12,6 +13,8 @@ export default class DisposableContainer extends Container implements IDisposabl
   };
 
   dispose(): void {
+    this.get<ILogger>(ILogger).log(`Dispose ${String(this)}`);
+
     for (const disposable of this.disposables) {
       disposable.dispose();
     }

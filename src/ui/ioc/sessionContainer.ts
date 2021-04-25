@@ -1,5 +1,4 @@
 import { interfaces } from 'inversify';
-import 'reflect-metadata';
 import TelemetryBridge, { ITelemetryBridge } from '../telemetryBridge';
 import { ICDPClientAddress } from '../telemetryBridge/cdpClient';
 import DisposableContainer, { IDisposableContainer } from './disposableContainer';

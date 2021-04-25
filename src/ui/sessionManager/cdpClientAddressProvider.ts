@@ -1,10 +1,12 @@
-import * as vscode from 'vscode';
+import { inject, injectable } from 'inversify';
+import type * as vscodeApiType from 'vscode';
+import { VsCodeApi } from '../ioc/types';
 import { ICDPClientAddress } from '../telemetryBridge/cdpClient';
 
 export const ICDPClientAddressProvider = Symbol('CDPClientAddressProvider');
 
 export interface ICDPClientAddressProvider {
-  (debugSessionId: string): Promise<ICDPClientAddress | undefined>;
+  getCDPClientAddress(debugSessionId: string): Promise<ICDPClientAddress | undefined>;
 }
 
 const JS_DEBUG_REQUEST_CDP_PROXY_COMMAND = 'extension.js-debug.requestCDPProxy';
@@ -17,17 +19,20 @@ const JS_DEBUG_REQUEST_CDP_PROXY_COMMAND = 'extension.js-debug.requestCDPProxy';
  * @param debugSessionId
  * @returns
  */
-export default async function defaultCDPClientAddressProvider(
-  debugSessionId: string
-): Promise<ICDPClientAddress | undefined> {
-  if (!isCDPProxyRequestAvailable()) {
-    throw new Error(`Installed js-debug extension does not provide "${JS_DEBUG_REQUEST_CDP_PROXY_COMMAND}" command.`);
-  }
+@injectable()
+export default class DefaultCDPClientAddressProvider implements ICDPClientAddressProvider {
+  constructor(@inject(VsCodeApi) private readonly vscode: typeof vscodeApiType) {}
 
-  return vscode.commands.executeCommand(JS_DEBUG_REQUEST_CDP_PROXY_COMMAND, debugSessionId);
+  async getCDPClientAddress(debugSessionId: string): Promise<ICDPClientAddress | undefined> {
+    if (!isCDPProxyRequestAvailable(this.vscode)) {
+      throw new Error(`Installed js-debug extension does not provide "${JS_DEBUG_REQUEST_CDP_PROXY_COMMAND}" command.`);
+    }
+
+    return this.vscode.commands.executeCommand(JS_DEBUG_REQUEST_CDP_PROXY_COMMAND, debugSessionId);
+  }
 }
 
-async function isCDPProxyRequestAvailable(): Promise<boolean> {
+async function isCDPProxyRequestAvailable(vscode: typeof vscodeApiType): Promise<boolean> {
   const allCommands = await vscode.commands.getCommands();
   const hasRequestCDPProxyCommand = allCommands.find((c) => c === JS_DEBUG_REQUEST_CDP_PROXY_COMMAND);
   return typeof hasRequestCDPProxyCommand === 'string';

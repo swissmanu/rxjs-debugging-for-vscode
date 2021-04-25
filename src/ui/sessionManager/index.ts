@@ -1,8 +1,9 @@
 import { inject, injectable, interfaces } from 'inversify';
 import { IDisposable } from '../../shared/types';
 import { IDisposableContainer } from '../ioc/disposableContainer';
-import { RootContainer } from '../ioc/rootContainer';
 import createSessionContainer from '../ioc/sessionContainer';
+import { RootContainer } from '../ioc/types';
+import { ILogger } from '../logger';
 import { ICDPClientAddressProvider } from './cdpClientAddressProvider';
 
 type DebugSessionId = string;
@@ -10,7 +11,7 @@ type DebugSessionId = string;
 export const ISessionManager = Symbol('ISessionManager');
 
 export interface ISessionManager extends IDisposable {
-  getSessionContainer: (debugSessionId: DebugSessionId) => Promise<interfaces.Container>;
+  createSessionContainer: (debugSessionId: DebugSessionId) => Promise<interfaces.Container>;
 }
 
 @injectable()
@@ -19,18 +20,21 @@ export default class SessionManager implements ISessionManager {
 
   constructor(
     @inject(RootContainer) private readonly rootContainer: interfaces.Container,
-    @inject(ICDPClientAddressProvider) private readonly cdpClientAddressProvider: ICDPClientAddressProvider
+    @inject(ICDPClientAddressProvider) private readonly cdpClientAddressProvider: ICDPClientAddressProvider,
+    @inject(ILogger) private readonly logger: ILogger
   ) {}
 
-  async getSessionContainer(debugSessionId: DebugSessionId): Promise<interfaces.Container> {
+  async createSessionContainer(debugSessionId: DebugSessionId): Promise<interfaces.Container> {
     const sessionContainer = this.sessions.get(debugSessionId);
 
     if (sessionContainer) {
+      this.logger.log(`Reuse SessionContainer for Debug Session ${debugSessionId}`);
       return sessionContainer;
     }
 
-    const address = await this.cdpClientAddressProvider(debugSessionId);
+    const address = await this.cdpClientAddressProvider.getCDPClientAddress(debugSessionId);
     if (address) {
+      this.logger.log(`Create SessionContainer for Debug Session ${debugSessionId}`);
       const newSessionContainer = createSessionContainer(this.rootContainer, address);
       this.sessions.set(debugSessionId, newSessionContainer);
       return newSessionContainer;
