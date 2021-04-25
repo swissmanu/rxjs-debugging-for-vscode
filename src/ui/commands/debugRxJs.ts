@@ -1,61 +1,34 @@
+import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
 import { Commands, registerCommand } from '.';
-import { CDPProxyConnectionInformation } from '../../shared/types';
-import TelemetryBridge from '../telemetryBridge';
+import { ISessionManager } from '../sessionManager';
+import { ITelemetryBridge } from '../telemetryBridge';
 
-const JS_DEBUG_REQUEST_CDP_PROXY_COMMAND = 'extension.js-debug.requestCDPProxy';
-const SUPPORTED_DEBUG_SESSION_TYPES = [
-  'pwa-extensionHost',
-  'node-terminal',
-  'pwa-node',
-  'pwa-chrome',
-  'pwa-msedge',
-];
+const SUPPORTED_DEBUG_SESSION_TYPES = ['pwa-extensionHost', 'node-terminal', 'pwa-node', 'pwa-chrome', 'pwa-msedge'];
 
-export function registerDebugRxJS(context: vscode.ExtensionContext): void {
+export function registerDebugRxJS(context: vscode.ExtensionContext, rootContainer: interfaces.Container): void {
   context.subscriptions.push(
-    registerCommand(
-      vscode.commands,
-      Commands.DebugRxJS,
-      async (debugSessionId) => {
-        if (!isCDPProxyRequestAvailable()) {
-          vscode.window.showErrorMessage(
-            'Latest version of js-debug extension missing.'
-          );
-          return;
-        }
-
-        const sessionId = debugSessionId || getActiveDebugSessionId();
-        if (!sessionId) {
-          vscode.window.showErrorMessage(
-            'Could not find an active, supported debug session.'
-          );
-          return;
-        }
-
-        const info = await getCDPProxyConnectionInformation(sessionId);
-        if (info) {
-          try {
-            const receiver = new TelemetryBridge();
-            receiver.onTelemetryEvent(console.log);
-            await receiver.attach(info.host, info.port);
-            receiver.enable({
-              fileName: 'bla',
-              columnNumber: 1,
-              lineNumber: 2,
-            });
-          } catch (e) {
-            vscode.window.showErrorMessage(
-              `Could not create receiver (${JSON.stringify(e)})`
-            );
-          }
-        } else {
-          vscode.window.showErrorMessage(
-            'Could not acquire CDP proxy connection information.'
-          );
-        }
+    registerCommand(vscode.commands, Commands.DebugRxJS, async (debugSessionId) => {
+      const sessionId = debugSessionId || getActiveDebugSessionId();
+      if (!sessionId) {
+        vscode.window.showErrorMessage('Could not find an active, supported debug session.');
+        return;
       }
-    )
+
+      const sessionManager = rootContainer.get<ISessionManager>(ISessionManager);
+      const sessionContainer = await sessionManager.getSessionContainer(sessionId);
+
+      try {
+        const telemetryBridge = sessionContainer.get<ITelemetryBridge>(ITelemetryBridge);
+
+        telemetryBridge.onTelemetryEvent(console.log);
+        await telemetryBridge.attach();
+
+        vscode.window.showInformationMessage('Ready to debug!');
+      } catch (e) {
+        vscode.window.showErrorMessage(`Could not create receiver (${e})`);
+      }
+    })
   );
 }
 
@@ -65,23 +38,6 @@ function getActiveDebugSessionId(): string | undefined {
     return activeDebugSession.id;
   }
   return;
-}
-
-async function getCDPProxyConnectionInformation(
-  debugSessionId: string
-): Promise<CDPProxyConnectionInformation | undefined> {
-  return await vscode.commands.executeCommand(
-    JS_DEBUG_REQUEST_CDP_PROXY_COMMAND,
-    debugSessionId
-  );
-}
-
-async function isCDPProxyRequestAvailable(): Promise<boolean> {
-  const allCommands = await vscode.commands.getCommands();
-  const hasRequestCDPProxyCommand = allCommands.find(
-    (c) => c === JS_DEBUG_REQUEST_CDP_PROXY_COMMAND
-  );
-  return typeof hasRequestCDPProxyCommand === 'string';
 }
 
 function isSupportedDebugSession(debugSession: vscode.DebugSession): boolean {
