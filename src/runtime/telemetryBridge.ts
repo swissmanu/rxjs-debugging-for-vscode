@@ -6,7 +6,6 @@ export default class TelemetryBridge {
   constructor(private readonly send: (event: Telemetry.TelemetryEvent) => void) {}
 
   enable(fileName: string): void {
-    console.log(fileName);
     this.enabled.add(fileName);
   }
 
@@ -20,7 +19,6 @@ export default class TelemetryBridge {
    * @param sources
    */
   update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): void {
-    console.log('Test');
     this.enabled = new Set(sources.map(({ fileName }) => fileName));
   }
 

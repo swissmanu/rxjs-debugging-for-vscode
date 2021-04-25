@@ -1,9 +1,8 @@
 import 'reflect-metadata';
-import NullLogger from '../logger/nullLogger';
+import * as Telemetry from '../../shared/telemetry';
 import TelemetryBridge from './';
 import { ICDPClient, ICDPClientAddress } from './cdpClient';
 import { ICDPClientProvider } from './cdpClientProvider';
-import * as Telemetry from '../../shared/telemetry';
 
 describe('UI', () => {
   describe('TelemetryBridge', () => {
@@ -24,7 +23,7 @@ describe('UI', () => {
         createCDPClient: jest.fn(() => cdpClient),
       };
 
-      bridge = new TelemetryBridge(cdpClientAddress, cdpClientProvider, new NullLogger());
+      bridge = new TelemetryBridge(cdpClientAddress, cdpClientProvider);
       await bridge.attach();
     });
 
