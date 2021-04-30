@@ -74,7 +74,7 @@
     "stacktrace-js": "2.0.2",
     "ts-jest": "26.5.5",
     "tslib": "2.1.0",
-    "typescript": "4.2.3",
+    "typescript": "4.2.4",
     "vsce": "1.85.0",
     "vscode-test": "1.5.1"
   },
