@@ -1,5 +1,10 @@
 import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
+import {
+  INodeWithRxJSDebugConfigurationResolver,
+  NodeWithRxJSDebugConfigurationResolver,
+} from '../debugConfiguraitonResolvers';
+import { IRxJSDetector, RxJSDetector } from '../detector';
 import { ILogger } from '../logger';
 import ConsoleLogger from '../logger/consoleLogger';
 import LogPointManager, { ILogPointManager } from '../logPointManager';
@@ -18,6 +23,11 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
   container.bind<vscode.ExtensionContext>(ExtensionContext).toConstantValue(extensionContext);
   container.bind<ILogger>(ILogger).to(ConsoleLogger).inSingletonScope();
 
+  container.bind<IRxJSDetector>(IRxJSDetector).to(RxJSDetector).inSingletonScope();
+  container
+    .bind<vscode.DebugConfigurationProvider>(INodeWithRxJSDebugConfigurationResolver)
+    .to(NodeWithRxJSDebugConfigurationResolver)
+    .inSingletonScope();
   container.bind<ILogPointManager>(ILogPointManager).to(LogPointManager).inSingletonScope();
 
   container

@@ -5,7 +5,7 @@ import { ISessionManager } from '../sessionManager';
 
 const SUPPORTED_DEBUG_SESSION_TYPES = ['pwa-extensionHost', 'node-terminal', 'pwa-node', 'pwa-chrome', 'pwa-msedge'];
 
-export function registerDebugRxJS(context: vscode.ExtensionContext, rootContainer: interfaces.Container): void {
+export default function registerDebugRxJS(context: vscode.ExtensionContext, rootContainer: interfaces.Container): void {
   context.subscriptions.push(
     registerCommand(vscode.commands, Commands.DebugRxJS, async (debugSessionId) => {
       const debugSessionIdToConnectTo = debugSessionId || getActiveDebugSessionId();

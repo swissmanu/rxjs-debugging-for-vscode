@@ -4,6 +4,11 @@ import { registerDebugRxJS } from './ui/commands/debugRxJs';
 import { registerLogPointManagementCommands } from './ui/commands/logPointManagement';
 import { DecorationProvider } from './ui/decoration/decorationProvider';
 import { HoverProvider } from './ui/hover/hoverProvider';
+import registerDebugRxJS from './ui/commands/debugRxJs';
+import {
+  INodeWithRxJSDebugConfigurationResolver,
+  NodeWithRxJSDebugConfigurationResolver,
+} from './ui/debugConfigurationProvider';
 import createRootContainer from './ui/ioc/rootContainer';
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -13,10 +18,10 @@ export function activate(context: vscode.ExtensionContext): void {
   registerDebugRxJS(context, rootContainer);
   registerLogPointManagementCommands(context, rootContainer);
 
-  // vscode.languages.registerCodeLensProvider(
-  //   BlaCodeLensProvider.documentSelector,
-  //   new BlaCodeLensProvider()
-  // );
+  vscode.debug.registerDebugConfigurationProvider(
+    NodeWithRxJSDebugConfigurationResolver.type,
+    rootContainer.get<vscode.DebugConfigurationProvider>(INodeWithRxJSDebugConfigurationResolver)
+  );
 
   const decorationProvider = new DecorationProvider();
   context.subscriptions.push(decorationProvider);

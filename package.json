@@ -11,30 +11,13 @@
   ],
   "publisher": "manuelalabor",
   "activationEvents": [
+    "onDebugResolve:node",
     "onLanguage:typescript",
     "onLanguage:javascript",
     "onLanguage:typescriptreact",
     "onLanguage:javascriptreact"
   ],
   "main": "./out/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "rxjs-debugging-for-vs-code.command.debugRxJS",
-        "title": "%debug.rxjs%",
-        "icon": "$(debug)"
-      }
-    ],
-    "menus": {
-      "debug/callstack/context": [
-        {
-          "command": "rxjs-debugging-for-vs-code.command.debugRxJS",
-          "group": "navigation",
-          "when": "debugType == pwa-extensionHost && callStackItemType == 'session' || debugType == node-terminal && callStackItemType == 'session' || debugType == pwa-node && callStackItemType == 'session' || debugType == pwa-chrome && callStackItemType == 'session' || debugType == pwa-msedge && callStackItemType == 'session'"
-        }
-      ]
-    }
-  },
   "scripts": {
     "prepare": "husky install",
     "vscode:prepublish": "yarn compile",

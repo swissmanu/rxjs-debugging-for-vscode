@@ -5,28 +5,14 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "rxjs",
-      "name": "RxJS Debugging",
-      "request": "attach",
-      "debugServer": 4712
-    },
-    {
       "type": "node",
       "runtimeVersion": "12.22.0",
       "request": "launch",
       "name": "Launch NodeJS",
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}/src/node.ts",
-      "runtimeArgs": [
-        "-r",
-        "ts-node/register",
-        "-r",
-        "/Users/mal/git/private/mse-master-thesis/rxjs-debugger/out/runtime.node.js",
-        "--inspect"
-      ]
-      // "debugServer": 4711
+      "runtimeArgs": ["-r", "ts-node/register"]
     },
-
     {
       "type": "chrome",
       "request": "launch",
@@ -37,12 +23,6 @@
       "sourceMaps": true,
       "trace": true,
       "debugServer": 4711
-    }
-  ],
-  "compounds": [
-    {
-      "name": "Full Debug",
-      "configurations": ["Launch NodeJS", "RxJS Debugging"]
     }
   ]
 }
