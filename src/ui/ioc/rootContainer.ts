@@ -4,8 +4,10 @@ import LogPointRecommender, { ILogPointRecommender } from '../codeAnalysis/logPo
 import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
-} from '../debugConfiguraitonResolvers';
+} from '../debugConfigurationProvider';
+import LogPointDecorationProvider, { ILogPointDecorationProvider } from '../decoration/logPointDecorationProvider';
 import { IRxJSDetector, RxJSDetector } from '../detector';
+import LogPointHoverProvider, { ILogPointHoverProvider } from '../hover/hoverProvider';
 import { ILogger } from '../logger';
 import ConsoleLogger from '../logger/consoleLogger';
 import LogPointManager, { ILogPointManager } from '../logPointManager';
@@ -33,6 +35,16 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
   container
     .bind<ILogPointRecommender>(ILogPointRecommender)
     .to(LogPointRecommender)
+    .inSingletonScope()
+    .onActivation(container.trackDisposableBinding);
+  container
+    .bind<ILogPointDecorationProvider>(ILogPointDecorationProvider)
+    .to(LogPointDecorationProvider)
+    .inSingletonScope()
+    .onActivation(container.trackDisposableBinding);
+  container
+    .bind<ILogPointHoverProvider>(ILogPointHoverProvider)
+    .to(LogPointHoverProvider)
     .inSingletonScope()
     .onActivation(container.trackDisposableBinding);
   container.bind<ILogPointManager>(ILogPointManager).to(LogPointManager).inSingletonScope();
