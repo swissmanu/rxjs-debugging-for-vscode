@@ -22,21 +22,21 @@ describe('Session', () => {
     session = new Session(logPointManager, telemetryBridge);
   });
 
-  describe('start()', () => {
+  describe('attach()', () => {
     test('attaches to the TelemetryBridge', async () => {
-      await session.start();
+      await session.attach();
       expect(telemetryBridge.attach).toBeCalled();
     });
 
     test('sends log points present in the LogPointManager to the TelemetryBridge', async () => {
       logPointManager.logPoints = logPoints;
-      await session.start();
+      await session.attach();
       expect(telemetryBridge.update).toBeCalledWith(logPoints);
     });
   });
 
   test('forwards changed log points from the LogPointManager to the TelemetryBridge', async () => {
-    await session.start();
+    await session.attach();
     expect(telemetryBridge.update).not.toBeCalledWith(logPoints);
 
     const onDidChangeLogPointsHandler = (logPointManager.onDidChangeLogPoints as jest.Mock).mock.calls[0][0];

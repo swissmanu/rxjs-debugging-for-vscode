@@ -7,19 +7,25 @@ import { ITelemetryBridge } from '../telemetryBridge';
 export const ISession = Symbol('Session');
 
 export interface ISession extends IDisposable {
-  start(): Promise<void>;
+  attach(): Promise<void>;
 }
 
 @injectable()
 export default class Session implements ISession {
   private disposables: Array<IDisposable> = [];
+  private attached = false;
 
   constructor(
     @inject(ILogPointManager) private readonly logPointManager: ILogPointManager,
     @inject(ITelemetryBridge) private readonly telemetryBridge: ITelemetryBridge
   ) {}
 
-  async start(): Promise<void> {
+  async attach(): Promise<void> {
+    if (this.attached) {
+      return;
+    }
+
+    this.attached = true;
     this.disposables.push(this.logPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints));
     this.disposables.push(this.telemetryBridge.onTelemetryEvent(this.onTelemetryEvent));
     await this.telemetryBridge.attach();

@@ -25,9 +25,10 @@ export default class SessionManager implements ISessionManager {
     @inject(RootContainer) private readonly rootContainer: interfaces.Container,
     @inject(ICDPClientAddressProvider) private readonly cdpClientAddressProvider: ICDPClientAddressProvider,
     @inject(ILogger) private readonly logger: ILogger,
-    @inject(VsCodeApi) vscode: typeof vscodeApiType
+    @inject(VsCodeApi) private readonly vscode: typeof vscodeApiType
   ) {
-    this.disposables.push(vscode.debug.onDidTerminateDebugSession(this.onDidTerminateDebugSession));
+    this.disposables.push(this.vscode.debug.onDidStartDebugSession(this.onDidStartDebugSession));
+    this.disposables.push(this.vscode.debug.onDidTerminateDebugSession(this.onDidTerminateDebugSession));
   }
 
   async createSession(debugSessionId: DebugSessionId): Promise<ISession> {
@@ -49,12 +50,28 @@ export default class SessionManager implements ISessionManager {
       return newSession;
     }
 
+    this.logger.log(`Could not get CDPClientAddress for debug session with id "${debugSessionId}"`);
     throw new Error('Could not get CDPClientAddress from CDPClientAddressProvider');
   }
 
   getSession(debugSessionId: DebugSessionId): ISession | undefined {
     return this.sessions.get(debugSessionId);
   }
+
+  private onDidStartDebugSession = async ({ id, type }: vscodeApiType.DebugSession) => {
+    if (type === 'node' || type == 'pwa-node') {
+      this.logger.log(`Create session for Debug Session "${id}"`);
+
+      try {
+        const session = await this.createSession(id);
+        await session.attach();
+
+        this.vscode.window.showInformationMessage('Ready to debug!');
+      } catch (e) {
+        this.vscode.window.showErrorMessage(`Could not create and start session (${e})`);
+      }
+    }
+  };
 
   private onDidTerminateDebugSession = ({ id }: vscodeApiType.DebugSession) => {
     const session = this.sessions.get(id);

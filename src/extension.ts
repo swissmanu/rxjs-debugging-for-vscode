@@ -15,7 +15,6 @@ export function activate(context: vscode.ExtensionContext): void {
   const rootContainer = createRootContainer(context);
   context.subscriptions.push(rootContainer);
 
-  registerDebugRxJS(context, rootContainer);
   registerLogPointManagementCommands(context, rootContainer);
 
   vscode.debug.registerDebugConfigurationProvider(

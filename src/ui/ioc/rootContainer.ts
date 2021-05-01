@@ -42,5 +42,8 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
 
   container.bind<ICDPClientProvider>(ICDPClientProvider).to(DefaultCDPClientProvider).inSingletonScope();
 
+  // Ensure SessionManager is initialized:
+  container.get<ISessionManager>(ISessionManager);
+
   return container;
 }

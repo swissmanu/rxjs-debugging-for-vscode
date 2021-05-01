@@ -1,13 +1,11 @@
 import { commands, Disposable, Position, Uri } from 'vscode';
 
 export const enum Commands {
-  DebugRxJS = 'rxjs-debugging-for-vs-code.command.debugRxJS',
   EnableLogPoint = 'rxjs-debugging-for-vs-code.command.enableLogPoint',
   DisableLogPoint = 'rxjs-debugging-for-vs-code.command.disableLogPoint',
 }
 
 export interface ICommandTypes {
-  [Commands.DebugRxJS]: (debugSessionId?: string) => void;
   [Commands.EnableLogPoint]: (uri: Uri, position: Position) => void;
   [Commands.DisableLogPoint]: (uri: Uri, position: Position) => void;
 }
@@ -34,7 +32,7 @@ export function executeCommand<K extends keyof ICommandTypes>(
   key: K,
   ...args: Parameters<ICommandTypes[K]>
 ): Thenable<ReturnType<ICommandTypes[K]>> {
-  return ns.executeCommand(key, args) as Thenable<ReturnType<ICommandTypes[K]>>;
+  return ns.executeCommand(key, ...args) as Thenable<ReturnType<ICommandTypes[K]>>;
 }
 
 export function getMarkdownCommandWithArgs<K extends keyof ICommandTypes>(

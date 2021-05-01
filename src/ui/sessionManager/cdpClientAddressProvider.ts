@@ -24,11 +24,11 @@ export default class DefaultCDPClientAddressProvider implements ICDPClientAddres
   constructor(@inject(VsCodeApi) private readonly vscode: typeof vscodeApiType) {}
 
   async getCDPClientAddress(debugSessionId: string): Promise<ICDPClientAddress | undefined> {
-    if (!isCDPProxyRequestAvailable(this.vscode)) {
+    if (!(await isCDPProxyRequestAvailable(this.vscode))) {
       throw new Error(`Installed js-debug extension does not provide "${JS_DEBUG_REQUEST_CDP_PROXY_COMMAND}" command.`);
     }
 
-    return this.vscode.commands.executeCommand(JS_DEBUG_REQUEST_CDP_PROXY_COMMAND, debugSessionId);
+    return await this.vscode.commands.executeCommand(JS_DEBUG_REQUEST_CDP_PROXY_COMMAND, debugSessionId);
   }
 }
 
