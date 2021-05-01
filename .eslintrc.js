@@ -9,12 +9,8 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint'],
+  plugins: ['prettier', '@typescript-eslint'],
   rules: {
-    indent: ['error', 2, { SwitchCase: 1 }],
-    'linebreak-style': ['error', 'unix'],
-    quotes: ['error', 'single', { avoidEscape: true }],
-    semi: ['error', 'always'],
     '@typescript-eslint/no-empty-function': [1],
   },
 };
