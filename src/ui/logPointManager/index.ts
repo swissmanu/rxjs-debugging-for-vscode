@@ -1,11 +1,11 @@
 import { inject, injectable } from 'inversify';
 import * as Telemetry from '../../shared/telemetry';
-import { EventEmitter, IEvent } from '../../shared/types';
+import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
 import { ILogger } from '../logger';
 
 export const ILogPointManager = Symbol('LogPointManager');
 
-export interface ILogPointManager {
+export interface ILogPointManager extends IDisposable {
   enable(fileName: string, lineNumber: number, columnNumber: number): void;
   disable(fileName: string, lineNumber: number, columnNumber: number): void;
   logPoints: ReadonlyArray<Telemetry.ITelemetryEventSource>;
@@ -53,5 +53,9 @@ export default class LogPointManager implements ILogPointManager {
 
   private getKey(fileName: string, lineNumber: number, columnNumber: number): string {
     return `${fileName}-${lineNumber}:${columnNumber}`;
+  }
+
+  dispose(): void {
+    this._onDidChangeLogPoints.dispose();
   }
 }

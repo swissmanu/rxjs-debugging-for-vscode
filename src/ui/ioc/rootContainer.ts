@@ -1,5 +1,6 @@
 import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
+import LogPointRecommender, { ILogPointRecommender } from '../codeAnalysis/logPointRecommender';
 import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
@@ -28,6 +29,12 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
     .bind<vscode.DebugConfigurationProvider>(INodeWithRxJSDebugConfigurationResolver)
     .to(NodeWithRxJSDebugConfigurationResolver)
     .inSingletonScope();
+
+  container
+    .bind<ILogPointRecommender>(ILogPointRecommender)
+    .to(LogPointRecommender)
+    .inSingletonScope()
+    .onActivation(container.trackDisposableBinding);
   container.bind<ILogPointManager>(ILogPointManager).to(LogPointManager).inSingletonScope();
 
   container

@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import { Commands, registerCommand } from '.';
 import { ILogPointManager } from '../logPointManager';
 
-export function registerLogPointManagementCommands(
+export default function registerLogPointManagementCommands(
   context: vscode.ExtensionContext,
   container: interfaces.Container
 ): void {
@@ -14,19 +14,11 @@ function registerEnableLogPoint(context: vscode.ExtensionContext, container: int
   const logPointManager = container.get<ILogPointManager>(ILogPointManager);
 
   context.subscriptions.push(
-    registerCommand(vscode.commands, Commands.EnableLogPoint, async () => {
-      logPointManager.enable(
-        '/Users/mal/git/private/mse-master-thesis/rxjs-debugger/example-workspaces/browser-and-server/src/observable.ts',
-        4,
-        8
-      );
+    registerCommand(vscode.commands, Commands.EnableLogPoint, async ({ fsPath }, { line, character }) => {
+      logPointManager.enable(fsPath, line, character);
     }),
-    registerCommand(vscode.commands, Commands.DisableLogPoint, async () => {
-      logPointManager.disable(
-        '/Users/mal/git/private/mse-master-thesis/rxjs-debugger/example-workspaces/browser-and-server/src/observable.ts',
-        4,
-        8
-      );
+    registerCommand(vscode.commands, Commands.DisableLogPoint, async ({ fsPath }, { line, character }) => {
+      logPointManager.disable(fsPath, line, character);
     })
   );
 }

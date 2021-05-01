@@ -27,16 +27,22 @@ export function activate(context: vscode.ExtensionContext): void {
 
   const hoverProvider = new HoverProvider();
   context.subscriptions.push(hoverProvider);
+  const logPointRecommender = rootContainer.get<ILogPointRecommender>(ILogPointRecommender);
 
   if (vscode.window.activeTextEditor) {
     decorationProvider.attach(vscode.window.activeTextEditor);
     hoverProvider.attach(vscode.window.activeTextEditor);
   }
 
+  vscode.workspace.onDidChangeTextDocument(({ document }) => {
+    logPointRecommender.recommend(document);
+  });
   vscode.window.onDidChangeActiveTextEditor((editor) => {
     if (editor) {
       decorationProvider.attach(editor);
       hoverProvider.attach(editor);
+      logPointRecommender.onRecommendLogPoints(({ uri, logPoints }) => {});
+      logPointRecommender.recommend(editor.document);
     } else {
       decorationProvider.detach();
       hoverProvider.detach();
