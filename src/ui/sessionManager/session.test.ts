@@ -10,7 +10,13 @@ describe('Session', () => {
   const logPoints = [{ fileName: 'foo', lineNumber: 42, columnNumber: 48 }];
 
   beforeEach(() => {
-    logPointManager = { disable: jest.fn(), enable: jest.fn(), logPoints: [], onDidChangeLogPoints: jest.fn() };
+    logPointManager = {
+      disable: jest.fn(),
+      enable: jest.fn(),
+      logPoints: [],
+      onDidChangeLogPoints: jest.fn(),
+      dispose: jest.fn(),
+    };
     telemetryBridge = {
       attach: jest.fn(() => Promise.resolve()),
       disable: jest.fn(() => Promise.resolve()),
