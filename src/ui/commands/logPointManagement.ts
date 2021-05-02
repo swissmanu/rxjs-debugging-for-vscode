@@ -14,11 +14,11 @@ function registerEnableLogPoint(context: vscode.ExtensionContext, container: int
   const logPointManager = container.get<ILogPointManager>(ILogPointManager);
 
   context.subscriptions.push(
-    registerCommand(vscode.commands, Commands.EnableLogPoint, async ({ fsPath }, { line, character }) => {
-      logPointManager.enable(fsPath, line, character);
+    registerCommand(vscode.commands, Commands.EnableLogPoint, async (uri, position) => {
+      logPointManager.enable(uri, position);
     }),
-    registerCommand(vscode.commands, Commands.DisableLogPoint, async ({ fsPath }, { line, character }) => {
-      logPointManager.disable(fsPath, line, character);
+    registerCommand(vscode.commands, Commands.DisableLogPoint, async (uri, position) => {
+      logPointManager.disable(uri, position);
     })
   );
 }

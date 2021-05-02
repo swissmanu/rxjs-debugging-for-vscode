@@ -1,19 +1,14 @@
 import { Observable, OperatorFunction, Subscriber } from 'rxjs';
+import * as StackTrace from 'stacktrace-js';
 import * as Telemetry from '../shared/telemetry';
 import TelemetryBridge from './telemetryBridge';
 
 export function operate<T, R>(
-  init: (
-    liftedSource: Observable<T>,
-    subscriber: Subscriber<R>
-  ) => (() => void) | void
+  init: (liftedSource: Observable<T>, subscriber: Subscriber<R>) => (() => void) | void
 ): OperatorFunction<T, R> {
   return (source: Observable<T>) => {
     if (hasLift(source)) {
-      return source.lift(function (
-        this: Subscriber<R>,
-        liftedSource: Observable<T>
-      ) {
+      return source.lift(function (this: Subscriber<R>, liftedSource: Observable<T>) {
         try {
           return init(liftedSource, this);
         } catch (err) {
@@ -25,9 +20,7 @@ export function operate<T, R>(
   };
 }
 
-function hasLift(
-  source: any
-): source is { lift: InstanceType<typeof Observable>['lift'] } {
+function hasLift(source: any): source is { lift: InstanceType<typeof Observable>['lift'] } {
   return typeof source?.lift === 'function';
 }
 
@@ -97,12 +90,10 @@ export class TelemetrySubscriber<T> extends Subscriber<T> {
   }
 }
 
-function sourceFromStackFrame(
-  stackFrame: StackTrace.StackFrame
-): Telemetry.ITelemetryEventSource {
+function sourceFromStackFrame(stackFrame: StackTrace.StackFrame): Telemetry.ITelemetryEventSource {
   return {
-    columnNumber: stackFrame.columnNumber || -1,
+    character: stackFrame.columnNumber || -1,
     fileName: stackFrame.fileName || '',
-    lineNumber: stackFrame.lineNumber || -1,
+    line: stackFrame.lineNumber || -1,
   };
 }

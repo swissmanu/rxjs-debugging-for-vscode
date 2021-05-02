@@ -1,7 +1,6 @@
 import { inject, injectable } from 'inversify';
 import * as Telemetry from '../../shared/telemetry';
 import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
-import { ILogger } from '../logger';
 import { ICDPClient, ICDPClientAddress } from './cdpClient';
 import { ICDPClientProvider } from './cdpClientProvider';
 
@@ -72,18 +71,22 @@ export default class TelemetryBridge implements ITelemetryBridge {
   /**
    * @inheritdoc
    */
-  async enable(source: Telemetry.ITelemetryEventSource): Promise<void> {
+  async enable({ fileName, line, character }: Telemetry.ITelemetryEventSource): Promise<void> {
     return this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${Telemetry.telemetryRuntimeBridgeName}.enable("${source.fileName}", ${source.lineNumber}, ${source.columnNumber});`,
+      expression: `${Telemetry.telemetryRuntimeBridgeName}.enable(${JSON.stringify({
+        fileName,
+        line,
+        character,
+      })});`,
     });
   }
 
   /**
    * @inheritdoc
    */
-  async disable(source: Telemetry.ITelemetryEventSource): Promise<void> {
+  async disable({ fileName, line, character }: Telemetry.ITelemetryEventSource): Promise<void> {
     return this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${Telemetry.telemetryRuntimeBridgeName}.disable("${source.fileName}", ${source.lineNumber}, ${source.columnNumber});`,
+      expression: `${Telemetry.telemetryRuntimeBridgeName}.disable(${JSON.stringify({ fileName, line, character })});`,
     });
   }
 
@@ -92,7 +95,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
    */
   async update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): Promise<void> {
     return this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${Telemetry.telemetryRuntimeBridgeName}.update(${JSON.stringify(sources)});`,
+      expression: `${Telemetry.telemetryRuntimeBridgeName}.update(${JSON.stringify(sources.map(serializeSource))});`,
     });
   }
 
@@ -112,4 +115,12 @@ export default class TelemetryBridge implements ITelemetryBridge {
     this.cdpClient?.dispose();
     this.cdpClient = undefined;
   }
+}
+
+function serializeSource({
+  fileName,
+  line,
+  character,
+}: Telemetry.ITelemetryEventSource): { fileName: string; line: number; character: number } {
+  return { fileName, line, character };
 }

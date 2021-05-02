@@ -48,30 +48,30 @@ describe('UI', () => {
 
     describe('enable()', () => {
       test('sends a Runtime.evaluate request via the CDPClient', async () => {
-        const source: Telemetry.ITelemetryEventSource = { columnNumber: 1, fileName: 'foo', lineNumber: 2 };
+        const source: Telemetry.ITelemetryEventSource = { character: 1, fileName: 'foo', line: 2 };
         await bridge.enable(source);
         expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
-          expression: `rxJsDebuggerTelemetryBridge.enable("${source.fileName}", ${source.lineNumber}, ${source.columnNumber});`,
+          expression: `rxJsDebuggerTelemetryBridge.enable({"fileName":"foo","line":2,"character":1});`,
         });
       });
     });
 
     describe('disable()', () => {
       test('sends a Runtime.evaluate request via the CDPClient', async () => {
-        const source: Telemetry.ITelemetryEventSource = { columnNumber: 1, fileName: 'foo', lineNumber: 2 };
+        const source: Telemetry.ITelemetryEventSource = { character: 1, fileName: 'foo', line: 2 };
         await bridge.disable(source);
         expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
-          expression: `rxJsDebuggerTelemetryBridge.disable("${source.fileName}", ${source.lineNumber}, ${source.columnNumber});`,
+          expression: `rxJsDebuggerTelemetryBridge.disable({"fileName":"foo","line":2,"character":1});`,
         });
       });
     });
 
     describe('update()', () => {
       test('sends a Runtime.evaluate request via the CDPClient', async () => {
-        const source: Telemetry.ITelemetryEventSource = { columnNumber: 1, fileName: 'foo', lineNumber: 2 };
+        const source: Telemetry.ITelemetryEventSource = { character: 1, fileName: 'foo', line: 2 };
         await bridge.update([source]);
         expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
-          expression: 'rxJsDebuggerTelemetryBridge.update([{"columnNumber":1,"fileName":"foo","lineNumber":2}]);',
+          expression: 'rxJsDebuggerTelemetryBridge.update([{"fileName":"foo","line":2,"character":1}]);',
         });
       });
     });
@@ -84,7 +84,7 @@ describe('UI', () => {
         const callback = (cdpClient.subscribe as jest.Mock).mock.calls[0][2];
         const event: Telemetry.TelemetryEvent = {
           type: Telemetry.TelemetryEventType.Next,
-          source: { columnNumber: 1, fileName: 'foo', lineNumber: 2 },
+          source: { character: 1, fileName: 'foo', line: 2 },
           data: {
             value: 'test',
           },

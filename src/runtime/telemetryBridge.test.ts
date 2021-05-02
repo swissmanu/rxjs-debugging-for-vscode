@@ -2,25 +2,25 @@ import * as Telemetry from '../shared/telemetry';
 import TelemetryBridge from './telemetryBridge';
 
 const defaultFileName = 'foo/bar.ts';
-const defaultLineNumber = 42;
-const defaultColumnNumber = 43;
+const defaultLine = 42;
+const defaultCharacter = 43;
 
 function createEvent({
   fileName = defaultFileName,
-  lineNumber = defaultLineNumber,
-  columnNumber = defaultColumnNumber,
+  line = defaultLine,
+  character = defaultCharacter,
 }: {
   fileName?: string;
-  lineNumber?: number;
-  columnNumber?: number;
+  line?: number;
+  character?: number;
 } = {}): Telemetry.TelemetryEvent {
   return {
     type: Telemetry.TelemetryEventType.Subscribe,
     data: undefined,
     source: {
       fileName,
-      lineNumber,
-      columnNumber,
+      line,
+      character,
     },
   };
 }
@@ -44,19 +44,15 @@ describe('Runtime', () => {
       test('sends TelemetryEvent for a source which was enabled using enable()', () => {
         const enabledSource = createEvent();
         const anotherFile = createEvent({ fileName: 'another.ts' });
-        const anotherLineNumber = createEvent({ lineNumber: 0 });
-        const anotherColumnNumber = createEvent({ columnNumber: 0 });
+        const anotherLine = createEvent({ line: 0 });
+        const anotherCharacter = createEvent({ character: 0 });
 
-        telemetryBridge.enable(
-          enabledSource.source.fileName,
-          enabledSource.source.lineNumber,
-          enabledSource.source.columnNumber
-        );
+        telemetryBridge.enable(enabledSource.source);
 
         telemetryBridge.forward(enabledSource);
         telemetryBridge.forward(anotherFile);
-        telemetryBridge.forward(anotherLineNumber);
-        telemetryBridge.forward(anotherColumnNumber);
+        telemetryBridge.forward(anotherLine);
+        telemetryBridge.forward(anotherCharacter);
 
         expect(send).toHaveBeenCalledTimes(1);
         expect(send).toHaveBeenCalledWith(enabledSource);
@@ -64,13 +60,9 @@ describe('Runtime', () => {
 
       test('sends TelemetryEvent for a source which was enabled using update()', () => {
         const enabledEvent = createEvent();
-        const disabledEvent = createEvent({ fileName: 'disabled.ts', lineNumber: 100, columnNumber: 1 });
+        const disabledEvent = createEvent({ fileName: 'disabled.ts', line: 100, character: 1 });
 
-        telemetryBridge.enable(
-          disabledEvent.source.fileName,
-          disabledEvent.source.lineNumber,
-          disabledEvent.source.columnNumber
-        );
+        telemetryBridge.enable(disabledEvent.source);
         telemetryBridge.update([enabledEvent.source]); // Overwrite previously enabled source
 
         telemetryBridge.forward(enabledEvent);
@@ -82,8 +74,8 @@ describe('Runtime', () => {
 
       test('does not send TelemetryEvent for a source which got disabled again', () => {
         const event = createEvent();
-        telemetryBridge.enable(event.source.fileName, event.source.lineNumber, event.source.columnNumber);
-        telemetryBridge.disable(event.source.fileName, event.source.lineNumber, event.source.columnNumber);
+        telemetryBridge.enable(event.source);
+        telemetryBridge.disable(event.source);
 
         telemetryBridge.forward(event);
 

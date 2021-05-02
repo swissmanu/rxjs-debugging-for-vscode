@@ -1,5 +1,6 @@
 import 'reflect-metadata';
-import { ILogPointManager } from '../logPointManager';
+import { Position, Uri } from 'vscode';
+import { ILogPointManager, LogPoint } from '../logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
 import Session, { ISession } from './session';
 
@@ -7,7 +8,7 @@ describe('Session', () => {
   let session: ISession;
   let logPointManager: ILogPointManager;
   let telemetryBridge: ITelemetryBridge;
-  const logPoints = [{ fileName: 'foo', lineNumber: 42, columnNumber: 48 }];
+  const logPoints = [new LogPoint(Uri.file('test.ts'), new Position(42, 84))];
 
   beforeEach(() => {
     logPointManager = {

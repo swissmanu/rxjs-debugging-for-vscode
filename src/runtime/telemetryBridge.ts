@@ -15,23 +15,19 @@ export default class TelemetryBridge {
   /**
    * Enables `TelemetryEvent`s for a given source. This function is called via CDP from the extension.
    *
-   * @param fileName
-   * @param lineNumber
-   * @param columnNumber
+   * @param source
    */
-  enable(fileName: string, lineNumber: number, columnNumber: number): void {
-    this.enabledSources.add(this.getSourceKey(fileName, lineNumber, columnNumber));
+  enable(source: Telemetry.ITelemetryEventSource): void {
+    this.enabledSources.add(Telemetry.getKeyForEventSource(source));
   }
 
   /**
    * Disables 'TelemetryEvent's for a given source. This function is called via CDP from the extension.
    *
-   * @param fileName
-   * @param lineNumber
-   * @param columnNumber
+   * @param source
    */
-  disable(fileName: string, lineNumber: number, columnNumber: number): void {
-    this.enabledSources.delete(this.getSourceKey(fileName, lineNumber, columnNumber));
+  disable(source: Telemetry.ITelemetryEventSource): void {
+    this.enabledSources.delete(Telemetry.getKeyForEventSource(source));
   }
 
   /**
@@ -41,7 +37,7 @@ export default class TelemetryBridge {
    * @param sources
    */
   update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): void {
-    this.enabledSources = new Set(sources.map((s) => this.getSourceKeyForTelemetrySource(s)));
+    this.enabledSources = new Set(sources.map((s) => Telemetry.getKeyForEventSource(s)));
   }
 
   /**
@@ -56,18 +52,6 @@ export default class TelemetryBridge {
   }
 
   private isSourceEnabled(source: Telemetry.ITelemetryEventSource): boolean {
-    return this.enabledSources.has(this.getSourceKeyForTelemetrySource(source));
-  }
-
-  private getSourceKeyForTelemetrySource({
-    fileName,
-    lineNumber,
-    columnNumber,
-  }: Telemetry.ITelemetryEventSource): SourceKey {
-    return this.getSourceKey(fileName, lineNumber, columnNumber);
-  }
-
-  private getSourceKey(fileName: string, lineNumber: number, columnNumber: number): SourceKey {
-    return `${fileName}-${lineNumber}:${columnNumber}`;
+    return this.enabledSources.has(Telemetry.getKeyForEventSource(source));
   }
 }

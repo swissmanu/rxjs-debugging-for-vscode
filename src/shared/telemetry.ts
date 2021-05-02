@@ -19,8 +19,20 @@ interface ITelemetryEventData {
 
 export interface ITelemetryEventSource {
   fileName: string;
-  lineNumber: number;
-  columnNumber: number;
+
+  /**
+   * The 1-based line index
+   */
+  line: number;
+
+  /**
+   * The 1-based character index
+   */
+  character: number;
+}
+
+export function getKeyForEventSource({ fileName, line, character }: ITelemetryEventSource): string {
+  return `${fileName}-${line}:${character}`;
 }
 
 export interface ITelemetryEvent<T extends TelemetryEventType> {

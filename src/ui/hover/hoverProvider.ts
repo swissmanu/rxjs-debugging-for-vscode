@@ -53,10 +53,11 @@ export default class LogPointHoverProvider implements ILogPointHoverProvider {
 
     const range = this.ranges.find((range) => range.contains(position));
     if (range) {
-      const enabled = !!this.logPointManager.logPoints.find(
-        ({ fileName, lineNumber, columnNumber }) =>
-          fileName === document.fileName && range.contains(new Position(lineNumber, columnNumber))
-      );
+      const enabled = !!this.logPointManager.logPoints.find((x) => {
+        const sameFile = x.uri.toString() === document.uri.toString();
+        const inRange = range.contains(x.position);
+        return sameFile && inRange;
+      });
       const markdown = new MarkdownString(
         enabled
           ? `[$(bug) Remove Operator Log Point](${getMarkdownCommandWithArgs(Commands.DisableLogPoint, [
