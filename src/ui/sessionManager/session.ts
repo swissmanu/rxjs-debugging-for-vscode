@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
 import * as Telemetry from '../../shared/telemetry';
 import { IDisposable } from '../../shared/types';
+import { ILogger } from '../logger';
 import { ILogPointManager } from '../logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
 
@@ -13,24 +14,43 @@ export interface ISession extends IDisposable {
 @injectable()
 export default class Session implements ISession {
   private disposables: Array<IDisposable> = [];
-  private attached = false;
+
+  private attached?: Promise<void> | undefined;
+  private resolveAttached?: () => void | undefined;
 
   constructor(
     @inject(ILogPointManager) private readonly logPointManager: ILogPointManager,
-    @inject(ITelemetryBridge) private readonly telemetryBridge: ITelemetryBridge
+    @inject(ITelemetryBridge) private readonly telemetryBridge: ITelemetryBridge,
+    @inject(ILogger) private readonly logger: ILogger
   ) {}
 
-  async attach(): Promise<void> {
+  attach(): Promise<void> {
     if (this.attached) {
-      return;
+      return this.attached;
     }
 
-    this.attached = true;
-    this.disposables.push(this.logPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints));
-    this.disposables.push(this.telemetryBridge.onTelemetryEvent(this.onTelemetryEvent));
-    await this.telemetryBridge.attach();
-    await this.telemetryBridge.update(this.logPointManager.logPoints);
+    this.attached = new Promise((resolve) => {
+      this.resolveAttached = resolve;
+      this.disposables.push(this.logPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints));
+      this.disposables.push(this.telemetryBridge.onTelemetryEvent(this.onTelemetryEvent));
+      this.disposables.push(this.telemetryBridge.onRuntimeReady(this.onRuntimeReady));
+      this.telemetryBridge.attach();
+      this.logger.log('Wait for runtime to become ready');
+    });
+    return this.attached;
   }
+
+  private onRuntimeReady = (): void => {
+    this.logger.log('Runtime ready');
+
+    if (this.resolveAttached) {
+      this.resolveAttached();
+    } else {
+      this.logger.log('resolveAttached was not assigned; This should not happen.');
+    }
+
+    this.telemetryBridge.update(this.logPointManager.logPoints);
+  };
 
   private onDidChangeLogPoints = (logPoints: ReadonlyArray<Telemetry.ITelemetryEventSource>): void => {
     this.telemetryBridge.update(logPoints);

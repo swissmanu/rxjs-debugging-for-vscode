@@ -18,14 +18,8 @@ function getAbsolutePath(relativePath: string, parentFileName: string): string {
   }
 }
 
-function fakeLoad(
-  request: string,
-  parent?: { filename: string },
-  isMain?: boolean
-) {
-  const absolutePath = parent
-    ? getAbsolutePath(request, parent.filename)
-    : request;
+function fakeLoad(request: string, parent?: { filename: string }, isMain?: boolean) {
+  const absolutePath = parent ? getAbsolutePath(request, parent.filename) : request;
 
   if (absolutePath.indexOf('rxjs/internal/operators/') > -1) {
     const result = origLoad(request, parent, isMain);
@@ -43,13 +37,7 @@ function fakeLoad(
           return operate((source, subscriber) => {
             source
               .pipe(originalOperator.apply(originalThis, args))
-              .subscribe(
-                new TelemetrySubscriber(
-                  telemetryBridge,
-                  subscriber,
-                  sourceLocation
-                )
-              );
+              .subscribe(new TelemetrySubscriber(telemetryBridge, subscriber, sourceLocation));
           });
         },
       };
@@ -61,10 +49,27 @@ function fakeLoad(
 
 function defaultSend(event: Telemetry.TelemetryEvent): void {
   // global.sendRxJsDebuggerTelemetry will be provided via CDP Runtime.addBinding eventually:
-  if (typeof global[Telemetry.telemetryRuntimeCDPBindingName] === 'function') {
-    const message = JSON.stringify(event);
-    global[Telemetry.telemetryRuntimeCDPBindingName](message);
-  }
+  const message = JSON.stringify(event);
+  global[Telemetry.CDP_BINDING_NAME_SEND_TELEMETRY](message);
 }
 
-global[Telemetry.telemetryRuntimeBridgeName] = telemetryBridge;
+global[Telemetry.RUNTIME_TELEMETRY_BRIDGE] = telemetryBridge;
+
+/**
+ * Wait bindings to be present, then signal ready to the extension. If bindings are unavailable, retry
+ */
+function waitForBindings(numberOfTries = 0) {
+  if (numberOfTries >= 10) {
+    throw new Error('Bindings still not available after 10 tries. Abort.');
+  }
+
+  if (
+    typeof global[Telemetry.CDP_BINDING_NAME_READY] === 'function' &&
+    typeof global[Telemetry.CDP_BINDING_NAME_SEND_TELEMETRY] === 'function'
+  ) {
+    global[Telemetry.CDP_BINDING_NAME_READY]('');
+  } else {
+    setTimeout(() => waitForBindings(numberOfTries + 1), 500);
+  }
+}
+waitForBindings();

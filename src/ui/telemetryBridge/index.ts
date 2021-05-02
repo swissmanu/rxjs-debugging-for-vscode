@@ -31,11 +31,24 @@ export interface ITelemetryBridge extends IDisposable {
    */
   update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): Promise<void>;
 
+  /**
+   * An event fired once the runtime signals being ready to receive communication.
+   */
+  onRuntimeReady: IEvent<void>;
+
+  /**
+   * An event fired every time when the runtime sends a `TelemetryEvent`.
+   */
   onTelemetryEvent: IEvent<Telemetry.TelemetryEvent>;
 }
 @injectable()
 export default class TelemetryBridge implements ITelemetryBridge {
   private cdpClient: ICDPClient | undefined;
+
+  private _onRuntimeReady = new EventEmitter<void>();
+  get onRuntimeReady(): IEvent<void> {
+    return this._onRuntimeReady.event;
+  }
 
   private _onTelemetryEvent = new EventEmitter<Telemetry.TelemetryEvent>();
   get onTelemetryEvent(): IEvent<Telemetry.TelemetryEvent> {
@@ -58,7 +71,10 @@ export default class TelemetryBridge implements ITelemetryBridge {
       await Promise.all([
         await this.cdpClient.request('Runtime', 'enable'),
         await this.cdpClient.request('Runtime', 'addBinding', {
-          name: Telemetry.telemetryRuntimeCDPBindingName,
+          name: Telemetry.CDP_BINDING_NAME_READY,
+        }),
+        await this.cdpClient.request('Runtime', 'addBinding', {
+          name: Telemetry.CDP_BINDING_NAME_SEND_TELEMETRY,
         }),
         await this.cdpClient.subscribe('Runtime', 'bindingCalled', this.onBindingCalled),
       ]);
@@ -73,7 +89,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
    */
   async enable({ fileName, line, character }: Telemetry.ITelemetryEventSource): Promise<void> {
     return this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${Telemetry.telemetryRuntimeBridgeName}.enable(${JSON.stringify({
+      expression: `${Telemetry.RUNTIME_TELEMETRY_BRIDGE}.enable(${JSON.stringify({
         fileName,
         line,
         character,
@@ -86,7 +102,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
    */
   async disable({ fileName, line, character }: Telemetry.ITelemetryEventSource): Promise<void> {
     return this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${Telemetry.telemetryRuntimeBridgeName}.disable(${JSON.stringify({ fileName, line, character })});`,
+      expression: `${Telemetry.RUNTIME_TELEMETRY_BRIDGE}.disable(${JSON.stringify({ fileName, line, character })});`,
     });
   }
 
@@ -95,22 +111,25 @@ export default class TelemetryBridge implements ITelemetryBridge {
    */
   async update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): Promise<void> {
     return this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${Telemetry.telemetryRuntimeBridgeName}.update(${JSON.stringify(sources.map(serializeSource))});`,
+      expression: `${Telemetry.RUNTIME_TELEMETRY_BRIDGE}.update(${JSON.stringify(sources.map(serializeSource))});`,
     });
   }
 
   private onBindingCalled = (parameters: Record<string, unknown>): void => {
-    if (parameters.name === Telemetry.telemetryRuntimeCDPBindingName && typeof parameters.payload === 'string') {
+    if (parameters.name === Telemetry.CDP_BINDING_NAME_SEND_TELEMETRY && typeof parameters.payload === 'string') {
       try {
         const json: Telemetry.TelemetryEvent = JSON.parse(parameters.payload); // TODO fix any cast?
         this._onTelemetryEvent.fire(json);
       } catch (e) {
         console.error(JSON.stringify(e)); // TODO
       }
+    } else if (parameters.name === Telemetry.CDP_BINDING_NAME_READY) {
+      this._onRuntimeReady.fire();
     }
   };
 
   dispose(): void {
+    this._onRuntimeReady.dispose();
     this._onTelemetryEvent.dispose();
     this.cdpClient?.dispose();
     this.cdpClient = undefined;

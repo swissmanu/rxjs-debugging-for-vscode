@@ -1,5 +1,6 @@
-export const telemetryRuntimeCDPBindingName = 'sendRxJsDebuggerTelemetry';
-export const telemetryRuntimeBridgeName = 'rxJsDebuggerTelemetryBridge';
+export const CDP_BINDING_NAME_READY = 'rxJsDebuggerRuntimeReady';
+export const CDP_BINDING_NAME_SEND_TELEMETRY = 'sendRxJsDebuggerTelemetry';
+export const RUNTIME_TELEMETRY_BRIDGE = 'rxJsDebuggerTelemetryBridge';
 
 export const enum TelemetryEventType {
   Completed = 'Completed',

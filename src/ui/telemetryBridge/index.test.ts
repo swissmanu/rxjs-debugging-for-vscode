@@ -33,8 +33,9 @@ describe('UI', () => {
       });
 
       test('initializes the CDP Runtime domain', async () => {
-        expect(cdpClient.request).toBeCalledTimes(2);
+        expect(cdpClient.request).toBeCalledTimes(3);
         expect(cdpClient.request).toBeCalledWith('Runtime', 'enable');
+        expect(cdpClient.request).toBeCalledWith('Runtime', 'addBinding', { name: 'rxJsDebuggerRuntimeReady' });
         expect(cdpClient.request).toBeCalledWith('Runtime', 'addBinding', { name: 'sendRxJsDebuggerTelemetry' });
 
         expect(cdpClient.subscribe).toBeCalledTimes(1);
@@ -95,6 +96,21 @@ describe('UI', () => {
         });
 
         expect(spy).toBeCalledWith(event);
+      });
+    });
+
+    describe('onRuntimeReady()', () => {
+      test('is fired when the CDPClient register a call on the runtime ready binding', async () => {
+        const spy = jest.fn();
+        bridge.onRuntimeReady(spy);
+
+        const callback = (cdpClient.subscribe as jest.Mock).mock.calls[0][2];
+        callback({
+          name: 'rxJsDebuggerRuntimeReady',
+          payload: {},
+        });
+
+        expect(spy).toBeCalled();
       });
     });
   });
