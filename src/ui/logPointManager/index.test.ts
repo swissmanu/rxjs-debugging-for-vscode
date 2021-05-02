@@ -1,15 +1,13 @@
 import 'reflect-metadata';
 import { Position, Uri } from 'vscode';
 import LogPointManager from '.';
-import NullLogger from '../logger/nullLogger';
-
-const logger = new NullLogger();
+import Logger from '../logger';
 
 describe('LogPointManager', () => {
   let logPointManager: LogPointManager;
 
   beforeEach(() => {
-    logPointManager = new LogPointManager(logger);
+    logPointManager = new LogPointManager(Logger.nullLogger());
   });
 
   describe('enable()', () => {

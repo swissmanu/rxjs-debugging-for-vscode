@@ -17,7 +17,7 @@ export default class DisposableContainer extends Container implements IDisposabl
   };
 
   dispose(): void {
-    this.get<ILogger>(ILogger).log(`Dispose IoC Container "${this.name}"`);
+    this.get<ILogger>(ILogger).info('IoC', `Dispose IoC Container "${this.name}"`);
 
     for (const disposable of this.disposables) {
       disposable.dispose();
