@@ -1,9 +1,11 @@
 import 'reflect-metadata';
 import { Position, Uri } from 'vscode';
-import Logger from '../logger';
+import NullLogger from '../logger/nullLogger';
 import { ILogPointManager, LogPoint } from '../logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
 import Session, { ISession } from './session';
+
+const logger = new NullLogger();
 
 describe('Session', () => {
   let session: ISession;
@@ -28,7 +30,7 @@ describe('Session', () => {
       onTelemetryEvent: jest.fn(),
       dispose: jest.fn(),
     };
-    session = new Session(logPointManager, telemetryBridge, Logger.nullLogger());
+    session = new Session(logPointManager, telemetryBridge, logger);
   });
 
   describe('attach()', () => {

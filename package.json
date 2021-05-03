@@ -20,17 +20,16 @@
   "main": "./out/extension.js",
   "scripts": {
     "prepare": "husky install",
-    "vscode:prepublish": "yarn compile",
-    "compile": "tsc -p ./",
+    "build": "rollup -c",
+    "watch": "yarn build --watch",
     "lint": "eslint src --ext ts",
-    "watch": "tsc -watch -p ./",
+    "vscode:prepublish": "yarn build",
     "test": "jest",
     "pretest:integration": "yarn run compile",
     "test:integration": "node ./out/integrationTest/runTest.js",
     "pretty": "prettier --write",
     "package": "vsce package --yarn",
-    "runtime:build": "rollup -c",
-    "runtime:watch": "rollup -c -w"
+    "clean": "rm -rf out"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "18.0.0",

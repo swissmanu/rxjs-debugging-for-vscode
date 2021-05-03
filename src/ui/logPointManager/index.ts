@@ -66,7 +66,7 @@ export default class LogPointManager implements ILogPointManager {
     const key = logPoint.key;
 
     if (!this._logPoints.has(key)) {
-      this.logger.info('LogPointManager', `Enable log point at ${logPoint}`);
+      this.logger.log(`Enable log point at ${logPoint}`);
       this._logPoints.set(key, logPoint);
       this._onDidChangeLogPoints.fire(this.logPoints);
     }
@@ -77,7 +77,7 @@ export default class LogPointManager implements ILogPointManager {
     const key = logPoint.key;
 
     if (this._logPoints.has(key)) {
-      this.logger.info('LogPointManager', `Disable log point at ${logPoint}`);
+      this.logger.log(`Disable log point at ${logPoint}`);
       this._logPoints.delete(key);
       this._onDidChangeLogPoints.fire(this.logPoints);
     }

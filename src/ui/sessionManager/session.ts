@@ -35,18 +35,18 @@ export default class Session implements ISession {
       this.disposables.push(this.telemetryBridge.onTelemetryEvent(this.onTelemetryEvent));
       this.disposables.push(this.telemetryBridge.onRuntimeReady(this.onRuntimeReady));
       this.telemetryBridge.attach();
-      this.logger.info('Session', 'Wait for runtime to become ready');
+      this.logger.log('Wait for runtime to become ready');
     });
     return this.attached;
   }
 
   private onRuntimeReady = (): void => {
-    this.logger.info('Session', 'Runtime ready');
+    this.logger.log('Runtime ready');
 
     if (this.resolveAttached) {
       this.resolveAttached();
     } else {
-      this.logger.warn('Session', 'resolveAttached was not assigned; This should not happen.');
+      this.logger.log('resolveAttached was not assigned; This should not happen.');
     }
 
     this.telemetryBridge.update(this.logPointManager.logPoints);

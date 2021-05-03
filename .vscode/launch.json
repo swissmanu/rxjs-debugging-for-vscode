@@ -6,19 +6,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "🧩 Extension: Run",
+      "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
       "args": [
-        // "--extensions-dir=${workspaceFolder}/.dependencies",
         "--extensionDevelopmentPath=${workspaceFolder}",
         "${workspaceFolder}/example-workspaces/browser-and-server"
       ],
       "outFiles": ["${workspaceFolder}/out/**/*.js"]
-      // "preLaunchTask": "Build and Watch Extension"
+      // "preLaunchTask": "${defaultBuildTask}"
     },
     {
-      "name": "🧩 Extension: Test",
+      "name": "Test Extension",
       "type": "extensionHost",
       "request": "launch",
       "args": [

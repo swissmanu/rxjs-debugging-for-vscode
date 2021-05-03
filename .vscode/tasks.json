@@ -4,27 +4,30 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "🧩 Extension: Build and Watch",
+      "label": "Build and Watch",
       "type": "npm",
       "script": "watch",
-      "problemMatcher": "$tsc-watch",
       "isBackground": true,
-      "presentation": {
-        "reveal": "silent"
-      },
       "group": {
         "kind": "build",
         "isDefault": true
-      }
-    },
-    {
-      "label": "📡 Runtime: Build and Watch",
-      "type": "npm",
-      "script": "runtime:watch",
-      "group": "build",
-      "problemMatcher": [],
+      },
       "presentation": {
-        "reveal": "silent"
+        "reveal": "silent",
+        "panel": "new"
+      },
+      "problemMatcher": {
+        "pattern": {
+          "regexp": "\\(!\\)"
+        },
+        "background": {
+          "beginsPattern": {
+            "regexp": "^bundles .+ → .+\\.\\.\\.$"
+          },
+          "endsPattern": {
+            "regexp": "^\\[.+\\] waiting for changes\\.\\.\\.$"
+          }
+        }
       }
     }
   ]

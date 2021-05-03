@@ -8,8 +8,8 @@ import {
 import LogPointDecorationProvider, { ILogPointDecorationProvider } from '../decoration/logPointDecorationProvider';
 import { IRxJSDetector, RxJSDetector } from '../detector';
 import LogPointHoverProvider, { ILogPointHoverProvider } from '../hover/hoverProvider';
-import Logger, { ILogger, LogLevel } from '../logger';
-import ConsoleLogSink from '../logger/console';
+import { ILogger } from '../logger';
+import ConsoleLogger from '../logger/consoleLogger';
 import LogPointManager, { ILogPointManager } from '../logPointManager';
 import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
@@ -24,9 +24,7 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
 
   container.bind<interfaces.Container>(RootContainer).toConstantValue(container);
   container.bind<vscode.ExtensionContext>(ExtensionContext).toConstantValue(extensionContext);
-
-  const logger = new Logger([new ConsoleLogSink()], LogLevel.Info); // TODO Make configurable?
-  container.bind<ILogger>(ILogger).toConstantValue(logger);
+  container.bind<ILogger>(ILogger).to(ConsoleLogger).inSingletonScope();
 
   container.bind<IRxJSDetector>(IRxJSDetector).to(RxJSDetector).inSingletonScope();
   container
