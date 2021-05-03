@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import * as Telemetry from '../../shared/telemetry';
 import { IDisposable } from '../../shared/types';
 import { ILogger } from '../logger';
-import { ILogPointManager } from '../logPointManager';
+import { ILogPointManager } from '../logPoint/logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
 
 export const ISession = Symbol('Session');

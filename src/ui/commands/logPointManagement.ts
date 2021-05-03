@@ -1,7 +1,7 @@
 import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
 import { Commands, registerCommand } from '.';
-import { ILogPointManager } from '../logPointManager';
+import { ILogPointManager } from '../logPoint/logPointManager';
 
 export default function registerLogPointManagementCommands(
   context: vscode.ExtensionContext,

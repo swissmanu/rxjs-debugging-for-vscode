@@ -1,24 +1,20 @@
 import { injectable } from 'inversify';
 import ts, { Node, SourceFile, SyntaxKind } from 'typescript';
 import * as vscode from 'vscode';
+import { LogPoint } from '.';
 import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
 
 export const ILogPointRecommender = Symbol('LogPointRecommender');
 
 export interface ILogPointRecommender extends IDisposable {
-  onRecommendLogPoints: IEvent<IRecommendLogPointsEvent>;
+  onRecommendLogPoints: IEvent<ReadonlyArray<LogPoint>>;
   recommend(document: vscode.TextDocument): void;
-}
-
-interface IRecommendLogPointsEvent {
-  uri: vscode.Uri;
-  logPoints: ReadonlyArray<vscode.Range>;
 }
 
 @injectable()
 export default class LogPointRecommender implements ILogPointRecommender {
-  private _onRecommendLogPoints = new EventEmitter<IRecommendLogPointsEvent>();
-  get onRecommendLogPoints(): IEvent<IRecommendLogPointsEvent> {
+  private _onRecommendLogPoints = new EventEmitter<ReadonlyArray<LogPoint>>();
+  get onRecommendLogPoints(): IEvent<ReadonlyArray<LogPoint>> {
     return this._onRecommendLogPoints.event;
   }
 
@@ -50,8 +46,8 @@ export default class LogPointRecommender implements ILogPointRecommender {
 
     const hovers: ReadonlyArray<{ result: vscode.Hover[]; range: vscode.Range } | undefined> = await Promise.all(
       positions.map((range) =>
-        vscode.commands.executeCommand('vscode.executeHoverProvider', document.uri, range.start).then(
-          (result) => ({ result: result as vscode.Hover[], range }),
+        getHovers(document.uri, range.start).then(
+          (result) => ({ result, range }),
           () => undefined
         )
       )
@@ -86,15 +82,21 @@ export default class LogPointRecommender implements ILogPointRecommender {
       return acc;
     }, []);
 
-    this._onRecommendLogPoints.fire({
-      uri: document.uri,
-      logPoints,
-    });
+    this._onRecommendLogPoints.fire(logPoints.map(({ start }) => new LogPoint(document.uri, start)));
   }
 
   dispose(): void {
     this._onRecommendLogPoints.dispose();
   }
+}
+
+async function getHovers(uri: vscode.Uri, position: vscode.Position): Promise<vscode.Hover[]> {
+  const hovers: vscode.Hover[] | undefined = await vscode.commands.executeCommand(
+    'vscode.executeHoverProvider',
+    uri,
+    position
+  );
+  return hovers ?? [];
 }
 
 function traverseChildren(parent: Node, sourceFile: SourceFile): ReadonlyArray<Node> {

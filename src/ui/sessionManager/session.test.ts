@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import { Position, Uri } from 'vscode';
 import Logger from '../logger';
-import { ILogPointManager, LogPoint } from '../logPointManager';
+import { LogPoint } from '../logPoint';
+import { ILogPointManager } from '../logPoint/logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
 import Session, { ISession } from './session';
 

@@ -1,16 +1,15 @@
 import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
-import LogPointRecommender, { ILogPointRecommender } from '../codeAnalysis/logPointRecommender';
 import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
 } from '../debugConfigurationProvider';
 import LogPointDecorationProvider, { ILogPointDecorationProvider } from '../decoration/logPointDecorationProvider';
 import { IRxJSDetector, RxJSDetector } from '../detector';
-import LogPointHoverProvider, { ILogPointHoverProvider } from '../hover/hoverProvider';
 import Logger, { ILogger, LogLevel } from '../logger';
 import ConsoleLogSink from '../logger/console';
-import LogPointManager, { ILogPointManager } from '../logPointManager';
+import LogPointManager, { ILogPointManager } from '../logPoint/logPointManager';
+import LogPointRecommender, { ILogPointRecommender } from '../logPoint/logPointRecommender';
 import DefaultResourceProvider, { IResourceProvider } from '../resources';
 import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
@@ -45,11 +44,6 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
   container
     .bind<ILogPointDecorationProvider>(ILogPointDecorationProvider)
     .to(LogPointDecorationProvider)
-    .inSingletonScope()
-    .onActivation(container.trackDisposableBinding);
-  container
-    .bind<ILogPointHoverProvider>(ILogPointHoverProvider)
-    .to(LogPointHoverProvider)
     .inSingletonScope()
     .onActivation(container.trackDisposableBinding);
   container.bind<ILogPointManager>(ILogPointManager).to(LogPointManager).inSingletonScope();
