@@ -35,13 +35,13 @@ export default class SessionManager implements ISessionManager {
     const existingSession = this.sessions.get(debugSessionId);
 
     if (existingSession) {
-      this.logger.log(`Existing Session for Debug Session ${debugSessionId}`);
+      this.logger.info('SessionManager', `Reuse Existing Session for Debug Session ${debugSessionId}`);
       return existingSession;
     }
 
     const address = await this.cdpClientAddressProvider.getCDPClientAddress(debugSessionId);
     if (address) {
-      this.logger.log(`Create Session for Debug Session ${debugSessionId}`);
+      this.logger.info('SessionManager', `Create Session for Debug Session ${debugSessionId}`);
 
       const newSessionContainer = createSessionContainer(this.rootContainer, `Session ${debugSessionId}`, address);
       const newSession = newSessionContainer.get<ISession>(ISession);
@@ -50,7 +50,7 @@ export default class SessionManager implements ISessionManager {
       return newSession;
     }
 
-    this.logger.log(`Could not get CDPClientAddress for debug session with id "${debugSessionId}"`);
+    this.logger.error('SessionManager', `Could not get CDPClientAddress for debug session with id "${debugSessionId}"`);
     throw new Error('Could not get CDPClientAddress from CDPClientAddressProvider');
   }
 
@@ -60,14 +60,16 @@ export default class SessionManager implements ISessionManager {
 
   private onDidStartDebugSession = async ({ id, type }: vscodeApiType.DebugSession) => {
     if (type === 'node' || type == 'pwa-node') {
-      this.logger.log(`Create session for Debug Session "${id}"`);
+      this.logger.info('SessionManager', `Create new session for freshly detected debug session "${id}"`);
 
       try {
         const session = await this.createSession(id);
         await session.attach();
 
+        this.logger.info('SessionManager', 'Session ready');
         this.vscode.window.showInformationMessage('Ready to debug!');
       } catch (e) {
+        this.logger.error('SessionManager', 'Could not start session');
         this.vscode.window.showErrorMessage(`Could not create and start session (${e})`);
       }
     }
@@ -76,7 +78,7 @@ export default class SessionManager implements ISessionManager {
   private onDidTerminateDebugSession = ({ id }: vscodeApiType.DebugSession) => {
     const session = this.sessions.get(id);
     if (session) {
-      this.logger.log(`Dispose session for Debug Session "${id}"`);
+      this.logger.info('SessionManager', `Dispose session for Debug Session "${id}"`);
       this.sessions.delete(id);
       session.dispose();
     }
