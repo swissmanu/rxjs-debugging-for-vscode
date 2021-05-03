@@ -11,6 +11,7 @@ import LogPointHoverProvider, { ILogPointHoverProvider } from '../hover/hoverPro
 import Logger, { ILogger, LogLevel } from '../logger';
 import ConsoleLogSink from '../logger/console';
 import LogPointManager, { ILogPointManager } from '../logPointManager';
+import DefaultResourceProvider, { IResourceProvider } from '../resources';
 import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
 import { DefaultCDPClientProvider, ICDPClientProvider } from '../telemetryBridge/cdpClientProvider';
@@ -27,6 +28,8 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
 
   const logger = new Logger([new ConsoleLogSink()], LogLevel.Info); // TODO Make configurable?
   container.bind<ILogger>(ILogger).toConstantValue(logger);
+
+  container.bind<IResourceProvider>(IResourceProvider).to(DefaultResourceProvider).inTransientScope();
 
   container.bind<IRxJSDetector>(IRxJSDetector).to(RxJSDetector).inSingletonScope();
   container
