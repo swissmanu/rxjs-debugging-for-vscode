@@ -1,6 +1,6 @@
 import { inject, injectable, interfaces } from 'inversify';
 import type * as vscodeApiType from 'vscode';
-import { IDisposable } from '../../shared/types';
+import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
 import createSessionContainer from '../ioc/sessionContainer';
 import { RootContainer, VsCodeApi } from '../ioc/types';
 import { ILogger } from '../logger';
@@ -13,13 +13,32 @@ export const ISessionManager = Symbol('ISessionManager');
 
 export interface ISessionManager extends IDisposable {
   createSession: (debugSessionId: DebugSessionId) => Promise<ISession>;
+
   getSession: (debugSessionId: DebugSessionId) => ISession | undefined;
+
+  readonly activeSession: ISession | undefined;
+
+  /**
+   * When a user selects a debug session, the `SessionManager` will try to find the related session and fires then a
+   * `didChangeActiveSession` event.
+   */
+  onDidChangeActiveSession: IEvent<ISession | undefined>;
 }
 
 @injectable()
 export default class SessionManager implements ISessionManager {
   private readonly sessions: Map<DebugSessionId, ISession> = new Map();
   private disposables: Array<IDisposable> = [];
+
+  private _activeSession: ISession | undefined;
+  get activeSession(): ISession | undefined {
+    return this._activeSession;
+  }
+
+  private _onDidChangeActiveSession = new EventEmitter<ISession | undefined>();
+  get onDidChangeActiveSession(): IEvent<ISession | undefined> {
+    return this._onDidChangeActiveSession.event;
+  }
 
   constructor(
     @inject(RootContainer) private readonly rootContainer: interfaces.Container,
@@ -29,6 +48,7 @@ export default class SessionManager implements ISessionManager {
   ) {
     this.disposables.push(this.vscode.debug.onDidStartDebugSession(this.onDidStartDebugSession));
     this.disposables.push(this.vscode.debug.onDidTerminateDebugSession(this.onDidTerminateDebugSession));
+    this.disposables.push(this.vscode.debug.onDidChangeActiveDebugSession(this.onDidChangeActiveDebugSession));
   }
 
   async createSession(debugSessionId: DebugSessionId): Promise<ISession> {
@@ -65,6 +85,8 @@ export default class SessionManager implements ISessionManager {
       try {
         const session = await this.createSession(id);
         await session.attach();
+        this._activeSession = session;
+        this._onDidChangeActiveSession.fire(session);
 
         this.logger.info('SessionManager', 'Session ready');
         this.vscode.window.showInformationMessage('Ready to debug!');
@@ -84,7 +106,22 @@ export default class SessionManager implements ISessionManager {
     }
   };
 
+  private onDidChangeActiveDebugSession = (debugSession: vscodeApiType.DebugSession | undefined) => {
+    if (!debugSession) {
+      this._activeSession = undefined;
+      this._onDidChangeActiveSession.fire(undefined);
+    } else {
+      const session = this.sessions.get(debugSession.id);
+      if (session) {
+        this._activeSession = session;
+        this._onDidChangeActiveSession.fire(session);
+      }
+    }
+  };
+
   dispose(): void {
+    this._onDidChangeActiveSession.dispose();
+
     for (const disposable of this.disposables) {
       disposable.dispose();
     }
