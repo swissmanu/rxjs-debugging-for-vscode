@@ -4,6 +4,7 @@ import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
 } from '../debugConfigurationProvider';
+import LiveLogDecorationProvider, { ILiveLogDecorationProvider } from '../decoration/liveLogDecorationProvider';
 import LogPointDecorationProvider, { ILogPointDecorationProvider } from '../decoration/logPointDecorationProvider';
 import { IRxJSDetector, RxJSDetector } from '../detector';
 import Logger, { ILogger, LogLevel } from '../logger';
@@ -41,12 +42,18 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
     .to(LogPointRecommender)
     .inSingletonScope()
     .onActivation(container.trackDisposableBinding);
+  container.bind<ILogPointManager>(ILogPointManager).to(LogPointManager).inSingletonScope();
+
   container
     .bind<ILogPointDecorationProvider>(ILogPointDecorationProvider)
     .to(LogPointDecorationProvider)
     .inSingletonScope()
     .onActivation(container.trackDisposableBinding);
-  container.bind<ILogPointManager>(ILogPointManager).to(LogPointManager).inSingletonScope();
+  container
+    .bind<ILiveLogDecorationProvider>(ILiveLogDecorationProvider)
+    .to(LiveLogDecorationProvider)
+    .inSingletonScope()
+    .onActivation(container.trackDisposableBinding);
 
   container
     .bind<ISessionManager>(ISessionManager)

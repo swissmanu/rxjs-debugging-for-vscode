@@ -29,7 +29,6 @@ export default [
       file: 'out/runtime.node.js',
       format: 'commonjs',
       interop: false,
-      sourcemap: true,
     },
     external: ['module', 'path'],
     plugins: [
