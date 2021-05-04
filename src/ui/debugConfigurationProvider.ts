@@ -3,7 +3,7 @@ import { resolve } from 'path';
 import { DebugConfiguration, DebugConfigurationProvider, WorkspaceFolder } from 'vscode';
 import { IRxJSDetector } from './detector';
 
-const nodeRuntimePath = resolve(__dirname, '..', 'runtime.node.js');
+const nodeRuntimePath = resolve(__dirname, 'runtime.node.js'); // TODO
 
 export const INodeWithRxJSDebugConfigurationResolver = Symbol('NodeWithRxJSDebugConfigurationResolver');
 

@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify';
 import * as Telemetry from '../../shared/telemetry';
-import { IDisposable } from '../../shared/types';
+import { IDisposable, IEvent } from '../../shared/types';
 import { ILogger } from '../logger';
 import { ILogPointManager } from '../logPoint/logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
@@ -9,6 +9,7 @@ export const ISession = Symbol('Session');
 
 export interface ISession extends IDisposable {
   attach(): Promise<void>;
+  onTelemetryEvent: IEvent<Telemetry.TelemetryEvent>;
 }
 
 @injectable()
@@ -17,6 +18,10 @@ export default class Session implements ISession {
 
   private attached?: Promise<void> | undefined;
   private resolveAttached?: () => void | undefined;
+
+  get onTelemetryEvent(): IEvent<Telemetry.TelemetryEvent> {
+    return this.telemetryBridge.onTelemetryEvent;
+  }
 
   constructor(
     @inject(ILogPointManager) private readonly logPointManager: ILogPointManager,
@@ -32,7 +37,6 @@ export default class Session implements ISession {
     this.attached = new Promise((resolve) => {
       this.resolveAttached = resolve;
       this.disposables.push(this.logPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints));
-      this.disposables.push(this.telemetryBridge.onTelemetryEvent(this.onTelemetryEvent));
       this.disposables.push(this.telemetryBridge.onRuntimeReady(this.onRuntimeReady));
       this.telemetryBridge.attach();
       this.logger.info('Session', 'Wait for runtime to become ready');
@@ -54,10 +58,6 @@ export default class Session implements ISession {
 
   private onDidChangeLogPoints = (logPoints: ReadonlyArray<Telemetry.ITelemetryEventSource>): void => {
     this.telemetryBridge.update(logPoints);
-  };
-
-  private onTelemetryEvent = (event: Telemetry.TelemetryEvent): void => {
-    console.log(event);
   };
 
   dispose(): void {
