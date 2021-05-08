@@ -44,7 +44,7 @@
     "@typescript-eslint/eslint-plugin": "4.22.0",
     "@typescript-eslint/parser": "4.22.0",
     "devtools-protocol": "0.0.878026",
-    "eslint": "7.25.0",
+    "eslint": "7.26.0",
     "eslint-plugin-prettier": "3.4.0",
     "glob": "7.1.6",
     "husky": "6.0.0",
