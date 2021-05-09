@@ -79,6 +79,9 @@ export default class SessionManager implements ISessionManager {
   }
 
   private onDidStartDebugSession = async ({ id, type }: vscodeApiType.DebugSession) => {
+    // js-debug creates multiple debug sessions in a parent-child relationship.
+    // We cannot know on which we can connect to via CDP. Hence we simply try every debug session we detect.
+    // This might end up in some error logs, but in the end, also with at least on working CDP connection.
     if (type === 'node' || type == 'pwa-node') {
       this.logger.info('SessionManager', `Create new session for freshly detected debug session "${id}"`);
 
@@ -88,11 +91,10 @@ export default class SessionManager implements ISessionManager {
         this._activeSession = session;
         this._onDidChangeActiveSession.fire(session);
 
-        this.logger.info('SessionManager', 'Session ready');
+        this.logger.info('SessionManager', `Session ready for debug session "${id}"`);
         this.vscode.window.showInformationMessage('Ready to debug!');
       } catch (e) {
-        this.logger.error('SessionManager', 'Could not start session');
-        this.vscode.window.showErrorMessage(`Could not create and start session (${e})`);
+        this.logger.error('SessionManager', `Could not start session for debug session "${id}"`);
       }
     }
   };
