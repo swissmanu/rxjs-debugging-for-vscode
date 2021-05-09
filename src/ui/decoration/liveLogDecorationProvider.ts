@@ -1,9 +1,10 @@
 import { inject, injectable } from 'inversify';
-import { DecorationRangeBehavior, Range, TextEditor, window } from 'vscode';
+import { DecorationRangeBehavior, Range, TextEditor, ThemeColor, window } from 'vscode';
+import * as Telemetry from '../../shared/telemetry';
 import { IDisposable } from '../../shared/types';
+import { Colors } from '../colors';
 import { ISessionManager } from '../sessionManager';
 import { ISession } from '../sessionManager/session';
-import * as Telemetry from '../../shared/telemetry';
 
 export const ILiveLogDecorationProvider = Symbol('LiveLogDecorationProvider');
 
@@ -13,10 +14,13 @@ export interface ILiveLogDecorationProvider extends IDisposable {
   reset(): void;
 }
 
+type Line = number;
+type Character = number;
+
 @injectable()
 export default class LiveLogDecorationProvider implements ILiveLogDecorationProvider {
   private editor: TextEditor | undefined;
-  private readonly lastLogForLine: Map<number, string> = new Map();
+  private readonly lastLogForLine: Map<Line, Map<Character, Telemetry.TelemetryEvent>> = new Map();
   private disposables: IDisposable[] = [];
 
   constructor(@inject(ISessionManager) sessionManager: ISessionManager) {
@@ -52,31 +56,47 @@ export default class LiveLogDecorationProvider implements ILiveLogDecorationProv
   };
 
   private onTelemetryEvent = (event: Telemetry.TelemetryEvent): void => {
-    const contentText = Telemetry.match({
-      Completed: () => 'Completed',
-      Error: () => 'Error',
-      Next: ({ data: { value } }) => `Next: ${value}`,
-      Subscribe: () => 'Subscribe',
-      Unsubscribe: () => 'Unsubscribe',
-    })(event);
-    this.editor?.setDecorations(liveLogDecorationType, [
-      {
-        range: new Range(
-          event.source.line - 1,
-          Number.MAX_SAFE_INTEGER,
-          event.source.line - 1,
-          Number.MAX_SAFE_INTEGER
-        ),
-        renderOptions: { after: { contentText } },
-      },
-    ]);
+    const line = this.lastLogForLine.get(event.source.line);
+    if (line) {
+      line.set(event.source.character, event);
+    } else {
+      this.lastLogForLine.set(event.source.line, new Map([[event.source.character, event]]));
+    }
+
+    if (this.editor) {
+      this.updateDecorations(this.editor);
+    }
   };
+
+  private updateDecorations(editor: TextEditor): void {
+    const decorationOptions = [...this.lastLogForLine.entries()].map(([line, characters]) => {
+      const contentText = [...characters.entries()]
+        .sort(([a], [b]) => a - b)
+        .map(([, event]) =>
+          Telemetry.match({
+            Completed: () => 'Completed',
+            Error: () => 'Error',
+            Next: ({ data: { value } }) => `Next: ${value}`,
+            Subscribe: () => 'Subscribe',
+            Unsubscribe: () => 'Unsubscribe',
+          })(event)
+        )
+        .join(', ');
+
+      return {
+        renderOptions: { after: { contentText } },
+        range: new Range(line - 1, Number.MAX_SAFE_INTEGER, line - 1, Number.MAX_SAFE_INTEGER),
+      };
+    });
+
+    editor.setDecorations(liveLogDecorationType, decorationOptions);
+  }
 
   private removeAllDecorations(editor: TextEditor): void {
     editor.setDecorations(liveLogDecorationType, []);
   }
 
-  dispose() {
+  dispose(): void {
     for (const disposable of this.disposables) {
       disposable.dispose();
     }
@@ -87,6 +107,8 @@ export default class LiveLogDecorationProvider implements ILiveLogDecorationProv
 const liveLogDecorationType = window.createTextEditorDecorationType({
   after: {
     margin: '0 0 0 3em',
+    color: new ThemeColor(Colors.LiveLogLineForegroundColor),
+    backgroundColor: new ThemeColor(Colors.LiveLogLineBackgroundColor),
   },
   rangeBehavior: DecorationRangeBehavior.ClosedClosed,
 });
