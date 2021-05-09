@@ -7,6 +7,7 @@ import {
   TextEditor,
   window,
 } from 'vscode';
+import * as nls from 'vscode-nls';
 import { DocumentDecorationProvider } from '.';
 import { IDisposable } from '../../shared/types';
 import { Commands, getMarkdownCommandWithArgs } from '../commands';
@@ -14,6 +15,8 @@ import { LogPoint } from '../logPoint';
 import { ILogPointManager } from '../logPoint/logPointManager';
 import { ILogPointRecommendationEvent, ILogPointRecommender } from '../logPoint/logPointRecommender';
 import { IResourceProvider } from '../resources';
+
+const localize = nls.loadMessageBundle();
 
 export default class LogPointDecorationProvider extends DocumentDecorationProvider {
   private recommendedLogPoints: Map<string, LogPoint> = new Map();
@@ -74,14 +77,26 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
     const decorationOptions = logPoints.reduce<DecorationOptions[]>((acc, logPoint) => {
       const hoverMessage = new MarkdownString(
         logPoint.enabled
-          ? `$(bug) RxJS: [Remove Operator Log Point](${getMarkdownCommandWithArgs(Commands.DisableLogPoint, [
+          ? `$(bug) RxJS: [${localize(
+              'rxjs-debugging.logPointDecoration.removeOperatorLogPoint.title',
+              'Remove Operator Log Point'
+            )}](${getMarkdownCommandWithArgs(Commands.DisableLogPoint, [
               this.document.uri,
               logPoint.position,
-            ])} "Stop logging values emitted by this operator.")`
-          : `$(bug)  RxJS: [Add Operator Log Point](${getMarkdownCommandWithArgs(Commands.EnableLogPoint, [
+            ])} "${localize(
+              'rxjs-debugging.logPointDecoration.removeOperatorLogPoint.description',
+              'Stop logging events emitted by this operator.'
+            )}")`
+          : `$(bug)  RxJS: [${localize(
+              'rxjs-debugging.logPointDecoration.addOperatorLogPoint.title',
+              'Add Operator Log Point'
+            )}](${getMarkdownCommandWithArgs(Commands.EnableLogPoint, [
               this.document.uri,
               logPoint.position,
-            ])} "Log values emitted by this operator.")`,
+            ])} "${localize(
+              'rxjs-debugging.logPointDecoration.addOperatorLogPoint.description',
+              'Log events emitted by this operator.'
+            )}")`,
         true
       );
       hoverMessage.isTrusted = true;
