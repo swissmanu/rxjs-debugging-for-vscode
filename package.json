@@ -17,6 +17,28 @@
     "onLanguage:typescriptreact",
     "onLanguage:javascriptreact"
   ],
+  "contributes": {
+    "colors": [
+      {
+        "id": "rxjsdebuggingforvscode.liveLogLineBackgroundColor",
+        "description": "Defines the background color for log point events at the end of a line.",
+        "defaults": {
+          "light": "#00000000",
+          "dark": "#00000000",
+          "highContrast": "#00000000"
+        }
+      },
+      {
+        "id": "rxjsdebuggingforvscode.liveLogLineForegroundColor",
+        "description": "Defines the foreground color for log point events at the end of a line.",
+        "defaults": {
+          "dark": "#999999bd",
+          "light": "#999999bd",
+          "highContrast": "#99999999"
+        }
+      }
+    ]
+  },
   "main": "./out/extension.js",
   "scripts": {
     "prepare": "husky install",
