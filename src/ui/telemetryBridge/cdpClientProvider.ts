@@ -8,7 +8,7 @@ export interface ICDPClientProvider {
 
 @injectable()
 export class DefaultCDPClientProvider implements ICDPClientProvider {
-  createCDPClient({ host, port }: ICDPClientAddress): ICDPClient {
-    return new CDPClient(host, port);
+  createCDPClient({ host, port, path = '' }: ICDPClientAddress): ICDPClient {
+    return new CDPClient(host, port, path);
   }
 }

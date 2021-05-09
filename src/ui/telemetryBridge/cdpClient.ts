@@ -5,6 +5,11 @@ export const ICDPClientAddress = Symbol('ICDPClientAddress');
 export interface ICDPClientAddress {
   host: string;
   port: number;
+
+  /**
+   * TODO Make required once https://github.com/microsoft/vscode-js-debug/issues/987 is released
+   */
+  path?: string;
 }
 
 interface IFulfillRequest {
@@ -57,12 +62,12 @@ export default class CDPClient implements ICDPClient {
   private pendingRequests: Map<MessageId, IFulfillRequest> = new Map();
   private subscriptions: Map<Method, SubscriptionCallback[]> = new Map();
 
-  constructor(private readonly host: string, private readonly port: number) {}
+  constructor(private readonly host: string, private readonly port: number, private readonly path: string) {}
 
   connect(): Promise<void> {
     if (!this.webSocket) {
       return new Promise((resolve) => {
-        const webSocket = new WebSocket(`ws://${this.host}:${this.port}`);
+        const webSocket = new WebSocket(`ws://${this.host}:${this.port}${this.path}`);
 
         webSocket.on('message', (d) => {
           const message = d.toString();
