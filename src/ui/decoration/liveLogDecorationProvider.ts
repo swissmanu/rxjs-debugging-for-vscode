@@ -1,4 +1,4 @@
-import { DecorationRangeBehavior, Range, TextDocument, ThemeColor, window } from 'vscode';
+import { DecorationRangeBehavior, Range, TextDocument, TextEditor, ThemeColor, window } from 'vscode';
 import { DocumentDecorationProvider } from '.';
 import * as Telemetry from '../../shared/telemetry';
 import { IDisposable } from '../../shared/types';
@@ -19,7 +19,7 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
 
   decorationType = liveLogDecorationType;
 
-  constructor(sessionManager: ISessionManager, textDocument: TextDocument) {
+  constructor(private readonly sessionManager: ISessionManager, textDocument: TextDocument) {
     super(textDocument);
     this.onDidChangeActiveSessionDisposable = sessionManager.onDidChangeActiveSession(this.onDidChangeActiveSession);
   }
@@ -45,6 +45,13 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
 
     this.updateDecorations();
   };
+
+  attach(textEditors: ReadonlyArray<TextEditor>): void {
+    super.attach(textEditors);
+    if (this.sessionManager.activeSession) {
+      this.onTelemetryEventDisposable = this.sessionManager.activeSession.onTelemetryEvent(this.onTelemetryEvent);
+    }
+  }
 
   updateDecorations(): void {
     const decorationOptions = [...this.lastLogForLine.entries()].map(([line, characters]) => {

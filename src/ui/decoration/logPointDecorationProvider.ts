@@ -1,4 +1,12 @@
-import { DecorationOptions, DecorationRangeBehavior, MarkdownString, Range, TextDocument, window } from 'vscode';
+import {
+  DecorationOptions,
+  DecorationRangeBehavior,
+  MarkdownString,
+  Range,
+  TextDocument,
+  TextEditor,
+  window,
+} from 'vscode';
 import { DocumentDecorationProvider } from '.';
 import { IDisposable } from '../../shared/types';
 import { Commands, getMarkdownCommandWithArgs } from '../commands';
@@ -18,8 +26,8 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
 
   constructor(
     logPointRecommender: ILogPointRecommender,
-    logPointManager: ILogPointManager,
-    readonly resourceProvider: IResourceProvider,
+    private readonly logPointManager: ILogPointManager,
+    private readonly resourceProvider: IResourceProvider,
     textDocument: TextDocument
   ) {
     super(textDocument);
@@ -51,6 +59,11 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
     );
     this.updateDecorations();
   };
+
+  attach(textEditors: ReadonlyArray<TextEditor>): void {
+    super.attach(textEditors);
+    this.onDidChangeLogPoints(this.logPointManager.logPoints);
+  }
 
   updateDecorations(): void {
     const logPoints = [...this.recommendedLogPoints.values()].reduce<ReadonlyArray<LogPoint>>(
