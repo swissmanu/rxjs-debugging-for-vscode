@@ -91,7 +91,6 @@ export default class SessionManager implements ISessionManager {
         this._onDidChangeActiveSession.fire(session);
 
         this.logger.info('SessionManager', `Session ready for debug session "${debugSession.id}"`);
-        this.vscode.window.showInformationMessage('Ready to debug!');
       } catch (e) {
         this.logger.error('SessionManager', `Could not start session for debug session "${debugSession.id}"`);
       }

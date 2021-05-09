@@ -6,6 +6,7 @@ import {
   NodeWithRxJSDebugConfigurationResolver,
 } from './ui/debugConfigurationProvider';
 import createRootContainer from './ui/ioc/rootContainer';
+import { ILogger } from './ui/logger';
 import { ILogPointRecommender } from './ui/logPoint/logPointRecommender';
 
 export function activate(context: vscode.ExtensionContext): void {
@@ -28,6 +29,8 @@ export function activate(context: vscode.ExtensionContext): void {
   vscode.workspace.onDidOpenTextDocument((document) => {
     logPointRecommender.recommend(document);
   });
+
+  rootContainer.get<ILogger>(ILogger).info('Extension', 'Ready');
 }
 
 export function deactivate(): void {

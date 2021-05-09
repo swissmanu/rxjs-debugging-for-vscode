@@ -8,6 +8,7 @@ export const enum LogLevel {
 }
 
 export type LogDomain =
+  | 'Extension'
   | 'IoC'
   | 'LogPointManager'
   | 'SessionManager'
