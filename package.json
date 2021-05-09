@@ -13,9 +13,7 @@
   "activationEvents": [
     "onDebugResolve:node",
     "onLanguage:typescript",
-    "onLanguage:javascript",
-    "onLanguage:typescriptreact",
-    "onLanguage:javascriptreact"
+    "onLanguage:typescriptreact"
   ],
   "contributes": {
     "colors": [

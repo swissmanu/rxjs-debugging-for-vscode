@@ -1,8 +1,10 @@
-import { injectable } from 'inversify';
+import { inject, injectable } from 'inversify';
 import ts, { Node, SourceFile, SyntaxKind } from 'typescript';
 import * as vscode from 'vscode';
 import { LogPoint } from '.';
 import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
+import { isSupportedDocument } from '../detector';
+import { ILogger } from '../logger';
 
 export const ILogPointRecommender = Symbol('LogPointRecommender');
 
@@ -22,7 +24,15 @@ export default class LogPointRecommender implements ILogPointRecommender {
     return this._onRecommendLogPoints.event;
   }
 
+  constructor(@inject(ILogger) private readonly logger: ILogger) {}
+
   async recommend(document: vscode.TextDocument): Promise<void> {
+    if (!isSupportedDocument(document)) {
+      return;
+    }
+
+    this.logger.info('LogPointRecommender', `Recommend log points for ${document.uri.toString()}`);
+
     const documentText = document.getText();
     const sourceFile = ts.createSourceFile('parsed', documentText, ts.ScriptTarget.Latest);
 

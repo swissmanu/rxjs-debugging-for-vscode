@@ -24,6 +24,10 @@ export function activate(context: vscode.ExtensionContext): void {
     // TODO Debounce
     logPointRecommender.recommend(document);
   });
+
+  vscode.workspace.onDidOpenTextDocument((document) => {
+    logPointRecommender.recommend(document);
+  });
 }
 
 export function deactivate(): void {

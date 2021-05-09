@@ -13,7 +13,7 @@ export default [
     output: {
       file: 'out/extension.js',
       format: 'commonjs',
-      sourcemap: true,
+      sourcemap: !doProductionBuild,
     },
     external: ['fs', 'inversify', 'path', 'typescript', 'vscode', 'ws', 'reflect-metadata'],
     plugins: [

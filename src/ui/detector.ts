@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import { injectable } from 'inversify';
 import * as path from 'path';
-import { WorkspaceFolder } from 'vscode';
+import { TextDocument, WorkspaceFolder } from 'vscode';
 
 export const IRxJSDetector = Symbol('RxJSDetector');
 
@@ -31,4 +31,8 @@ function readFile(path: string): Promise<string> {
       reject(err);
     });
   });
+}
+
+export function isSupportedDocument(document: TextDocument): boolean {
+  return document.languageId === 'typescript';
 }

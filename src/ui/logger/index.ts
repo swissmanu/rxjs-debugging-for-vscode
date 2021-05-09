@@ -7,7 +7,13 @@ export const enum LogLevel {
   Never,
 }
 
-export type LogDomain = 'IoC' | 'LogPointManager' | 'SessionManager' | 'Session' | 'DecorationManager';
+export type LogDomain =
+  | 'IoC'
+  | 'LogPointManager'
+  | 'SessionManager'
+  | 'Session'
+  | 'DecorationManager'
+  | 'LogPointRecommender';
 
 export const ILogger = Symbol('ILogger');
 
