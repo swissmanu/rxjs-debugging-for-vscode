@@ -46,9 +46,11 @@ export default class SessionManager implements ISessionManager {
     @inject(ILogger) private readonly logger: ILogger,
     @inject(VsCodeApi) private readonly vscode: typeof vscodeApiType
   ) {
-    this.disposables.push(this.vscode.debug.onDidStartDebugSession(this.onDidStartDebugSession));
-    this.disposables.push(this.vscode.debug.onDidTerminateDebugSession(this.onDidTerminateDebugSession));
-    this.disposables.push(this.vscode.debug.onDidChangeActiveDebugSession(this.onDidChangeActiveDebugSession));
+    this.disposables.push(
+      this.vscode.debug.onDidStartDebugSession(this.onDidStartDebugSession),
+      this.vscode.debug.onDidTerminateDebugSession(this.onDidTerminateDebugSession),
+      this.vscode.debug.onDidChangeActiveDebugSession(this.onDidChangeActiveDebugSession)
+    );
   }
 
   async createSession(debugSessionId: DebugSessionId): Promise<ISession> {
@@ -78,23 +80,20 @@ export default class SessionManager implements ISessionManager {
     return this.sessions.get(debugSessionId);
   }
 
-  private onDidStartDebugSession = async ({ id, type }: vscodeApiType.DebugSession) => {
-    // js-debug creates multiple debug sessions in a parent-child relationship.
-    // We cannot know on which we can connect to via CDP. Hence we simply try every debug session we detect.
-    // This might end up in some error logs, but in the end, also with at least on working CDP connection.
-    if (type === 'node' || type == 'pwa-node') {
-      this.logger.info('SessionManager', `Create new session for freshly detected debug session "${id}"`);
+  private onDidStartDebugSession = async (debugSession: vscodeApiType.DebugSession) => {
+    if (isSupportedDebuggingSession(debugSession) && hasParentDebugSession(debugSession)) {
+      this.logger.info('SessionManager', `Create new session for freshly detected debug session "${debugSession.id}"`);
 
       try {
-        const session = await this.createSession(id);
+        const session = await this.createSession(debugSession.id);
         await session.attach();
         this._activeSession = session;
         this._onDidChangeActiveSession.fire(session);
 
-        this.logger.info('SessionManager', `Session ready for debug session "${id}"`);
+        this.logger.info('SessionManager', `Session ready for debug session "${debugSession.id}"`);
         this.vscode.window.showInformationMessage('Ready to debug!');
       } catch (e) {
-        this.logger.error('SessionManager', `Could not start session for debug session "${id}"`);
+        this.logger.error('SessionManager', `Could not start session for debug session "${debugSession.id}"`);
       }
     }
   };
@@ -134,4 +133,27 @@ export default class SessionManager implements ISessionManager {
     }
     this.sessions.clear();
   }
+}
+
+function isSupportedDebuggingSession({ type }: vscodeApiType.DebugSession): boolean {
+  return type === 'node' || type == 'pwa-node';
+}
+
+/**
+ * This function checks the presence uf the `__parentId` property in the configuration of a `DebugSession` to determine
+ * if a debug session has a parent session.
+ *
+ * ## Context
+ * vscode-js-debug creates debug sessions with a parent-child dependency. The child session is usually the actual
+ * debugging session holding the CDP connection to the application under inspection. Such a child session can be
+ * identified by the presence of the `__parentId` property in its configuration. This property is private API and might
+ * change in the future. Use with care.
+ *
+ * @param debugSession
+ * @returns
+ * @see Could be improved once https://github.com/microsoft/vscode/issues/123403 is resolved.
+ */
+function hasParentDebugSession(debugSession: vscodeApiType.DebugSession): boolean {
+  const { __parentId }: vscodeApiType.DebugConfiguration & { __parentId?: string } = debugSession.configuration;
+  return typeof __parentId === 'string';
 }
