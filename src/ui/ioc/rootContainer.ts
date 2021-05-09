@@ -4,8 +4,7 @@ import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
 } from '../debugConfigurationProvider';
-import LiveLogDecorationProvider, { ILiveLogDecorationProvider } from '../decoration/liveLogDecorationProvider';
-import LogPointDecorationProvider, { ILogPointDecorationProvider } from '../decoration/logPointDecorationProvider';
+import DecorationManager, { IDecorationManager } from '../decoration/decorationManager';
 import { IRxJSDetector, RxJSDetector } from '../detector';
 import Logger, { ILogger, LogLevel } from '../logger';
 import ConsoleLogSink from '../logger/console';
@@ -45,13 +44,8 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
   container.bind<ILogPointManager>(ILogPointManager).to(LogPointManager).inSingletonScope();
 
   container
-    .bind<ILogPointDecorationProvider>(ILogPointDecorationProvider)
-    .to(LogPointDecorationProvider)
-    .inSingletonScope()
-    .onActivation(container.trackDisposableBinding);
-  container
-    .bind<ILiveLogDecorationProvider>(ILiveLogDecorationProvider)
-    .to(LiveLogDecorationProvider)
+    .bind<IDecorationManager>(IDecorationManager)
+    .to(DecorationManager)
     .inSingletonScope()
     .onActivation(container.trackDisposableBinding);
 
@@ -67,8 +61,9 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
 
   container.bind<ICDPClientProvider>(ICDPClientProvider).to(DefaultCDPClientProvider).inSingletonScope();
 
-  // Ensure SessionManager is initialized:
+  // Ensure SessionManager and DecorationManager are initialized:
   container.get<ISessionManager>(ISessionManager);
+  container.get<IDecorationManager>(IDecorationManager);
 
   return container;
 }

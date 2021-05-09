@@ -6,15 +6,19 @@ import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
 
 export const ILogPointRecommender = Symbol('LogPointRecommender');
 
+export interface ILogPointRecommendationEvent {
+  documentUri: vscode.Uri;
+  logPoints: ReadonlyArray<LogPoint>;
+}
 export interface ILogPointRecommender extends IDisposable {
-  onRecommendLogPoints: IEvent<ReadonlyArray<LogPoint>>;
+  onRecommendLogPoints: IEvent<ILogPointRecommendationEvent>;
   recommend(document: vscode.TextDocument): void;
 }
 
 @injectable()
 export default class LogPointRecommender implements ILogPointRecommender {
-  private _onRecommendLogPoints = new EventEmitter<ReadonlyArray<LogPoint>>();
-  get onRecommendLogPoints(): IEvent<ReadonlyArray<LogPoint>> {
+  private _onRecommendLogPoints = new EventEmitter<ILogPointRecommendationEvent>();
+  get onRecommendLogPoints(): IEvent<ILogPointRecommendationEvent> {
     return this._onRecommendLogPoints.event;
   }
 
@@ -82,7 +86,10 @@ export default class LogPointRecommender implements ILogPointRecommender {
       return acc;
     }, []);
 
-    this._onRecommendLogPoints.fire(logPoints.map(({ start }) => new LogPoint(document.uri, start)));
+    this._onRecommendLogPoints.fire({
+      documentUri: document.uri,
+      logPoints: logPoints.map(({ start }) => new LogPoint(document.uri, start)),
+    });
   }
 
   dispose(): void {

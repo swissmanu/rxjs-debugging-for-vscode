@@ -1,5 +1,5 @@
-import { inject, injectable } from 'inversify';
-import { DecorationRangeBehavior, Range, TextEditor, ThemeColor, window } from 'vscode';
+import { DecorationRangeBehavior, Range, TextDocument, ThemeColor, window } from 'vscode';
+import { DocumentDecorationProvider } from '.';
 import * as Telemetry from '../../shared/telemetry';
 import { IDisposable } from '../../shared/types';
 import { Colors } from '../colors';
@@ -8,54 +8,34 @@ import { ISession } from '../sessionManager/session';
 
 export const ILiveLogDecorationProvider = Symbol('LiveLogDecorationProvider');
 
-export interface ILiveLogDecorationProvider extends IDisposable {
-  attach(editor: TextEditor): void;
-  detach(): void;
-  reset(): void;
-}
-
 type Line = number;
 type Character = number;
 
-@injectable()
-export default class LiveLogDecorationProvider implements ILiveLogDecorationProvider {
-  private editor: TextEditor | undefined;
+export default class LiveLogDecorationProvider extends DocumentDecorationProvider {
   private readonly lastLogForLine: Map<Line, Map<Character, Telemetry.TelemetryEvent>> = new Map();
-  private disposables: IDisposable[] = [];
 
-  constructor(@inject(ISessionManager) sessionManager: ISessionManager) {
-    this.disposables.push(sessionManager.onDidChangeActiveSession(this.onDidChangeActiveSession));
-  }
+  private readonly onDidChangeActiveSessionDisposable: IDisposable;
+  private onTelemetryEventDisposable: IDisposable | undefined;
 
-  attach(editor: TextEditor): void {
-    if (this.editor) {
-      this.detach();
-    }
-    this.editor = editor;
-  }
+  decorationType = liveLogDecorationType;
 
-  detach(): void {
-    if (this.editor && (this.editor as any)._disposed !== true) {
-      this.removeAllDecorations(this.editor);
-      this.editor = undefined;
-    }
-  }
-
-  reset(): void {
-    if (this.editor) {
-      this.removeAllDecorations(this.editor);
-    }
+  constructor(sessionManager: ISessionManager, textDocument: TextDocument) {
+    super(textDocument);
+    this.onDidChangeActiveSessionDisposable = sessionManager.onDidChangeActiveSession(this.onDidChangeActiveSession);
   }
 
   private onDidChangeActiveSession = (session: ISession | undefined): void => {
-    this.dispose();
-
+    this.onTelemetryEventDisposable?.dispose();
     if (session) {
-      this.disposables.push(session.onTelemetryEvent(this.onTelemetryEvent));
+      this.onTelemetryEventDisposable = session.onTelemetryEvent(this.onTelemetryEvent);
     }
   };
 
   private onTelemetryEvent = (event: Telemetry.TelemetryEvent): void => {
+    if (event.source.fileName !== this.document.fileName) {
+      return;
+    }
+
     const line = this.lastLogForLine.get(event.source.line);
     if (line) {
       line.set(event.source.character, event);
@@ -63,12 +43,10 @@ export default class LiveLogDecorationProvider implements ILiveLogDecorationProv
       this.lastLogForLine.set(event.source.line, new Map([[event.source.character, event]]));
     }
 
-    if (this.editor) {
-      this.updateDecorations(this.editor);
-    }
+    this.updateDecorations();
   };
 
-  private updateDecorations(editor: TextEditor): void {
+  updateDecorations(): void {
     const decorationOptions = [...this.lastLogForLine.entries()].map(([line, characters]) => {
       const contentText = [...characters.entries()]
         .sort(([a], [b]) => a - b)
@@ -89,18 +67,14 @@ export default class LiveLogDecorationProvider implements ILiveLogDecorationProv
       };
     });
 
-    editor.setDecorations(liveLogDecorationType, decorationOptions);
-  }
-
-  private removeAllDecorations(editor: TextEditor): void {
-    editor.setDecorations(liveLogDecorationType, []);
+    this.setDecorations(decorationOptions);
   }
 
   dispose(): void {
-    for (const disposable of this.disposables) {
-      disposable.dispose();
-    }
-    this.disposables = [];
+    super.dispose();
+
+    this.onDidChangeActiveSessionDisposable.dispose();
+    this.onTelemetryEventDisposable?.dispose();
   }
 }
 
