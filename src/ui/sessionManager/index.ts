@@ -23,6 +23,12 @@ export interface ISessionManager extends IDisposable {
    * `didChangeActiveSession` event.
    */
   onDidChangeActiveSession: IEvent<ISession | undefined>;
+
+  /**
+   * Once an actual `DebugSession` gets terminated, `onDidTerminateSession` will inform about the terminated `ISession`
+   * as well.
+   */
+  onDidTerminateSession: IEvent<ISession>;
 }
 
 @injectable()
@@ -38,6 +44,10 @@ export default class SessionManager implements ISessionManager {
   private _onDidChangeActiveSession = new EventEmitter<ISession | undefined>();
   get onDidChangeActiveSession(): IEvent<ISession | undefined> {
     return this._onDidChangeActiveSession.event;
+  }
+  private _onDidTerminateSession = new EventEmitter<ISession>();
+  get onDidTerminateSession(): IEvent<ISession> {
+    return this._onDidTerminateSession.event;
   }
 
   constructor(
@@ -103,6 +113,8 @@ export default class SessionManager implements ISessionManager {
       this.logger.info('SessionManager', `Dispose session for Debug Session "${id}"`);
       this.sessions.delete(id);
       session.dispose();
+
+      this._onDidTerminateSession.fire(session);
     }
   };
 
@@ -121,6 +133,7 @@ export default class SessionManager implements ISessionManager {
 
   dispose(): void {
     this._onDidChangeActiveSession.dispose();
+    this._onDidTerminateSession.dispose();
 
     for (const disposable of this.disposables) {
       disposable.dispose();

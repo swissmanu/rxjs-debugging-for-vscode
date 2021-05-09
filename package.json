@@ -16,9 +16,19 @@
     "onLanguage:typescriptreact"
   ],
   "contributes": {
+    "configuration": {
+      "title": "%rxjs-debugging.config.title%",
+      "properties": {
+        "debug.rxjs.hideLiveLogWhenStoppingDebugger": {
+          "description": "%rxjs-debugging.config.hideLiveLogWhenStoppingDebugger%",
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
     "colors": [
       {
-        "id": "rxjsdebuggingforvscode.liveLogLineBackgroundColor",
+        "id": "rxjsdebugging.liveLogLineBackgroundColor",
         "description": "Defines the background color for log point events at the end of a line.",
         "defaults": {
           "light": "#00000000",
@@ -27,7 +37,7 @@
         }
       },
       {
-        "id": "rxjsdebuggingforvscode.liveLogLineForegroundColor",
+        "id": "rxjsdebugging.liveLogLineForegroundColor",
         "description": "Defines the foreground color for log point events at the end of a line.",
         "defaults": {
           "dark": "#999999bd",

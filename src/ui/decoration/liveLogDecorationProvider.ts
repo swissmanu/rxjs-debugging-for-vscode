@@ -1,8 +1,9 @@
-import { DecorationRangeBehavior, Range, TextDocument, TextEditor, ThemeColor, window } from 'vscode';
+import { DecorationRangeBehavior, Range, TextDocument, TextEditor, ThemeColor, window, workspace } from 'vscode';
 import { DocumentDecorationProvider } from '.';
 import * as Telemetry from '../../shared/telemetry';
 import { IDisposable } from '../../shared/types';
 import { Colors } from '../colors';
+import { Configuration } from '../configuration';
 import { ISessionManager } from '../sessionManager';
 import { ISession } from '../sessionManager/session';
 
@@ -15,19 +16,28 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
   private readonly lastLogForLine: Map<Line, Map<Character, Telemetry.TelemetryEvent>> = new Map();
 
   private readonly onDidChangeActiveSessionDisposable: IDisposable;
-  private onTelemetryEventDisposable: IDisposable | undefined;
+  private readonly onDidTerminateSessionDisposable: IDisposable;
+  private onTelemetryEventDisposable?: IDisposable;
 
   decorationType = liveLogDecorationType;
 
   constructor(private readonly sessionManager: ISessionManager, textDocument: TextDocument) {
     super(textDocument);
     this.onDidChangeActiveSessionDisposable = sessionManager.onDidChangeActiveSession(this.onDidChangeActiveSession);
+    this.onDidTerminateSessionDisposable = sessionManager.onDidTerminateSession(this.onDidTerminateSession);
   }
 
   private onDidChangeActiveSession = (session: ISession | undefined): void => {
     this.onTelemetryEventDisposable?.dispose();
     if (session) {
       this.onTelemetryEventDisposable = session.onTelemetryEvent(this.onTelemetryEvent);
+    }
+  };
+
+  private onDidTerminateSession = (): void => {
+    const hideLiveLog: boolean = workspace.getConfiguration().get(Configuration.HideLiveLogWhenStoppingDebugger, true);
+    if (hideLiveLog) {
+      this.setDecorations([]);
     }
   };
 
@@ -81,6 +91,7 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
     super.dispose();
 
     this.onDidChangeActiveSessionDisposable.dispose();
+    this.onDidTerminateSessionDisposable.dispose();
     this.onTelemetryEventDisposable?.dispose();
   }
 }

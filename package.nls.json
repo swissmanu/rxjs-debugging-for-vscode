@@ -1,3 +1,4 @@
 {
-  "debug.rxjs": "Debug RxJS"
+  "rxjs-debugging.config.title": "RxJS Debugging",
+  "rxjs-debugging.config.hideLiveLogWhenStoppingDebugger": "When enabled, live log values are hidden automatically after stopping the debugger."
 }

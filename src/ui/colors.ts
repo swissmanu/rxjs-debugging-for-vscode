@@ -1,4 +1,4 @@
 export enum Colors {
-  LiveLogLineBackgroundColor = 'rxjsdebuggingforvscode.liveLogLineBackgroundColor',
-  LiveLogLineForegroundColor = 'rxjsdebuggingforvscode.liveLogLineForegroundColor',
+  LiveLogLineBackgroundColor = 'rxjsdebugging.liveLogLineBackgroundColor',
+  LiveLogLineForegroundColor = 'rxjsdebugging.liveLogLineForegroundColor',
 }
