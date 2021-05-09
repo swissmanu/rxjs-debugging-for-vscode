@@ -1,6 +1,7 @@
 import { inject, injectable, interfaces } from 'inversify';
 import type * as vscodeApiType from 'vscode';
 import { IDisposable } from '../../shared/types';
+import { isSupportedDocument } from '../detector';
 import { RootContainer, VsCodeApi } from '../ioc/types';
 import { ILogger } from '../logger';
 import { ILogPointManager } from '../logPoint/logPointManager';
@@ -18,27 +19,46 @@ export type IDecorationManager = IDisposable;
 @injectable()
 export default class DecorationManager implements IDecorationManager {
   private readonly decorators: Map<string, ReadonlyArray<IDecorationProvider>> = new Map();
-  private readonly onDidChangeVisibleTextEditorsDisposable: IDisposable;
+  private disposables: IDisposable[] = [];
 
   constructor(
     @inject(VsCodeApi) vscode: typeof vscodeApiType,
     @inject(ILogger) private readonly logger: ILogger,
     @inject(RootContainer) private readonly rootContainer: interfaces.Container
   ) {
-    this.onDidChangeVisibleTextEditorsDisposable = vscode.window.onDidChangeVisibleTextEditors(
-      this.onDidChangeVisibleTextEditors
-    );
+    vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, undefined, this.disposables);
+    vscode.window.onDidChangeVisibleTextEditors(this.onDidChangeVisibleTextEditors, undefined, this.disposables);
     this.onDidChangeVisibleTextEditors(vscode.window.visibleTextEditors);
   }
+
+  private onDidCloseTextDocument = (document: vscodeApiType.TextDocument): void => {
+    if (!isSupportedDocument(document)) {
+      return;
+    }
+
+    const uri = document.uri.toString();
+    const decorators = this.decorators.get(uri);
+
+    if (decorators) {
+      this.logger.info('DecorationManager', `Remove decoration providers for ${uri}`);
+      for (const decorator of decorators) {
+        decorator.dispose();
+      }
+      this.decorators.delete(uri);
+    }
+  };
 
   private onDidChangeVisibleTextEditors = (editors: ReadonlyArray<vscodeApiType.TextEditor>): void => {
     for (const editor of editors) {
       const { document } = editor;
-      const stringUri = document.uri.toString();
+      if (!isSupportedDocument(document)) {
+        continue;
+      }
 
-      if (!this.decorators.has(stringUri)) {
-        this.logger.info('DecorationManager', `Create decoration providers for ${stringUri}`);
-        this.decorators.set(stringUri, [
+      const uri = document.uri.toString();
+      if (!this.decorators.has(uri)) {
+        this.logger.info('DecorationManager', `Create decoration providers for ${uri}`);
+        this.decorators.set(uri, [
           new LogPointDecorationProvider(
             this.rootContainer.get(ILogPointRecommender),
             this.rootContainer.get(ILogPointManager),
@@ -70,7 +90,7 @@ export default class DecorationManager implements IDecorationManager {
 
   dispose(): void {
     const disposables = [
-      this.onDidChangeVisibleTextEditorsDisposable,
+      ...this.disposables,
       ...[...this.decorators.values()].reduce((acc, ds) => [...acc, ...ds], []),
     ];
     this.decorators.clear();
