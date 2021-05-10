@@ -88,7 +88,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
    * @inheritdoc
    */
   async enable({ fileName, line, character }: Telemetry.ITelemetryEventSource): Promise<void> {
-    return this.cdpClient?.request('Runtime', 'evaluate', {
+    await this.cdpClient?.request('Runtime', 'evaluate', {
       expression: `${Telemetry.RUNTIME_TELEMETRY_BRIDGE}.enable(${JSON.stringify({
         fileName,
         line,
@@ -101,7 +101,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
    * @inheritdoc
    */
   async disable({ fileName, line, character }: Telemetry.ITelemetryEventSource): Promise<void> {
-    return this.cdpClient?.request('Runtime', 'evaluate', {
+    await this.cdpClient?.request('Runtime', 'evaluate', {
       expression: `${Telemetry.RUNTIME_TELEMETRY_BRIDGE}.disable(${JSON.stringify({ fileName, line, character })});`,
     });
   }
@@ -110,7 +110,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
    * @inheritdoc
    */
   async update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): Promise<void> {
-    return this.cdpClient?.request('Runtime', 'evaluate', {
+    await this.cdpClient?.request('Runtime', 'evaluate', {
       expression: `${Telemetry.RUNTIME_TELEMETRY_BRIDGE}.update(${JSON.stringify(sources.map(serializeSource))});`,
     });
   }
@@ -136,10 +136,10 @@ export default class TelemetryBridge implements ITelemetryBridge {
   }
 }
 
-function serializeSource({
-  fileName,
-  line,
-  character,
-}: Telemetry.ITelemetryEventSource): { fileName: string; line: number; character: number } {
+function serializeSource({ fileName, line, character }: Telemetry.ITelemetryEventSource): {
+  fileName: string;
+  line: number;
+  character: number;
+} {
   return { fileName, line, character };
 }

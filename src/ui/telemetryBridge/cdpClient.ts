@@ -13,7 +13,7 @@ export interface ICDPClientAddress {
 }
 
 interface IFulfillRequest {
-  resolve: (result: any) => void; // TODO FIX any
+  resolve: (result: unknown) => void;
   reject: (e: Error) => void;
 }
 
@@ -46,8 +46,8 @@ type ProtocolResponse = IProtocolError | IProtocolSuccess;
 
 export interface ICDPClient extends IDisposable {
   connect(): Promise<void>;
-  request(domain: string, method: string, params?: Record<string, unknown>): Promise<any>;
-  subscribe(domain: string, event: string, callback: SubscriptionCallback): Promise<any>;
+  request(domain: string, method: string, params?: Record<string, unknown>): Promise<unknown>;
+  subscribe(domain: string, event: string, callback: SubscriptionCallback): Promise<unknown>;
 }
 
 /**
@@ -105,11 +105,11 @@ export default class CDPClient implements ICDPClient {
     return Promise.resolve();
   }
 
-  request(domain: string, method: string, params?: Record<string, unknown>): Promise<any> {
+  request(domain: string, method: string, params?: Record<string, unknown>): Promise<unknown> {
     return this.send(`${domain}.${method}`, params);
   }
 
-  async subscribe(domain: string, event: string, callback: SubscriptionCallback): Promise<any> {
+  async subscribe(domain: string, event: string, callback: SubscriptionCallback): Promise<unknown> {
     const domainAndEvent = `${domain}.${event}`;
 
     if (this.subscriptions.has(domainAndEvent)) {
@@ -128,7 +128,7 @@ export default class CDPClient implements ICDPClient {
     }
   }
 
-  private async send(method: string, params?: Record<string, unknown>): Promise<any> {
+  private async send(method: string, params?: Record<string, unknown>): Promise<unknown> {
     if (!this.webSocket) {
       throw new Error('WebSocket not initialized.');
     }
