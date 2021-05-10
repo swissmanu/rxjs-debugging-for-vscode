@@ -7,10 +7,6 @@ export default function registerLogPointManagementCommands(
   context: vscode.ExtensionContext,
   container: interfaces.Container
 ): void {
-  registerEnableLogPoint(context, container);
-}
-
-function registerEnableLogPoint(context: vscode.ExtensionContext, container: interfaces.Container) {
   const logPointManager = container.get<ILogPointManager>(ILogPointManager);
 
   context.subscriptions.push(
