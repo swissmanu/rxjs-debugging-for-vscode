@@ -3,11 +3,13 @@ import { commands, Disposable, Position, Uri } from 'vscode';
 export const enum Commands {
   EnableLogPoint = 'rxjs-debugging-for-vs-code.command.enableLogPoint',
   DisableLogPoint = 'rxjs-debugging-for-vs-code.command.disableLogPoint',
+  ToggleLogPointRecommendations = 'rxjs-debugging-for-vs-code.command.toggleLogPointRecommendations',
 }
 
 export interface ICommandTypes {
   [Commands.EnableLogPoint]: (uri: Uri, position: Position) => void;
   [Commands.DisableLogPoint]: (uri: Uri, position: Position) => void;
+  [Commands.ToggleLogPointRecommendations]: () => void;
 }
 
 /**

@@ -1,4 +1,5 @@
 import {
+  ConfigurationChangeEvent,
   DecorationOptions,
   DecorationRangeBehavior,
   MarkdownString,
@@ -6,11 +7,14 @@ import {
   TextDocument,
   TextEditor,
   window,
+  workspace,
 } from 'vscode';
 import * as nls from 'vscode-nls';
 import { DocumentDecorationProvider } from '.';
+import { difference } from '../../shared/map';
 import { IDisposable } from '../../shared/types';
 import { Commands, getMarkdownCommandWithArgs } from '../commands';
+import { Configuration } from '../configuration';
 import { LogPoint } from '../logPoint';
 import { ILogPointManager } from '../logPoint/logPointManager';
 import { ILogPointRecommendationEvent, ILogPointRecommender } from '../logPoint/logPointRecommender';
@@ -24,6 +28,9 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
 
   private readonly onRecommendLogPointsDisposable: IDisposable;
   private readonly onDidChangeLogPointsDisposable: IDisposable;
+  private readonly onDidChangeConfigurationDisposable: IDisposable;
+
+  private showLogPointRecommendations: boolean;
 
   decorationType = RecommendedLogPointDecorationType;
 
@@ -37,6 +44,11 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
 
     this.onRecommendLogPointsDisposable = logPointRecommender.onRecommendLogPoints(this.onRecommendLogPoints);
     this.onDidChangeLogPointsDisposable = logPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints);
+    this.onDidChangeConfigurationDisposable = workspace.onDidChangeConfiguration(this.onDidChangeConfiguration);
+
+    this.showLogPointRecommendations = workspace
+      .getConfiguration(Configuration.ShowLogPointRecommendations)
+      .get(Configuration.ShowLogPointRecommendations, true);
   }
 
   private onRecommendLogPoints = ({ documentUri, logPoints }: ILogPointRecommendationEvent): void => {
@@ -63,16 +75,26 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
     this.updateDecorations();
   };
 
+  private onDidChangeConfiguration = ({ affectsConfiguration }: ConfigurationChangeEvent) => {
+    if (affectsConfiguration(Configuration.ShowLogPointRecommendations)) {
+      this.showLogPointRecommendations = workspace
+        .getConfiguration(Configuration.ShowLogPointRecommendations)
+        .get(Configuration.ShowLogPointRecommendations, true);
+      this.updateDecorations();
+    }
+  };
+
   attach(textEditors: ReadonlyArray<TextEditor>): void {
     super.attach(textEditors);
     this.onDidChangeLogPoints(this.logPointManager.logPoints);
   }
 
   updateDecorations(): void {
-    const logPoints = [...this.recommendedLogPoints.values()].reduce<ReadonlyArray<LogPoint>>(
-      (acc, recommendedLogPoint) => [...acc, this.enabledLogPoints.get(recommendedLogPoint.key) ?? recommendedLogPoint],
-      []
-    );
+    const recommendedLogPoints = this.showLogPointRecommendations
+      ? difference(this.recommendedLogPoints, this.enabledLogPoints)
+      : new Map<string, LogPoint>();
+
+    const logPoints = [...this.enabledLogPoints.values(), ...recommendedLogPoints.values()];
 
     const decorationOptions = logPoints.reduce<DecorationOptions[]>((acc, logPoint) => {
       const hoverMessage = new MarkdownString(
@@ -132,6 +154,7 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
     super.dispose();
     this.onDidChangeLogPointsDisposable.dispose();
     this.onRecommendLogPointsDisposable.dispose();
+    this.onDidChangeConfigurationDisposable.dispose();
   }
 }
 

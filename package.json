@@ -16,9 +16,21 @@
     "onLanguage:typescriptreact"
   ],
   "contributes": {
+    "commands": [
+      {
+        "category": "RxJS",
+        "command": "rxjs-debugging-for-vs-code.command.toggleLogPointRecommendations",
+        "title": "%rxjs-debugging.command.toggleLogPointRecommendations%"
+      }
+    ],
     "configuration": {
       "title": "%rxjs-debugging.config.title%",
       "properties": {
+        "debug.rxjs.showLogPointRecommendations": {
+          "description": "%rxjs-debugging.config.showLogPointRecommendations%",
+          "type": "boolean",
+          "default": true
+        },
         "debug.rxjs.hideLiveLogWhenStoppingDebugger": {
           "description": "%rxjs-debugging.config.hideLiveLogWhenStoppingDebugger%",
           "type": "boolean",
