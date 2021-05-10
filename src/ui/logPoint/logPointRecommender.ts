@@ -3,8 +3,8 @@ import ts, { Node, SourceFile, SyntaxKind } from 'typescript';
 import * as vscode from 'vscode';
 import { LogPoint } from '.';
 import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
-import { isSupportedDocument } from '../detector';
 import { ILogger } from '../logger';
+import { isSupportedDocument } from '../workspaceMonitor/supportedDocument';
 
 export const ILogPointRecommender = Symbol('LogPointRecommender');
 

@@ -1,10 +1,10 @@
 import { inject, injectable } from 'inversify';
 import type * as vscodeApiType from 'vscode';
-import { IDisposable } from '../shared/types';
-import { Configuration } from './configuration';
-import { VsCodeApi } from './ioc/types';
-import { ILogger } from './logger';
-import { ILogPointRecommender } from './logPoint/logPointRecommender';
+import { IDisposable } from '../../shared/types';
+import { Configuration } from '../configuration';
+import { VsCodeApi } from '../ioc/types';
+import { ILogger } from '../logger';
+import { ILogPointRecommender } from '../logPoint/logPointRecommender';
 
 export const IWorkspaceMonitor = Symbol('WorkspaceMonitor');
 

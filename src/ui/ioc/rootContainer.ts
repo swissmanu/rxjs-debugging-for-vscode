@@ -5,7 +5,6 @@ import {
   NodeWithRxJSDebugConfigurationResolver,
 } from '../debugConfigurationProvider';
 import DecorationManager, { IDecorationManager } from '../decoration/decorationManager';
-import { IRxJSDetector, RxJSDetector } from '../detector';
 import Logger, { ILogger, LogLevel } from '../logger';
 import ConsoleLogSink from '../logger/console';
 import LogPointManager, { ILogPointManager } from '../logPoint/logPointManager';
@@ -15,6 +14,7 @@ import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
 import { DefaultCDPClientProvider, ICDPClientProvider } from '../telemetryBridge/cdpClientProvider';
 import WorkspaceMonitor, { IWorkspaceMonitor } from '../workspaceMonitor';
+import { IRxJSDetector, RxJSDetector } from '../workspaceMonitor/detector';
 import DisposableContainer, { IDisposableContainer } from './disposableContainer';
 import { ExtensionContext, RootContainer, VsCodeApi } from './types';
 

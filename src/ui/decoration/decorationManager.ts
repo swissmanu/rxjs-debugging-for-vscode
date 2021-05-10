@@ -1,13 +1,13 @@
 import { inject, injectable, interfaces } from 'inversify';
 import type * as vscodeApiType from 'vscode';
 import { IDisposable } from '../../shared/types';
-import { isSupportedDocument } from '../detector';
 import { RootContainer, VsCodeApi } from '../ioc/types';
 import { ILogger } from '../logger';
 import { ILogPointManager } from '../logPoint/logPointManager';
 import { ILogPointRecommender } from '../logPoint/logPointRecommender';
 import { IResourceProvider } from '../resources';
 import { ISessionManager } from '../sessionManager';
+import { isSupportedDocument } from '../workspaceMonitor/supportedDocument';
 import { IDecorationProvider } from './';
 import LiveLogDecorationProvider from './liveLogDecorationProvider';
 import LogPointDecorationProvider from './logPointDecorationProvider';
