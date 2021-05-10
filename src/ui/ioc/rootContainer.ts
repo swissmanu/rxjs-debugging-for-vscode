@@ -14,6 +14,7 @@ import DefaultResourceProvider, { IResourceProvider } from '../resources';
 import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
 import { DefaultCDPClientProvider, ICDPClientProvider } from '../telemetryBridge/cdpClientProvider';
+import WorkspaceMonitor, { IWorkspaceMonitor } from '../workspaceMonitor';
 import DisposableContainer, { IDisposableContainer } from './disposableContainer';
 import { ExtensionContext, RootContainer, VsCodeApi } from './types';
 
@@ -29,6 +30,12 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
   container.bind<ILogger>(ILogger).toConstantValue(logger);
 
   container.bind<IResourceProvider>(IResourceProvider).to(DefaultResourceProvider).inTransientScope();
+
+  container
+    .bind<IWorkspaceMonitor>(IWorkspaceMonitor)
+    .to(WorkspaceMonitor)
+    .inSingletonScope()
+    .onActivation(container.trackDisposableBinding);
 
   container.bind<IRxJSDetector>(IRxJSDetector).to(RxJSDetector).inSingletonScope();
   container
@@ -61,9 +68,10 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
 
   container.bind<ICDPClientProvider>(ICDPClientProvider).to(DefaultCDPClientProvider).inSingletonScope();
 
-  // Ensure SessionManager and DecorationManager are initialized:
+  // Ensure necessary components are initialized and active by default:
   container.get<ISessionManager>(ISessionManager);
   container.get<IDecorationManager>(IDecorationManager);
+  container.get<IWorkspaceMonitor>(IWorkspaceMonitor);
 
   return container;
 }
