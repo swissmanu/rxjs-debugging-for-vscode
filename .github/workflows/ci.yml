@@ -17,7 +17,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 10.x
+          node-version: 14.x
       - name: Install Dependencies
         run: yarn
       - name: Lint Code
@@ -34,7 +34,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 10.x
+          node-version: 14.x
       - name: Install Dependencies
         run: yarn
 
@@ -56,7 +56,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 10.x
+          node-version: 14.x
       - name: Install Dependencies
         run: yarn
 
