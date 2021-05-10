@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
 import type * as vscodeApiType from 'vscode';
 import { IDisposable } from '../shared/types';
+import { Configuration } from './configuration';
 import { VsCodeApi } from './ioc/types';
 import { ILogPointRecommender } from './logPoint/logPointRecommender';
 
@@ -13,24 +14,44 @@ const DID_CHANGE_TEXT_DOCUMENT_DEBOUNCE_DELAY_MS = 500;
 @injectable()
 export default class WorkspaceMonitor implements IWorkspaceMonitor {
   private readonly disposables: IDisposable[] = [];
+  private showLogPointRecommendations: boolean;
 
   constructor(
-    @inject(VsCodeApi) vscode: typeof vscodeApiType,
+    @inject(VsCodeApi) private readonly vscode: typeof vscodeApiType,
     @inject(ILogPointRecommender) private readonly logPointRecommender: ILogPointRecommender
   ) {
     this.disposables.push(
       vscode.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument),
-      vscode.workspace.onDidChangeTextDocument(this.onDidChangeTextDocument)
+      vscode.workspace.onDidChangeTextDocument(this.onDidChangeTextDocument),
+      vscode.workspace.onDidChangeConfiguration(this.onDidChangeConfiguration)
     );
+
+    this.showLogPointRecommendations = vscode.workspace
+      .getConfiguration(Configuration.ShowLogPointRecommendations)
+      .get(Configuration.ShowLogPointRecommendations, true);
   }
 
   private onDidOpenTextDocument = (document: vscodeApiType.TextDocument): void => {
-    this.logPointRecommender.recommend(document);
+    // Safe some CPU and start the recommender only when really required:
+    if (this.showLogPointRecommendations) {
+      this.logPointRecommender.recommend(document);
+    }
   };
 
   private onDidChangeTextDocument = debounced(({ document }: vscodeApiType.TextDocumentChangeEvent) => {
-    this.logPointRecommender.recommend(document);
+    // Safe some CPU and start the recommender only when really required:
+    if (this.showLogPointRecommendations) {
+      this.logPointRecommender.recommend(document);
+    }
   }, DID_CHANGE_TEXT_DOCUMENT_DEBOUNCE_DELAY_MS);
+
+  private onDidChangeConfiguration = ({ affectsConfiguration }: vscodeApiType.ConfigurationChangeEvent) => {
+    if (affectsConfiguration(Configuration.ShowLogPointRecommendations)) {
+      this.showLogPointRecommendations = this.vscode.workspace
+        .getConfiguration(Configuration.ShowLogPointRecommendations)
+        .get(Configuration.ShowLogPointRecommendations, true);
+    }
+  };
 
   dispose(): void {
     for (const disposable of this.disposables) {
