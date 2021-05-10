@@ -26,8 +26,10 @@ export default class DecorationManager implements IDecorationManager {
     @inject(ILogger) private readonly logger: ILogger,
     @inject(RootContainer) private readonly rootContainer: interfaces.Container
   ) {
-    vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument, undefined, this.disposables);
-    vscode.window.onDidChangeVisibleTextEditors(this.onDidChangeVisibleTextEditors, undefined, this.disposables);
+    this.disposables.push(
+      vscode.workspace.onDidCloseTextDocument(this.onDidCloseTextDocument),
+      vscode.window.onDidChangeVisibleTextEditors(this.onDidChangeVisibleTextEditors)
+    );
     this.onDidChangeVisibleTextEditors(vscode.window.visibleTextEditors);
   }
 

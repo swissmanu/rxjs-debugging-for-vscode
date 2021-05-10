@@ -3,6 +3,7 @@ import type * as vscodeApiType from 'vscode';
 import { IDisposable } from '../shared/types';
 import { Configuration } from './configuration';
 import { VsCodeApi } from './ioc/types';
+import { ILogger } from './logger';
 import { ILogPointRecommender } from './logPoint/logPointRecommender';
 
 export const IWorkspaceMonitor = Symbol('WorkspaceMonitor');
@@ -18,7 +19,8 @@ export default class WorkspaceMonitor implements IWorkspaceMonitor {
 
   constructor(
     @inject(VsCodeApi) private readonly vscode: typeof vscodeApiType,
-    @inject(ILogPointRecommender) private readonly logPointRecommender: ILogPointRecommender
+    @inject(ILogPointRecommender) private readonly logPointRecommender: ILogPointRecommender,
+    @inject(ILogger) private readonly logger: ILogger
   ) {
     this.disposables.push(
       vscode.workspace.onDidOpenTextDocument(this.onDidOpenTextDocument),
@@ -29,9 +31,19 @@ export default class WorkspaceMonitor implements IWorkspaceMonitor {
     this.showLogPointRecommendations = vscode.workspace
       .getConfiguration(Configuration.ShowLogPointRecommendations)
       .get(Configuration.ShowLogPointRecommendations, true);
+
+    for (const textEditor of vscode.window.visibleTextEditors) {
+      this.onDidOpenTextDocument(textEditor.document);
+    }
   }
 
   private onDidOpenTextDocument = (document: vscodeApiType.TextDocument): void => {
+    if (document.uri.scheme !== 'file') {
+      return;
+    }
+
+    this.logger.info('WorkspaceMonitor', `Opened ${document.fileName} (${document.languageId})`);
+
     // Safe some CPU and start the recommender only when really required:
     if (this.showLogPointRecommendations) {
       this.logPointRecommender.recommend(document);
@@ -39,6 +51,12 @@ export default class WorkspaceMonitor implements IWorkspaceMonitor {
   };
 
   private onDidChangeTextDocument = debounced(({ document }: vscodeApiType.TextDocumentChangeEvent) => {
+    if (document.uri.scheme !== 'file') {
+      return;
+    }
+
+    this.logger.info('WorkspaceMonitor', `Changed ${document.fileName} (${document.languageId})`);
+
     // Safe some CPU and start the recommender only when really required:
     if (this.showLogPointRecommendations) {
       this.logPointRecommender.recommend(document);
