@@ -1,9 +1,7 @@
 # Change Log
 
-All notable changes to the "rxjs-debugging-for-vs-code" extension will be documented in this file.
+## v0.1.0
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+- Feature: Operator Log Points
+- Feature: NodeJS Support
 
-## [Unreleased]
-
-- Initial release
