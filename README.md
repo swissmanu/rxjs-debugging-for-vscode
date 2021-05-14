@@ -1,6 +1,4 @@
-LOGO
-
-# RxJS Debugging for VS Code
+# ![Archie](./docs/archie-small.png)  RxJS Debugger for Visual Studio Code
 
 Adds non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applications to [Visual Studio Code](https://code.visualstudio.com/).
 
