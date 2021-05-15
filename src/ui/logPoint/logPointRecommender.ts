@@ -1,5 +1,5 @@
 import { inject, injectable } from 'inversify';
-import ts, { Node, SourceFile, SyntaxKind } from 'typescript';
+import { createSourceFile, Node, ScriptTarget, SourceFile, SyntaxKind } from 'typescript';
 import * as vscode from 'vscode';
 import { LogPoint } from '.';
 import { IDisposable } from '../../shared/types';
@@ -55,7 +55,7 @@ export default class LogPointRecommender implements ILogPointRecommender {
  * @returns
  */
 async function getCallExpressionRanges(document: vscode.TextDocument): Promise<ReadonlyArray<vscode.Range>> {
-  const sourceFile = ts.createSourceFile('parsed', document.getText(), ts.ScriptTarget.Latest);
+  const sourceFile = createSourceFile('parsed', document.getText(), ScriptTarget.Latest);
 
   const callExpressions = traverseChildren(sourceFile, sourceFile).reduce<ReadonlyArray<Node>>((acc, n) => {
     if (n.kind === SyntaxKind.CallExpression) {

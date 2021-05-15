@@ -2,8 +2,12 @@ import * as Module from 'module';
 import * as path from 'path';
 import * as StackTrace from 'stacktrace-js';
 import * as Telemetry from '../shared/telemetry';
-import { operate, TelemetrySubscriber } from './rx';
+import rx from './rx';
 import TelemetryBridge from './telemetryBridge';
+
+const programPath = process.env[Telemetry.RUNTIME_PROGRAM_ENV_VAR];
+const programModule = Module.createRequire(programPath);
+const { operate, TelemetrySubscriber } = rx(programModule('rxjs'));
 
 const origLoad = (Module as any)._load;
 (Module as any)._load = fakeLoad;

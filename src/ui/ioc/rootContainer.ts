@@ -6,7 +6,7 @@ import {
   NodeWithRxJSDebugConfigurationResolver,
 } from '../debugConfigurationProvider';
 import DecorationManager, { IDecorationManager } from '../decoration/decorationManager';
-import Logger, { ILogger, LogLevel, logLevelFromString } from '../logger';
+import Logger, { ILogger, logLevelFromString } from '../logger';
 import ConsoleLogSink from '../logger/console';
 import LogPointManager, { ILogPointManager } from '../logPoint/logPointManager';
 import LogPointRecommender, { ILogPointRecommender } from '../logPoint/logPointRecommender';
