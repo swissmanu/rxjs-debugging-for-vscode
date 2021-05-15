@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
+import { Event } from 'vscode';
 import * as Telemetry from '../../shared/telemetry';
-import { IDisposable, IEvent } from '../../shared/types';
+import { IDisposable } from '../../shared/types';
 import { ILogger } from '../logger';
 import { ILogPointManager } from '../logPoint/logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
@@ -9,7 +10,7 @@ export const ISession = Symbol('Session');
 
 export interface ISession extends IDisposable {
   attach(): Promise<void>;
-  onTelemetryEvent: IEvent<Telemetry.TelemetryEvent>;
+  onTelemetryEvent: Event<Telemetry.TelemetryEvent>;
 }
 
 @injectable()
@@ -19,7 +20,7 @@ export default class Session implements ISession {
   private attached?: Promise<void> | undefined;
   private resolveAttached?: () => void | undefined;
 
-  get onTelemetryEvent(): IEvent<Telemetry.TelemetryEvent> {
+  get onTelemetryEvent(): Event<Telemetry.TelemetryEvent> {
     return this.telemetryBridge.onTelemetryEvent;
   }
 
