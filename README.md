@@ -1,30 +1,56 @@
-# ![Archie](./docs/archie-small.png)  RxJS Debugger for Visual Studio Code
+# ![Archie the Debugger Owl](./docs/brand/archie-small.png)  RxJS Debugger for Visual Studio Code
 
-Adds non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applications to [Visual Studio Code](https://code.visualstudio.com/).
+> Never, ever use `tap(console.log)` again.
+
+Add non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applications to [Visual Studio Code](https://code.visualstudio.com/).
+
+![Operator Log Points with RxJS Debugger for Visual Studio Code](./docs/demo.gif)
 
 
-
-## Video
-
-todo
 
 ## Features
 
-- Intuitive user interface integrated in Visual Studio Code
-- Support for RxJS 6
-- Support for NodeJS applications
-  - Browser support is in the pipeline. See [Roadmap](#Roadmap) below
+- RxJS debugging, fully integrated with Visual Studio Code
+- Works with RxJS 6
+- Support for NodeJS-based RxJS applications
 
 ### Operator Log Points
 
-todo
+Operator log points make manually added `console.log` statements a thing of the past: RxJS Debugger detects [operators](https://rxjs.dev/guide/operators) automatically and recommends a log point, indicated with an empty diamond. Hover the mouse cursor on the operator to add or remove an operator log point:
 
+![Manage Operator Log Points](./docs/manage-operator-log-points.gif)
 
+Once you launch your application with the JavaScript debugger built-in to Visual Studio Code, enabled log points display [events of interest](https://rxjs.dev/guide/observable#anatomy-of-an-observable) inline in the editor:
 
-## Roadmap
+- Subscribe
+- Emitted values (next, error, complete)
+- Unsubscribe
 
-todo
+![Live Operator Log Points](./docs/live-operator-logs.gif)
+
+By default, RxJS Debugger clears logged events from the editor after you stop the JavaScript debugger. You can customize this behavior in the settings.
+
+![Toggle Display of Log Point Recommendations](./docs/toggle-log-points.png)
+
+You can toggle the display of recommended log points via the command palette.
+
+## Requirements
+
+- [Visual Studio Code 1.55](https://code.visualstudio.com/) or newer
+- [NodeJS 12](https://nodejs.org/) or newer
+- [TypeScript 4.2](https://www.typescriptlang.org/) or newer
+- [RxJS 6](https://rxjs.dev/)
+
+## Roadmap & Future Development
+
+Refer to the [milestones overview](https://github.com/swissmanu/rxjs-debugging-for-vscode/milestones) for planned, future iterations. The [issue list](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues) provides an overview on all open development topics.
+
+## Contributing
+
+"RxJS Debugger for Visual Studio Code" welcomes any type of contribution! ❤️
+Have a look at [CONTRIBUTING.md](./CONTRIBUTING.md) for further details.
 
 ## Research
 
-This extension is based on research by Manuel Alabor. Have a look at [RESEARCH.md](./RESEARCH.md) for further information.
+This extension is based on research by Manuel Alabor. See [RESEARCH.md](./RESEARCH.md) for more information.
+

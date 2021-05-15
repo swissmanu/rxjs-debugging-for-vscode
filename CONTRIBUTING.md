@@ -1,8 +1,8 @@
 # Contributing
 
-This project welcomes any type of contribution! ❤️ [Opening an issue](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/new/choose) to discuss a problem you encountered or suggesting a new feature is always a good start.
+This project welcomes any type of contribution! ❤️ [Opening an issue](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/new/choose) to document a problem you encountered or suggesting a new feature is always a good start.
 
-Before you submit a pull request, please discuss potential changes with the maintainer either in an [issue](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/new/choose) or via email.
+Before you submit a pull request, please discuss potential changes with the maintainer either in an [issue](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/new/choose), using [GitHub Discussions](https://github.com/swissmanu/rxjs-debugging-for-vscode/discussions) or via email.
 
 ## Development
 
