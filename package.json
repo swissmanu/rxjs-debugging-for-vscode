@@ -35,6 +35,17 @@
           "description": "%rxjs-debugging.config.hideLiveLogWhenStoppingDebugger%",
           "type": "boolean",
           "default": true
+        },
+        "debug.rxjs.logLevel": {
+          "description": "%rxjs-debugging.config.logLevel%",
+          "type": "string",
+          "default": "Never",
+          "enum": [
+            "Info",
+            "Warn",
+            "Error",
+            "Never"
+          ]
         }
       }
     },

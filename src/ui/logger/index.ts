@@ -7,6 +7,21 @@ export const enum LogLevel {
   Never,
 }
 
+export function logLevelFromString(s: string, defaultLogLevel = LogLevel.Never): LogLevel {
+  switch (s) {
+    case 'Info':
+      return LogLevel.Info;
+    case 'Warn':
+      return LogLevel.Warn;
+    case 'Error':
+      return LogLevel.Error;
+    case 'Never':
+      return LogLevel.Never;
+    default:
+      return defaultLogLevel;
+  }
+}
+
 export type LogDomain =
   | 'Extension'
   | 'IoC'

@@ -1,11 +1,12 @@
 import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
+import { Configuration } from '../configuration';
 import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
 } from '../debugConfigurationProvider';
 import DecorationManager, { IDecorationManager } from '../decoration/decorationManager';
-import Logger, { ILogger, LogLevel } from '../logger';
+import Logger, { ILogger, LogLevel, logLevelFromString } from '../logger';
 import ConsoleLogSink from '../logger/console';
 import LogPointManager, { ILogPointManager } from '../logPoint/logPointManager';
 import LogPointRecommender, { ILogPointRecommender } from '../logPoint/logPointRecommender';
@@ -26,7 +27,10 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
   container.bind<interfaces.Container>(RootContainer).toConstantValue(container);
   container.bind<vscode.ExtensionContext>(ExtensionContext).toConstantValue(extensionContext);
 
-  const logger = new Logger([new ConsoleLogSink()], LogLevel.Info); // TODO Make configurable?
+  const logger = new Logger(
+    [new ConsoleLogSink()],
+    logLevelFromString(vscode.workspace.getConfiguration().get(Configuration.LogLevel, 'Never'))
+  );
   container.bind<ILogger>(ILogger).toConstantValue(logger);
 
   container.bind<IResourceProvider>(IResourceProvider).to(DefaultResourceProvider).inTransientScope();

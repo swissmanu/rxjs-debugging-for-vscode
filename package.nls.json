@@ -2,5 +2,6 @@
   "rxjs-debugging.config.title": "RxJS Debugging",
   "rxjs-debugging.config.hideLiveLogWhenStoppingDebugger": "When enabled, live log values are hidden automatically after stopping the debugger.",
   "rxjs-debugging.config.showLogPointRecommendations": "When enabled, recommended log points will be shown automatically. Hint: You can toggle this setting using the related command in the command palette as well.",
+  "rxjs-debugging.config.logLevel": "Internal log level for the extension. (reload required)",
   "rxjs-debugging.command.toggleLogPointRecommendations": "Toggle Display of Log Point Recommendations"
 }
