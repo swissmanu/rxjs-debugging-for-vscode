@@ -2,7 +2,7 @@ import { inject, injectable } from 'inversify';
 import ts, { Node, SourceFile, SyntaxKind } from 'typescript';
 import * as vscode from 'vscode';
 import { LogPoint } from '.';
-import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
+import { IDisposable } from '../../shared/types';
 import { ILogger } from '../logger';
 import { isSupportedDocument } from '../workspaceMonitor/supportedDocument';
 
@@ -13,14 +13,14 @@ export interface ILogPointRecommendationEvent {
   logPoints: ReadonlyArray<LogPoint>;
 }
 export interface ILogPointRecommender extends IDisposable {
-  onRecommendLogPoints: IEvent<ILogPointRecommendationEvent>;
+  onRecommendLogPoints: vscode.Event<ILogPointRecommendationEvent>;
   recommend(document: vscode.TextDocument): void;
 }
 
 @injectable()
 export default class LogPointRecommender implements ILogPointRecommender {
-  private _onRecommendLogPoints = new EventEmitter<ILogPointRecommendationEvent>();
-  get onRecommendLogPoints(): IEvent<ILogPointRecommendationEvent> {
+  private _onRecommendLogPoints = new vscode.EventEmitter<ILogPointRecommendationEvent>();
+  get onRecommendLogPoints(): vscode.Event<ILogPointRecommendationEvent> {
     return this._onRecommendLogPoints.event;
   }
 

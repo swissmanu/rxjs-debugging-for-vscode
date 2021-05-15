@@ -6,7 +6,7 @@
   "configurations": [
     {
       "type": "node",
-      "runtimeVersion": "12.22.0",
+      "runtimeVersion": "14.16.1",
       "request": "launch",
       "name": "Launch NodeJS",
       "skipFiles": ["<node_internals>/**"],

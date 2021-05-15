@@ -1,6 +1,7 @@
 import { inject, injectable } from 'inversify';
+import { Event, EventEmitter } from 'vscode';
 import * as Telemetry from '../../shared/telemetry';
-import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
+import { IDisposable } from '../../shared/types';
 import { ICDPClient, ICDPClientAddress } from './cdpClient';
 import { ICDPClientProvider } from './cdpClientProvider';
 
@@ -34,24 +35,24 @@ export interface ITelemetryBridge extends IDisposable {
   /**
    * An event fired once the runtime signals being ready to receive communication.
    */
-  onRuntimeReady: IEvent<void>;
+  onRuntimeReady: Event<void>;
 
   /**
    * An event fired every time when the runtime sends a `TelemetryEvent`.
    */
-  onTelemetryEvent: IEvent<Telemetry.TelemetryEvent>;
+  onTelemetryEvent: Event<Telemetry.TelemetryEvent>;
 }
 @injectable()
 export default class TelemetryBridge implements ITelemetryBridge {
   private cdpClient: ICDPClient | undefined;
 
   private _onRuntimeReady = new EventEmitter<void>();
-  get onRuntimeReady(): IEvent<void> {
+  get onRuntimeReady(): Event<void> {
     return this._onRuntimeReady.event;
   }
 
   private _onTelemetryEvent = new EventEmitter<Telemetry.TelemetryEvent>();
-  get onTelemetryEvent(): IEvent<Telemetry.TelemetryEvent> {
+  get onTelemetryEvent(): Event<Telemetry.TelemetryEvent> {
     return this._onTelemetryEvent.event;
   }
 

@@ -1,6 +1,6 @@
 import { inject, injectable, interfaces } from 'inversify';
-import type * as vscodeApiType from 'vscode';
-import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
+import * as vscodeApiType from 'vscode';
+import { IDisposable } from '../../shared/types';
 import createSessionContainer from '../ioc/sessionContainer';
 import { RootContainer, VsCodeApi } from '../ioc/types';
 import { ILogger } from '../logger';
@@ -22,13 +22,13 @@ export interface ISessionManager extends IDisposable {
    * When a user selects a debug session, the `SessionManager` will try to find the related session and fires then a
    * `didChangeActiveSession` event.
    */
-  onDidChangeActiveSession: IEvent<ISession | undefined>;
+  onDidChangeActiveSession: vscodeApiType.Event<ISession | undefined>;
 
   /**
    * Once an actual `DebugSession` gets terminated, `onDidTerminateSession` will inform about the terminated `ISession`
    * as well.
    */
-  onDidTerminateSession: IEvent<ISession>;
+  onDidTerminateSession: vscodeApiType.Event<ISession>;
 }
 
 @injectable()
@@ -41,12 +41,12 @@ export default class SessionManager implements ISessionManager {
     return this._activeSession;
   }
 
-  private _onDidChangeActiveSession = new EventEmitter<ISession | undefined>();
-  get onDidChangeActiveSession(): IEvent<ISession | undefined> {
+  private _onDidChangeActiveSession = new vscodeApiType.EventEmitter<ISession | undefined>();
+  get onDidChangeActiveSession(): vscodeApiType.Event<ISession | undefined> {
     return this._onDidChangeActiveSession.event;
   }
-  private _onDidTerminateSession = new EventEmitter<ISession>();
-  get onDidTerminateSession(): IEvent<ISession> {
+  private _onDidTerminateSession = new vscodeApiType.EventEmitter<ISession>();
+  get onDidTerminateSession(): vscodeApiType.Event<ISession> {
     return this._onDidTerminateSession.event;
   }
 

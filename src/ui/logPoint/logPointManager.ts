@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify';
-import { Position, Uri } from 'vscode';
+import { Event, EventEmitter, Position, Uri } from 'vscode';
 import { LogPoint } from '.';
-import { EventEmitter, IDisposable, IEvent } from '../../shared/types';
+import { IDisposable } from '../../shared/types';
 import { ILogger } from '../logger';
 
 export const ILogPointManager = Symbol('LogPointManager');
@@ -10,7 +10,7 @@ export interface ILogPointManager extends IDisposable {
   enable(uri: Uri, position: Position): void;
   disable(uri: Uri, position: Position): void;
   logPoints: ReadonlyArray<LogPoint>;
-  onDidChangeLogPoints: IEvent<ReadonlyArray<LogPoint>>;
+  onDidChangeLogPoints: Event<ReadonlyArray<LogPoint>>;
 }
 
 @injectable()
@@ -18,7 +18,7 @@ export default class LogPointManager implements ILogPointManager {
   private readonly _logPoints: Map<string, LogPoint> = new Map();
 
   private _onDidChangeLogPoints = new EventEmitter<ReadonlyArray<LogPoint>>();
-  get onDidChangeLogPoints(): IEvent<ReadonlyArray<LogPoint>> {
+  get onDidChangeLogPoints(): Event<ReadonlyArray<LogPoint>> {
     return this._onDidChangeLogPoints.event;
   }
 
