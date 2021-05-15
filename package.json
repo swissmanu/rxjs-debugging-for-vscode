@@ -116,9 +116,9 @@
     }
   },
   "dependencies": {
-    "inversify": "^5.0.5",
-    "reflect-metadata": "^0.1.13",
-    "vscode-nls": "^5.0.0",
-    "ws": "^7.4.4"
+    "inversify": "5.1.1",
+    "reflect-metadata": "0.1.13",
+    "vscode-nls": "5.0.0",
+    "ws": "7.4.5"
   }
 }
