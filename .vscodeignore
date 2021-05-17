@@ -3,6 +3,7 @@
 .vscode/**
 .vscode-test/**
 docs/**
+!docs/brand/icon.png
 example-workspaces/**
 jest/**
 node_modules/**
