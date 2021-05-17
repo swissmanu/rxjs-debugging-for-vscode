@@ -85,7 +85,8 @@
     "lint": "eslint src --ext ts",
     "pretty": "prettier --write",
     "vscode:prepublish": "NODE_ENV=production yarn build",
-    "package": "vsce package --yarn"
+    "package": "vsce package --yarn",
+    "deploy": "vsce publish --yarn"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "18.1.0",

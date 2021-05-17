@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   push:
@@ -7,6 +7,9 @@ on:
   pull_request:
     branches:
       - main
+  release:
+    types:
+      - published
 
 jobs:
   lint:
@@ -46,6 +49,7 @@ jobs:
         run: yarn test
 
   snapshot:
+    if: github.event != 'release'
     needs:
       - test
       - lint
@@ -71,3 +75,23 @@ jobs:
           name: Extension Snapshot
           path: '*.vsix'
           retention-days: 10
+
+  publish:
+    if: github.event == 'release' && github.event.action == 'published'
+    needs:
+      - test
+      - lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - name: Install Dependencies
+        run: yarn
+      - name: Build & Publish to Marketplace
+        run: yarn deploy
+        env:
+          VSCE_PAT: ${{ secrets.AZURE_ACCESS_TOKEN }}
