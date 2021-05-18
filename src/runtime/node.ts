@@ -22,10 +22,12 @@ function getAbsolutePath(relativePath: string, parentFileName: string): string {
   }
 }
 
+const operatorsPath = path.join('rxjs', 'internal', 'operators');
+
 function fakeLoad(request: string, parent?: { filename: string }, isMain?: boolean) {
   const absolutePath = parent ? getAbsolutePath(request, parent.filename) : request;
 
-  if (absolutePath.indexOf('rxjs/internal/operators/') > -1) {
+  if (absolutePath.indexOf(operatorsPath) > -1) {
     const result = origLoad(request, parent, isMain);
     const name = path.basename(request);
 
