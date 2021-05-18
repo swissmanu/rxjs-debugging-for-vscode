@@ -11,7 +11,7 @@ export const INodeWithRxJSDebugConfigurationResolver = Symbol('NodeWithRxJSDebug
 
 @injectable()
 export class NodeWithRxJSDebugConfigurationResolver implements DebugConfigurationProvider {
-  static type = 'node';
+  static readonly types = ['node', 'pwa-node'];
 
   constructor(
     @inject(IRxJSDetector) private readonly rxJsDetector: IRxJSDetector,
@@ -20,9 +20,9 @@ export class NodeWithRxJSDebugConfigurationResolver implements DebugConfiguratio
 
   async resolveDebugConfiguration(
     folder: WorkspaceFolder | undefined,
-    debugConfiguration: DebugConfiguration
+    debugConfiguration: DebugConfiguration & { __parentId?: string }
   ): Promise<DebugConfiguration> {
-    if (folder && (await this.rxJsDetector.detect(folder))) {
+    if (!hasParentDebugConfiguration(debugConfiguration) && folder && (await this.rxJsDetector.detect(folder))) {
       this.logger.info('Extension', `Augment debug configuration "${debugConfiguration.name}" with NodeJS Runtime.`);
       const originalRuntimeArgs = debugConfiguration.runtimeArgs ?? [];
       const augmentedRuntimeArgs = [...originalRuntimeArgs, '-r', nodeRuntimePath];
@@ -54,4 +54,21 @@ export class NodeWithRxJSDebugConfigurationResolver implements DebugConfiguratio
 
     return debugConfiguration;
   }
+}
+
+/**
+ * This function checks the presence uf the `__parentId` property in the configuration.
+ *
+ * ## Context
+ * vscode-js-debug creates debug sessions with a parent-child dependency. The child session is usually the actual
+ * debugging session holding the CDP connection to the application under inspection. Such a child session can be
+ * identified by the presence of the `__parentId` property in its configuration. This property is private API and might
+ * change in the future. Use with care.
+ *
+ * @param debugConfiguration
+ * @returns
+ * @see Could be improved once https://github.com/microsoft/vscode/issues/123403 is resolved.
+ */
+export function hasParentDebugConfiguration(debugConfiguration: DebugConfiguration & { __parentId?: string }): boolean {
+  return typeof debugConfiguration.__parentId === 'string';
 }

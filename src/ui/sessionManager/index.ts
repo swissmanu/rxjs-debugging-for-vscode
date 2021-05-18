@@ -1,6 +1,7 @@
 import { inject, injectable, interfaces } from 'inversify';
 import * as vscodeApiType from 'vscode';
 import { IDisposable } from '../../shared/types';
+import { hasParentDebugConfiguration } from '../debugConfigurationProvider';
 import createSessionContainer from '../ioc/sessionContainer';
 import { RootContainer, VsCodeApi } from '../ioc/types';
 import { ILogger } from '../logger';
@@ -151,21 +152,6 @@ function isSupportedDebuggingSession({ type }: vscodeApiType.DebugSession): bool
   return type === 'node' || type == 'pwa-node';
 }
 
-/**
- * This function checks the presence uf the `__parentId` property in the configuration of a `DebugSession` to determine
- * if a debug session has a parent session.
- *
- * ## Context
- * vscode-js-debug creates debug sessions with a parent-child dependency. The child session is usually the actual
- * debugging session holding the CDP connection to the application under inspection. Such a child session can be
- * identified by the presence of the `__parentId` property in its configuration. This property is private API and might
- * change in the future. Use with care.
- *
- * @param debugSession
- * @returns
- * @see Could be improved once https://github.com/microsoft/vscode/issues/123403 is resolved.
- */
 function hasParentDebugSession(debugSession: vscodeApiType.DebugSession): boolean {
-  const { __parentId }: vscodeApiType.DebugConfiguration & { __parentId?: string } = debugSession.configuration;
-  return typeof __parentId === 'string';
+  return hasParentDebugConfiguration(debugSession.configuration);
 }

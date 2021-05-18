@@ -13,10 +13,12 @@ export function activate(context: vscode.ExtensionContext): void {
   const rootContainer = createRootContainer(context);
   context.subscriptions.push(rootContainer);
 
-  vscode.debug.registerDebugConfigurationProvider(
-    NodeWithRxJSDebugConfigurationResolver.type,
-    rootContainer.get<vscode.DebugConfigurationProvider>(INodeWithRxJSDebugConfigurationResolver)
-  );
+  for (const type of NodeWithRxJSDebugConfigurationResolver.types) {
+    vscode.debug.registerDebugConfigurationProvider(
+      type,
+      rootContainer.get<vscode.DebugConfigurationProvider>(INodeWithRxJSDebugConfigurationResolver)
+    );
+  }
   registerLogPointManagementCommands(context, rootContainer);
   registerToggleLogPointDecorationCommand(context);
 
