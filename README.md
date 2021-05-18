@@ -1,5 +1,9 @@
 # ![Archie the Debugger Owl](./docs/brand/archie-small.png)  RxJS Debugger for Visual Studio Code
 
+[![Click to visit marketplace](https://vsmarketplacebadge.apphb.com/version-short/manuelalabor.rxjs-debugging-for-vs-code.svg)](https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code)
+
+
+
 > Never, ever use `tap(console.log)` again.
 
 Add non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applications to [Visual Studio Code](https://code.visualstudio.com/).
