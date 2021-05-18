@@ -1,8 +1,8 @@
 # Change Log
 
-# v0.1.2
+## v0.1.2
 
-- Fix: Log Point Events not displayed #54
+- Fix: Log Point Events not displayed [#54](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/54)
 - Improvement: Support for `pwa-node` launch configurations
 
 ## v0.1.1
