@@ -1,5 +1,10 @@
 # Change Log
 
+# v0.1.2
+
+- Fix: Log Point Events not displayed #54
+- Improvement: Support for `pwa-node` launch configurations
+
 ## v0.1.1
 
 - Add Icon for Visual Studio Code Extension Marketplace. 🦉
