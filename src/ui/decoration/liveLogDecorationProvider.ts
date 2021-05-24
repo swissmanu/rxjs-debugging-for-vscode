@@ -13,7 +13,7 @@ type Line = number;
 type Character = number;
 
 export default class LiveLogDecorationProvider extends DocumentDecorationProvider {
-  private readonly lastLogForLine: Map<Line, Map<Character, Telemetry.TelemetryEvent>> = new Map();
+  private readonly lastLogForLine: Map<Line, Map<Character, ReadonlyArray<Telemetry.TelemetryEvent>>> = new Map();
 
   private readonly onDidChangeActiveSessionDisposable: IDisposable;
   private readonly onDidTerminateSessionDisposable: IDisposable;
@@ -35,6 +35,8 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
   };
 
   private onDidTerminateSession = (): void => {
+    this.lastLogForLine.clear();
+
     const hideLiveLog: boolean = workspace.getConfiguration().get(Configuration.HideLiveLogWhenStoppingDebugger, true);
     if (hideLiveLog) {
       this.setDecorations([]);
@@ -48,9 +50,18 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
 
     const line = this.lastLogForLine.get(event.source.line);
     if (line) {
-      line.set(event.source.character, event);
+      if (shouldMemoizePreviousEvent(event)) {
+        const prevEvents = line.get(event.source.character);
+        if (prevEvents) {
+          line.set(event.source.character, [...prevEvents, event]);
+        } else {
+          line.set(event.source.character, [event]);
+        }
+      } else {
+        line.set(event.source.character, [event]);
+      }
     } else {
-      this.lastLogForLine.set(event.source.line, new Map([[event.source.character, event]]));
+      this.lastLogForLine.set(event.source.line, new Map([[event.source.character, [event]]]));
     }
 
     this.updateDecorations();
@@ -67,16 +78,20 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
     const decorationOptions = [...this.lastLogForLine.entries()].map(([line, characters]) => {
       const contentText = [...characters.entries()]
         .sort(([a], [b]) => a - b)
-        .map(([, event]) =>
-          Telemetry.match({
-            Completed: () => 'Completed',
-            Error: () => 'Error',
-            Next: ({ data: { value } }) => `Next: ${value}`,
-            Subscribe: () => 'Subscribe',
-            Unsubscribe: () => 'Unsubscribe',
-          })(event)
+        .map(([, events]) =>
+          events
+            .map((event) =>
+              Telemetry.match({
+                Completed: () => 'Completed',
+                Error: () => 'Error',
+                Next: ({ data: { value } }) => `Next: ${value}`,
+                Subscribe: () => 'Subscribe',
+                Unsubscribe: () => 'Unsubscribe',
+              })(event)
+            )
+            .join(', ')
         )
-        .join(', ');
+        .join(' - ');
 
       return {
         renderOptions: { after: { contentText } },
@@ -103,4 +118,12 @@ const liveLogDecorationType = window.createTextEditorDecorationType({
     backgroundColor: new ThemeColor(Colors.LiveLogLineBackgroundColor),
   },
   rangeBehavior: DecorationRangeBehavior.ClosedClosed,
+});
+
+const shouldMemoizePreviousEvent = Telemetry.match({
+  Completed: () => true,
+  Error: () => true,
+  Next: () => false,
+  Subscribe: () => false,
+  Unsubscribe: () => true,
 });
