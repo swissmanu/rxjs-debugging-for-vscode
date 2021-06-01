@@ -54,6 +54,12 @@ Refer to the [milestones overview](https://github.com/swissmanu/rxjs-debugging-f
 "RxJS Debugger for Visual Studio Code" welcomes any type of contribution! ❤️
 Have a look at [CONTRIBUTING.md](./CONTRIBUTING.md) for further details.
 
+## Playground
+
+Jump right in and explore, how "RxJS Debugging for Visual Studio Code" can improve your RxJS debugging workflow:
+
+https://github.com/swissmanu/playground-rxjs-debugging-for-vscode
+
 ## Research
 
 This extension is based on research by Manuel Alabor. See [RESEARCH.md](./RESEARCH.md) for more information.
