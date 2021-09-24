@@ -40,7 +40,7 @@ You can toggle the display of recommended log points via the command palette.
 
 ## Requirements
 
-- [Visual Studio Code 1.55](https://code.visualstudio.com/) or newer
+- [Visual Studio Code 1.60](https://code.visualstudio.com/) or newer
 - [NodeJS 12](https://nodejs.org/) or newer
 - [TypeScript 4.2](https://www.typescriptlang.org/) or newer
 - [RxJS 6](https://rxjs.dev/)

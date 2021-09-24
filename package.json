@@ -8,7 +8,7 @@
     "url": "https://github.com/swissmanu/rxjs-debugging-for-vscode"
   },
   "engines": {
-    "vscode": "^1.56.0"
+    "vscode": "^1.60.0"
   },
   "categories": [
     "Debuggers"
