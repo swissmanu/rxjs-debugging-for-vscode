@@ -97,7 +97,7 @@
     "@types/jest": "26.0.24",
     "@types/node": "14.17.18",
     "@types/stacktrace-js": "2.0.3",
-    "@types/vscode": "1.56.0",
+    "@types/vscode": "1.60.0",
     "@types/ws": "7.4.4",
     "@typescript-eslint/eslint-plugin": "4.23.0",
     "@typescript-eslint/parser": "4.23.0",
