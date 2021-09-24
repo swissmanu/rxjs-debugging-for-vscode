@@ -1,5 +1,5 @@
 import { exampleObservable } from './observable';
 
-exampleObservable().subscribe((x) => {
-  console.log(x);
+exampleObservable().subscribe((v) => {
+  console.log(v);
 });

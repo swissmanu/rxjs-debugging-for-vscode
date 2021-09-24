@@ -1,5 +1,5 @@
 import { exampleObservable } from './observable';
 
-exampleObservable().subscribe((x) => {
-  document.querySelector('body').textContent = `Value: ${x}`;
+exampleObservable().subscribe((v) => {
+  document.querySelector('body').textContent = `Value: ${v}`;
 });
