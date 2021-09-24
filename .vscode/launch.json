@@ -9,10 +9,7 @@
       "name": "Run Extension",
       "type": "extensionHost",
       "request": "launch",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "${workspaceFolder}/example-workspaces/browser-and-server"
-      ],
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/test-benches/browser-and-server"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"]
       // "preLaunchTask": "${defaultBuildTask}"
     },

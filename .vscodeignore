@@ -4,7 +4,7 @@
 .vscode-test/**
 docs/**
 !docs/brand/icon.png
-example-workspaces/**
+test-benches/**
 jest/**
 node_modules/**
 out/integrationTest/**
