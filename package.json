@@ -90,7 +90,7 @@
     "deploy": "vsce publish --yarn"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "18.1.0",
+    "@rollup/plugin-commonjs": "20.0.0",
     "@rollup/plugin-node-resolve": "13.0.5",
     "@rollup/plugin-typescript": "8.2.5",
     "@types/glob": "7.1.3",
