@@ -15,18 +15,18 @@ import { difference } from '../../shared/map';
 import { IDisposable } from '../../shared/types';
 import { Commands, getMarkdownCommandWithArgs } from '../commands';
 import { Configuration } from '../configuration';
-import { LogPoint } from '../logPoint';
-import { ILogPointManager } from '../logPoint/logPointManager';
-import { ILogPointRecommendationEvent, ILogPointRecommender } from '../logPoint/logPointRecommender';
+import OperatorLogPoint from '../operatorLogPoint';
+import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
+import { IOperatorLogPointRecommendationEvent, IOperatorLogPointRecommender } from '../operatorLogPoint/recommender';
 import { IResourceProvider } from '../resources';
 
 const localize = nls.loadMessageBundle();
 
 export default class LogPointDecorationProvider extends DocumentDecorationProvider {
-  private recommendedLogPoints: Map<string, LogPoint> = new Map();
-  private enabledLogPoints: Map<string, LogPoint> = new Map();
+  private recommendedLogPoints: Map<string, OperatorLogPoint> = new Map();
+  private enabledLogPoints: Map<string, OperatorLogPoint> = new Map();
 
-  private readonly onRecommendLogPointsDisposable: IDisposable;
+  private readonly onRecommendOperatorLogPointsDisposable: IDisposable;
   private readonly onDidChangeLogPointsDisposable: IDisposable;
   private readonly onDidChangeConfigurationDisposable: IDisposable;
 
@@ -35,15 +35,17 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
   decorationType = RecommendedLogPointDecorationType;
 
   constructor(
-    logPointRecommender: ILogPointRecommender,
-    private readonly logPointManager: ILogPointManager,
+    operatorLogPointRecommender: IOperatorLogPointRecommender,
+    private readonly operatorLogPointManager: IOperatorLogPointManager,
     private readonly resourceProvider: IResourceProvider,
     textDocument: TextDocument
   ) {
     super(textDocument);
 
-    this.onRecommendLogPointsDisposable = logPointRecommender.onRecommendLogPoints(this.onRecommendLogPoints);
-    this.onDidChangeLogPointsDisposable = logPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints);
+    this.onRecommendOperatorLogPointsDisposable = operatorLogPointRecommender.onRecommendOperatorLogPoints(
+      this.onRecommendOperatorLogPoints
+    );
+    this.onDidChangeLogPointsDisposable = operatorLogPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints);
     this.onDidChangeConfigurationDisposable = workspace.onDidChangeConfiguration(this.onDidChangeConfiguration);
 
     this.showLogPointRecommendations = workspace
@@ -51,24 +53,27 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
       .get(Configuration.ShowLogPointRecommendations, true);
   }
 
-  private onRecommendLogPoints = ({ documentUri, logPoints }: ILogPointRecommendationEvent): void => {
+  private onRecommendOperatorLogPoints = ({
+    documentUri,
+    operatorLogPoints,
+  }: IOperatorLogPointRecommendationEvent): void => {
     if (documentUri.toString() !== this.document.uri.toString()) {
       return;
     }
 
     this.recommendedLogPoints = new Map(
-      logPoints.reduce<ReadonlyArray<[string, LogPoint]>>(
-        (acc, l) => (l.fileName === this.document.fileName ? [...acc, [l.key, l]] : acc),
+      operatorLogPoints.reduce<ReadonlyArray<[string, OperatorLogPoint]>>(
+        (acc, l) => (l.operatorIdentifier.fileName === this.document.fileName ? [...acc, [l.key, l]] : acc),
         []
       )
     );
     this.updateDecorations();
   };
 
-  private onDidChangeLogPoints = (logPoints: ReadonlyArray<LogPoint>): void => {
+  private onDidChangeLogPoints = (operatorLogPoints: ReadonlyArray<OperatorLogPoint>): void => {
     this.enabledLogPoints = new Map(
-      logPoints.reduce<ReadonlyArray<[string, LogPoint]>>(
-        (acc, l) => (l.fileName === this.document.fileName ? [...acc, [l.key, l]] : acc),
+      operatorLogPoints.reduce<ReadonlyArray<[string, OperatorLogPoint]>>(
+        (acc, l) => (l.operatorIdentifier.fileName === this.document.fileName ? [...acc, [l.key, l]] : acc),
         []
       )
     );
@@ -86,13 +91,13 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
 
   attach(textEditors: ReadonlyArray<TextEditor>): void {
     super.attach(textEditors);
-    this.onDidChangeLogPoints(this.logPointManager.logPoints);
+    this.onDidChangeLogPoints(this.operatorLogPointManager.logPoints);
   }
 
   updateDecorations(): void {
     const recommendedLogPoints = this.showLogPointRecommendations
       ? difference(this.recommendedLogPoints, this.enabledLogPoints)
-      : new Map<string, LogPoint>();
+      : new Map<string, OperatorLogPoint>();
 
     const logPoints = [...this.enabledLogPoints.values(), ...recommendedLogPoints.values()];
 
@@ -102,9 +107,10 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
           ? `$(bug) RxJS: [${localize(
               'rxjs-debugging.logPointDecoration.removeOperatorLogPoint.title',
               'Remove Operator Log Point'
-            )}](${getMarkdownCommandWithArgs(Commands.DisableLogPoint, [
+            )}](${getMarkdownCommandWithArgs(Commands.DisableOperatorLogPoint, [
               this.document.uri,
-              logPoint.position,
+              logPoint.sourcePosition,
+              logPoint.operatorIdentifier,
             ])} "${localize(
               'rxjs-debugging.logPointDecoration.removeOperatorLogPoint.description',
               'Stop logging events emitted by this operator.'
@@ -112,9 +118,10 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
           : `$(bug)  RxJS: [${localize(
               'rxjs-debugging.logPointDecoration.addOperatorLogPoint.title',
               'Add Operator Log Point'
-            )}](${getMarkdownCommandWithArgs(Commands.EnableLogPoint, [
+            )}](${getMarkdownCommandWithArgs(Commands.EnableOperatorLogPoint, [
               this.document.uri,
-              logPoint.position,
+              logPoint.sourcePosition,
+              logPoint.operatorIdentifier,
             ])} "${localize(
               'rxjs-debugging.logPointDecoration.addOperatorLogPoint.description',
               'Log events emitted by this operator.'
@@ -127,7 +134,10 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
         ...acc,
         logPoint.enabled
           ? {
-              range: new Range(logPoint.position, logPoint.position.with(undefined, logPoint.position.character + 3)),
+              range: new Range(
+                logPoint.sourcePosition,
+                logPoint.sourcePosition.with(undefined, logPoint.sourcePosition.character + 3)
+              ),
               hoverMessage,
               renderOptions: {
                 before: {
@@ -136,7 +146,10 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
               },
             }
           : {
-              range: new Range(logPoint.position, logPoint.position.with(undefined, logPoint.position.character + 3)),
+              range: new Range(
+                logPoint.sourcePosition,
+                logPoint.sourcePosition.with(undefined, logPoint.sourcePosition.character + 3)
+              ),
               hoverMessage,
               renderOptions: {
                 before: {
@@ -153,7 +166,7 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
   dispose(): void {
     super.dispose();
     this.onDidChangeLogPointsDisposable.dispose();
-    this.onRecommendLogPointsDisposable.dispose();
+    this.onRecommendOperatorLogPointsDisposable.dispose();
     this.onDidChangeConfigurationDisposable.dispose();
   }
 }

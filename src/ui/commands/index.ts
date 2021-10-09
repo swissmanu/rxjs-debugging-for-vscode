@@ -1,15 +1,16 @@
 import { commands, Disposable, Position, Uri } from 'vscode';
+import { IOperatorIdentifier } from '../../shared/telemetry/operatorIdentifier';
 
 export const enum Commands {
-  EnableLogPoint = 'rxjs-debugging-for-vs-code.command.enableLogPoint',
-  DisableLogPoint = 'rxjs-debugging-for-vs-code.command.disableLogPoint',
-  ToggleLogPointRecommendations = 'rxjs-debugging-for-vs-code.command.toggleLogPointRecommendations',
+  EnableOperatorLogPoint = 'rxjs-debugging-for-vs-code.command.enableOperatorLogPoint',
+  DisableOperatorLogPoint = 'rxjs-debugging-for-vs-code.command.disableOperatorLogPoint',
+  ToggleOperatorLogPointRecommendations = 'rxjs-debugging-for-vs-code.command.toggleOperatorLogPointRecommendations',
 }
 
 export interface ICommandTypes {
-  [Commands.EnableLogPoint]: (uri: Uri, position: Position) => void;
-  [Commands.DisableLogPoint]: (uri: Uri, position: Position) => void;
-  [Commands.ToggleLogPointRecommendations]: () => void;
+  [Commands.EnableOperatorLogPoint]: (uri: Uri, position: Position, operatorIdentifier: IOperatorIdentifier) => void;
+  [Commands.DisableOperatorLogPoint]: (uri: Uri, position: Position, operatorIdentifier: IOperatorIdentifier) => void;
+  [Commands.ToggleOperatorLogPointRecommendations]: () => void;
 }
 
 /**

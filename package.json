@@ -23,15 +23,15 @@
     "commands": [
       {
         "category": "RxJS",
-        "command": "rxjs-debugging-for-vs-code.command.toggleLogPointRecommendations",
-        "title": "%rxjs-debugging.command.toggleLogPointRecommendations%"
+        "command": "rxjs-debugging-for-vs-code.command.toggleOperatorLogPointRecommendations",
+        "title": "%rxjs-debugging.command.toggleOperatorLogPointRecommendations%"
       }
     ],
     "configuration": {
       "title": "%rxjs-debugging.config.title%",
       "properties": {
-        "debug.rxjs.showLogPointRecommendations": {
-          "description": "%rxjs-debugging.config.showLogPointRecommendations%",
+        "debug.rxjs.showOperatorLogPointRecommendations": {
+          "description": "%rxjs-debugging.config.showOperatorLogPointRecommendations%",
           "type": "boolean",
           "default": true
         },
@@ -80,8 +80,9 @@
     "clean": "rm -rf out",
     "build": "rollup --c",
     "watch": "yarn build --watch",
-    "test": "true",
+    "test": "yarn test:unit",
     "pretest:integration": "yarn run compile",
+    "test:unit": "jest",
     "test:integration": "node ./out/integrationTest/runTest.js",
     "lint": "eslint src --ext ts",
     "pretty": "prettier --write",
@@ -98,6 +99,7 @@
     "@types/node": "14.17.18",
     "@types/stacktrace-js": "2.0.3",
     "@types/vscode": "1.60.0",
+    "@types/webpack": "5.28.0",
     "@types/ws": "7.4.4",
     "@typescript-eslint/eslint-plugin": "4.31.2",
     "@typescript-eslint/parser": "4.31.2",
@@ -114,7 +116,8 @@
     "tslib": "2.3.1",
     "typescript": "4.4.3",
     "vsce": "1.88.0",
-    "vscode-test": "1.6.1"
+    "vscode-test": "1.6.1",
+    "webpack": "git+https://github.com/swissmanu/webpack.git#fix-normalmodule-beforeLoaders-hook"
   },
   "prettier": {
     "printWidth": 120

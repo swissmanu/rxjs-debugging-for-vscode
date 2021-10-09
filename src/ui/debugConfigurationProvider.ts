@@ -1,11 +1,11 @@
 import { inject, injectable } from 'inversify';
 import { resolve } from 'path';
 import { DebugConfiguration, DebugConfigurationProvider, window, WorkspaceFolder } from 'vscode';
-import { RUNTIME_PROGRAM_ENV_VAR } from '../shared/telemetry';
+import { RUNTIME_PROGRAM_ENV_VAR } from '../shared/telemetry/consts';
 import { ILogger } from './logger';
 import { IRxJSDetector } from './workspaceMonitor/detector';
 
-const nodeRuntimePath = resolve(__dirname, 'runtime.node.js'); // TODO
+const nodeRuntimePath = resolve(__dirname, 'node/runtime.js'); // TODO
 
 export const INodeWithRxJSDebugConfigurationResolver = Symbol('NodeWithRxJSDebugConfigurationResolver');
 

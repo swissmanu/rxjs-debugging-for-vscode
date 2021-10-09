@@ -1,26 +1,32 @@
-import * as Telemetry from '../shared/telemetry';
+import { OperatorLogPointTelemetryEvent, TelemetryEventType } from '../shared/telemetry';
+import { ObservableEventType } from '../shared/telemetry/observableEvent';
 import TelemetryBridge from './telemetryBridge';
 
 const defaultFileName = 'foo/bar.ts';
 const defaultLine = 42;
 const defaultCharacter = 43;
+const defaultOperatorIndex = 44;
 
 function createEvent({
   fileName = defaultFileName,
   line = defaultLine,
   character = defaultCharacter,
+  operatorIndex = defaultOperatorIndex,
 }: {
   fileName?: string;
   line?: number;
   character?: number;
-} = {}): Telemetry.TelemetryEvent {
+  operatorIndex?: number;
+} = {}): OperatorLogPointTelemetryEvent {
   return {
-    type: Telemetry.TelemetryEventType.Subscribe,
+    type: TelemetryEventType.OperatorLogPoint,
     data: undefined,
-    source: {
+    observableEvent: ObservableEventType.Subscribe,
+    operator: {
+      character,
       fileName,
       line,
-      character,
+      operatorIndex,
     },
   };
 }
@@ -47,7 +53,7 @@ describe('Runtime', () => {
         const anotherLine = createEvent({ line: 0 });
         const anotherCharacter = createEvent({ character: 0 });
 
-        telemetryBridge.enable(enabledSource.source);
+        telemetryBridge.enableOperatorLogPoint(enabledSource.operator);
 
         telemetryBridge.forward(enabledSource);
         telemetryBridge.forward(anotherFile);
@@ -62,8 +68,8 @@ describe('Runtime', () => {
         const enabledEvent = createEvent();
         const disabledEvent = createEvent({ fileName: 'disabled.ts', line: 100, character: 1 });
 
-        telemetryBridge.enable(disabledEvent.source);
-        telemetryBridge.update([enabledEvent.source]); // Overwrite previously enabled source
+        telemetryBridge.enableOperatorLogPoint(disabledEvent.operator);
+        telemetryBridge.updateOperatorLogPoints([enabledEvent.operator]); // Overwrite previously enabled source
 
         telemetryBridge.forward(enabledEvent);
         telemetryBridge.forward(disabledEvent);
@@ -74,8 +80,8 @@ describe('Runtime', () => {
 
       test('does not send TelemetryEvent for a source which got disabled again', () => {
         const event = createEvent();
-        telemetryBridge.enable(event.source);
-        telemetryBridge.disable(event.source);
+        telemetryBridge.enableOperatorLogPoint(event.operator);
+        telemetryBridge.disableOperatorLogPoint(event.operator);
 
         telemetryBridge.forward(event);
 

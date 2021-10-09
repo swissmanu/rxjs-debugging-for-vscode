@@ -2,9 +2,9 @@ import * as vscode from 'vscode';
 import { Commands, registerCommand } from '.';
 import { Configuration } from '../configuration';
 
-export default function registerToggleLogPointDecorationCommand(context: vscode.ExtensionContext): void {
+export default function registerToggleOperatorLogPointDecorationCommand(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
-    registerCommand(vscode.commands, Commands.ToggleLogPointRecommendations, async () => {
+    registerCommand(vscode.commands, Commands.ToggleOperatorLogPointRecommendations, async () => {
       const newValue = !vscode.workspace
         .getConfiguration(Configuration.ShowLogPointRecommendations)
         .get(Configuration.ShowLogPointRecommendations, true);

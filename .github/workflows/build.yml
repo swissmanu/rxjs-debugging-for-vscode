@@ -26,7 +26,24 @@ jobs:
       - name: Lint Code
         run: yarn lint
 
-  test:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - name: Install Dependencies
+        run: yarn
+      - name: Run Unit Tests
+        run: yarn test:unit
+
+  integration-test:
+    needs:
+      - unit-test
+      - lint
     strategy:
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
@@ -43,15 +60,16 @@ jobs:
 
       - name: Integration Test on Linux System
         if: runner.os == 'Linux'
-        run: xvfb-run -a yarn test
+        run: xvfb-run -a yarn test:integration
       - name: Integration Test on Non-Linux System
         if: runner.os != 'Linux'
-        run: yarn test
+        run: yarn test:integration
 
   snapshot:
     if: github.event != 'release'
     needs:
-      - test
+      - unit-test
+      - integration-test
       - lint
     runs-on: ubuntu-latest
     steps:
@@ -79,7 +97,8 @@ jobs:
   publish:
     if: github.event == 'release' && github.event.action == 'published'
     needs:
-      - test
+      - unit-test
+      - integration-test
       - lint
     runs-on: ubuntu-latest
     steps:
