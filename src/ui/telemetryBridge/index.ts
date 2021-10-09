@@ -1,7 +1,14 @@
 import { inject, injectable } from 'inversify';
 import { Event, EventEmitter } from 'vscode';
 import * as Telemetry from '../../shared/telemetry';
+import {
+  CDP_BINDING_NAME_READY,
+  CDP_BINDING_NAME_SEND_TELEMETRY,
+  RUNTIME_TELEMETRY_BRIDGE,
+} from '../../shared/telemetry/consts';
+import { IOperatorIdentifier } from '../../shared/telemetry/operatorIdentifier';
 import { IDisposable } from '../../shared/types';
+import { ILogger } from '../logger';
 import { ICDPClient, ICDPClientAddress } from './cdpClient';
 import { ICDPClientProvider } from './cdpClientProvider';
 
@@ -11,26 +18,26 @@ export interface ITelemetryBridge extends IDisposable {
   attach(): Promise<void>;
 
   /**
-   * Enable one specific `ITelemetryEventSource` to the runtime.
+   * Enable one specific `IOperatorIdentifer` to the runtime.
    *
-   * @param source
+   * @param operator
    */
-  enable(source: Telemetry.ITelemetryEventSource): Promise<void>;
+  enableOperatorLogPoint(operator: IOperatorIdentifier): Promise<void>;
 
   /**
-   * Disable one specific `ITelemetryEventSource` in the runtime.
+   * Disable one specific `IOperatorIdentifer` in the runtime.
    *
-   * @param source
+   * @param operator
    */
-  disable(source: Telemetry.ITelemetryEventSource): Promise<void>;
+  disableOperatorLogPoint(operator: IOperatorIdentifier): Promise<void>;
 
   /**
-   * Send a list of `ITelemetryEventSource`s to the runtime. The runtime will replace currently enabled log point
-   * sources with this new list.
+   * Send a list of `IOperatorIdentifer`s to the runtime. The runtime will replace currently enabled log point sources
+   * with this new list.
    *
-   * @param sources
+   * @param operators
    */
-  update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): Promise<void>;
+  updateOperatorLogPoints(operators: ReadonlyArray<IOperatorIdentifier>): Promise<void>;
 
   /**
    * An event fired once the runtime signals being ready to receive communication.
@@ -58,7 +65,8 @@ export default class TelemetryBridge implements ITelemetryBridge {
 
   constructor(
     @inject(ICDPClientAddress) private readonly cdpClientAddress: ICDPClientAddress,
-    @inject(ICDPClientProvider) private readonly cdpClientProvider: ICDPClientProvider
+    @inject(ICDPClientProvider) private readonly cdpClientProvider: ICDPClientProvider,
+    @inject(ILogger) private readonly logger: ILogger
   ) {}
 
   async attach(): Promise<void> {
@@ -66,19 +74,23 @@ export default class TelemetryBridge implements ITelemetryBridge {
       throw new Error('Cannot attach when already attached to CDP');
     }
 
+    this.logger.info('TelemetryBridge', 'Attach to CDP');
+
     try {
       this.cdpClient = this.cdpClientProvider.createCDPClient(this.cdpClientAddress);
       await this.cdpClient.connect();
       await Promise.all([
         await this.cdpClient.request('Runtime', 'enable'),
         await this.cdpClient.request('Runtime', 'addBinding', {
-          name: Telemetry.CDP_BINDING_NAME_READY,
+          name: CDP_BINDING_NAME_READY,
         }),
         await this.cdpClient.request('Runtime', 'addBinding', {
-          name: Telemetry.CDP_BINDING_NAME_SEND_TELEMETRY,
+          name: CDP_BINDING_NAME_SEND_TELEMETRY,
         }),
         await this.cdpClient.subscribe('Runtime', 'bindingCalled', this.onBindingCalled),
       ]);
+
+      this.logger.info('TelemetryBridge', 'Attached to CDP');
     } catch (e) {
       this.dispose();
       throw e;
@@ -88,43 +100,43 @@ export default class TelemetryBridge implements ITelemetryBridge {
   /**
    * @inheritdoc
    */
-  async enable({ fileName, line, character }: Telemetry.ITelemetryEventSource): Promise<void> {
+  async enableOperatorLogPoint(operator: IOperatorIdentifier): Promise<void> {
     await this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${Telemetry.RUNTIME_TELEMETRY_BRIDGE}.enable(${JSON.stringify({
-        fileName,
-        line,
-        character,
-      })});`,
+      expression: `${RUNTIME_TELEMETRY_BRIDGE}.enableOperatorLogPoint(${operator});`,
     });
   }
 
   /**
    * @inheritdoc
    */
-  async disable({ fileName, line, character }: Telemetry.ITelemetryEventSource): Promise<void> {
+  async disableOperatorLogPoint(operator: IOperatorIdentifier): Promise<void> {
     await this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${Telemetry.RUNTIME_TELEMETRY_BRIDGE}.disable(${JSON.stringify({ fileName, line, character })});`,
+      expression: `${RUNTIME_TELEMETRY_BRIDGE}.disableOperatorLogPoint(${operator});`,
     });
   }
 
   /**
    * @inheritdoc
    */
-  async update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): Promise<void> {
+  async updateOperatorLogPoints(operators: ReadonlyArray<IOperatorIdentifier>): Promise<void> {
     await this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${Telemetry.RUNTIME_TELEMETRY_BRIDGE}.update(${JSON.stringify(sources.map(serializeSource))});`,
+      expression: `${RUNTIME_TELEMETRY_BRIDGE}.updateOperatorLogPoints(${JSON.stringify(operators)});`,
     });
   }
 
   private onBindingCalled = (parameters: Record<string, unknown>): void => {
-    if (parameters.name === Telemetry.CDP_BINDING_NAME_SEND_TELEMETRY && typeof parameters.payload === 'string') {
+    this.logger.info('TelemetryBridge', `"${parameters.name}" binding called`);
+
+    if (parameters.name === CDP_BINDING_NAME_SEND_TELEMETRY && typeof parameters.payload === 'string') {
       try {
         const json: Telemetry.TelemetryEvent = JSON.parse(parameters.payload); // TODO fix any cast?
+        this.logger.info('TelemetryBridge', `TelemetryEvent received: ${parameters.payload}`);
         this._onTelemetryEvent.fire(json);
       } catch (e) {
         console.error(JSON.stringify(e)); // TODO
       }
-    } else if (parameters.name === Telemetry.CDP_BINDING_NAME_READY) {
+    } else if (parameters.name === CDP_BINDING_NAME_READY) {
+      this.logger.info('TelemetryBridge', 'Runtime ready');
       this._onRuntimeReady.fire();
     }
   };
@@ -135,12 +147,4 @@ export default class TelemetryBridge implements ITelemetryBridge {
     this.cdpClient?.dispose();
     this.cdpClient = undefined;
   }
-}
-
-function serializeSource({ fileName, line, character }: Telemetry.ITelemetryEventSource): {
-  fileName: string;
-  line: number;
-  character: number;
-} {
-  return { fileName, line, character };
 }

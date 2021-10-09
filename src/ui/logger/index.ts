@@ -29,9 +29,10 @@ export type LogDomain =
   | 'SessionManager'
   | 'Session'
   | 'DecorationManager'
-  | 'LogPointRecommender'
+  | 'OperatorLogPointRecommender'
   | 'WorkspaceMonitor'
-  | 'Detector';
+  | 'Detector'
+  | 'TelemetryBridge';
 
 export const ILogger = Symbol('ILogger');
 

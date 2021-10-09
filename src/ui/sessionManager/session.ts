@@ -1,16 +1,17 @@
 import { inject, injectable } from 'inversify';
 import { Event } from 'vscode';
-import * as Telemetry from '../../shared/telemetry';
+import { TelemetryEvent } from '../../shared/telemetry';
 import { IDisposable } from '../../shared/types';
 import { ILogger } from '../logger';
-import { ILogPointManager } from '../logPoint/logPointManager';
+import OperatorLogPoint from '../operatorLogPoint';
+import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
 
 export const ISession = Symbol('Session');
 
 export interface ISession extends IDisposable {
   attach(): Promise<void>;
-  onTelemetryEvent: Event<Telemetry.TelemetryEvent>;
+  onTelemetryEvent: Event<TelemetryEvent>;
 }
 
 @injectable()
@@ -20,12 +21,12 @@ export default class Session implements ISession {
   private attached?: Promise<void> | undefined;
   private resolveAttached?: () => void | undefined;
 
-  get onTelemetryEvent(): Event<Telemetry.TelemetryEvent> {
+  get onTelemetryEvent(): Event<TelemetryEvent> {
     return this.telemetryBridge.onTelemetryEvent;
   }
 
   constructor(
-    @inject(ILogPointManager) private readonly logPointManager: ILogPointManager,
+    @inject(IOperatorLogPointManager) private readonly operatorLogPointManager: IOperatorLogPointManager,
     @inject(ITelemetryBridge) private readonly telemetryBridge: ITelemetryBridge,
     @inject(ILogger) private readonly logger: ILogger
   ) {}
@@ -37,7 +38,7 @@ export default class Session implements ISession {
 
     this.attached = new Promise((resolve) => {
       this.resolveAttached = resolve;
-      this.disposables.push(this.logPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints));
+      this.disposables.push(this.operatorLogPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints));
       this.disposables.push(this.telemetryBridge.onRuntimeReady(this.onRuntimeReady));
       this.telemetryBridge.attach();
       this.logger.info('Session', 'Wait for runtime to become ready');
@@ -54,11 +55,13 @@ export default class Session implements ISession {
       this.logger.warn('Session', 'resolveAttached was not assigned; This should not happen.');
     }
 
-    this.telemetryBridge.update(this.logPointManager.logPoints);
+    this.telemetryBridge.updateOperatorLogPoints(
+      this.operatorLogPointManager.logPoints.map(({ operatorIdentifier }) => operatorIdentifier)
+    );
   };
 
-  private onDidChangeLogPoints = (logPoints: ReadonlyArray<Telemetry.ITelemetryEventSource>): void => {
-    this.telemetryBridge.update(logPoints);
+  private onDidChangeLogPoints = (logPoints: ReadonlyArray<OperatorLogPoint>): void => {
+    this.telemetryBridge.updateOperatorLogPoints(logPoints.map(({ operatorIdentifier }) => operatorIdentifier));
   };
 
   dispose(): void {

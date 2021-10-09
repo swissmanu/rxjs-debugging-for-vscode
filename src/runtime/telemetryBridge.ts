@@ -1,24 +1,24 @@
-import * as Telemetry from '../shared/telemetry';
-
-type SourceKey = string;
+import { TelemetryEvent } from '../shared/telemetry';
+import matchTelemetryEvent from '../shared/telemetry/match';
+import { IOperatorIdentifier } from '../shared/telemetry/operatorIdentifier';
+import operatorIdentifierToString from '../shared/telemetry/operatorIdentifier/toString';
 
 /**
- * The `TelemetryBridge` manages a set of enabled `TelemetryEvent` sources. Its management functions (`enable`,
- * `disable` and `update`) are called via CDP from the extension. The runtime can use `forward` to send a
- * `TelemetryEvent` to the extension.
+ * The `TelemetryBridge` manages a `Set` of `IOperatorIdentifier`s. Using a given `send` function, `forward` can be used
+ * to send `ITelemetryEvent`s to a receiver.
  */
 export default class TelemetryBridge {
-  private enabledSources: Set<SourceKey> = new Set();
+  private enabledOperatorLogPoints: Set<string> = new Set();
 
-  constructor(private readonly send: (event: Telemetry.TelemetryEvent) => void) {}
+  constructor(private readonly send: (event: TelemetryEvent) => void) {}
 
   /**
    * Enables `TelemetryEvent`s for a given source. This function is called via CDP from the extension.
    *
    * @param source
    */
-  enable(source: Telemetry.ITelemetryEventSource): void {
-    this.enabledSources.add(Telemetry.getKeyForEventSource(source));
+  enableOperatorLogPoint(source: IOperatorIdentifier): void {
+    this.enabledOperatorLogPoints.add(operatorIdentifierToString(source));
   }
 
   /**
@@ -26,8 +26,8 @@ export default class TelemetryBridge {
    *
    * @param source
    */
-  disable(source: Telemetry.ITelemetryEventSource): void {
-    this.enabledSources.delete(Telemetry.getKeyForEventSource(source));
+  disableOperatorLogPoint(source: IOperatorIdentifier): void {
+    this.enabledOperatorLogPoints.delete(operatorIdentifierToString(source));
   }
 
   /**
@@ -36,22 +36,26 @@ export default class TelemetryBridge {
    *
    * @param sources
    */
-  update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): void {
-    this.enabledSources = new Set(sources.map((s) => Telemetry.getKeyForEventSource(s)));
+  updateOperatorLogPoints(sources: ReadonlyArray<IOperatorIdentifier>): void {
+    this.enabledOperatorLogPoints = new Set(sources.map((s) => operatorIdentifierToString(s)));
   }
 
   /**
    * Forward given `TelemetryEvent` if its source is currently enabled.
    *
-   * @param event
+   * @param telemetryEvent
    */
-  forward(event: Telemetry.TelemetryEvent): void {
-    if (this.isSourceEnabled(event.source)) {
-      this.send(event);
+  forward(telemetryEvent: TelemetryEvent): void {
+    const enabled = matchTelemetryEvent({
+      OperatorLogPoint: (o) => this.isOperatorLogPointEnabled(o.operator),
+    })(telemetryEvent);
+
+    if (enabled) {
+      this.send(telemetryEvent);
     }
   }
 
-  private isSourceEnabled(source: Telemetry.ITelemetryEventSource): boolean {
-    return this.enabledSources.has(Telemetry.getKeyForEventSource(source));
+  private isOperatorLogPointEnabled(operatorIdentifier: IOperatorIdentifier): boolean {
+    return this.enabledOperatorLogPoints.has(operatorIdentifierToString(operatorIdentifier));
   }
 }

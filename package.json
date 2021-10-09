@@ -23,15 +23,15 @@
     "commands": [
       {
         "category": "RxJS",
-        "command": "rxjs-debugging-for-vs-code.command.toggleLogPointRecommendations",
-        "title": "%rxjs-debugging.command.toggleLogPointRecommendations%"
+        "command": "rxjs-debugging-for-vs-code.command.toggleOperatorLogPointRecommendations",
+        "title": "%rxjs-debugging.command.toggleOperatorLogPointRecommendations%"
       }
     ],
     "configuration": {
       "title": "%rxjs-debugging.config.title%",
       "properties": {
-        "debug.rxjs.showLogPointRecommendations": {
-          "description": "%rxjs-debugging.config.showLogPointRecommendations%",
+        "debug.rxjs.showOperatorLogPointRecommendations": {
+          "description": "%rxjs-debugging.config.showOperatorLogPointRecommendations%",
           "type": "boolean",
           "default": true
         },

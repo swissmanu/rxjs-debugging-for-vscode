@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import * as vscode from 'vscode';
-import registerLogPointManagementCommands from './ui/commands/logPointManagement';
-import registerToggleLogPointDecorationCommand from './ui/commands/toggleLogPointDecoration';
+import registerOperatorLogPointManagementCommands from './ui/commands/operatorLogPointManagement';
+import registerToggleOperatorLogPointDecorationCommand from './ui/commands/toggleOperatorLogPointDecoration';
 import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
@@ -19,8 +19,8 @@ export function activate(context: vscode.ExtensionContext): void {
       rootContainer.get<vscode.DebugConfigurationProvider>(INodeWithRxJSDebugConfigurationResolver)
     );
   }
-  registerLogPointManagementCommands(context, rootContainer);
-  registerToggleLogPointDecorationCommand(context);
+  registerOperatorLogPointManagementCommands(context, rootContainer);
+  registerToggleOperatorLogPointDecorationCommand(context);
 
   rootContainer.get<ILogger>(ILogger).info('Extension', 'Ready');
 }

@@ -3,8 +3,8 @@ import type * as vscodeApiType from 'vscode';
 import { IDisposable } from '../../shared/types';
 import { RootContainer, VsCodeApi } from '../ioc/types';
 import { ILogger } from '../logger';
-import { ILogPointManager } from '../logPoint/logPointManager';
-import { ILogPointRecommender } from '../logPoint/logPointRecommender';
+import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
+import { IOperatorLogPointRecommender } from '../operatorLogPoint/recommender';
 import { IResourceProvider } from '../resources';
 import { ISessionManager } from '../sessionManager';
 import { isSupportedDocument } from '../workspaceMonitor/supportedDocument';
@@ -60,14 +60,16 @@ export default class DecorationManager implements IDecorationManager {
       const uri = document.uri.toString();
       if (!this.decorators.has(uri)) {
         this.logger.info('DecorationManager', `Create decoration providers for ${uri}`);
+        const operatorLogPointManager = this.rootContainer.get<IOperatorLogPointManager>(IOperatorLogPointManager);
+
         this.decorators.set(uri, [
           new LogPointDecorationProvider(
-            this.rootContainer.get(ILogPointRecommender),
-            this.rootContainer.get(ILogPointManager),
+            this.rootContainer.get(IOperatorLogPointRecommender),
+            operatorLogPointManager,
             this.rootContainer.get(IResourceProvider),
             document
           ),
-          new LiveLogDecorationProvider(this.rootContainer.get(ISessionManager), document),
+          new LiveLogDecorationProvider(this.rootContainer.get(ISessionManager), operatorLogPointManager, document),
         ]);
       }
     }

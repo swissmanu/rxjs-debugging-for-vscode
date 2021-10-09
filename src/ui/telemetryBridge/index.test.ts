@@ -1,5 +1,9 @@
 import 'reflect-metadata';
-import * as Telemetry from '../../shared/telemetry';
+import { TelemetryEvent, TelemetryEventType } from '../../shared/telemetry';
+import { ObservableEventType } from '../../shared/telemetry/observableEvent';
+import { IOperatorIdentifier } from '../../shared/telemetry/operatorIdentifier';
+import serializeTelemetryEvent from '../../shared/telemetry/serialize';
+import Logger, { ILogger } from '../logger';
 import TelemetryBridge from './';
 import { ICDPClient, ICDPClientAddress } from './cdpClient';
 import { ICDPClientProvider } from './cdpClientProvider';
@@ -10,6 +14,7 @@ describe('UI', () => {
     let cdpClient: ICDPClient;
     let cdpClientProvider: ICDPClientProvider;
     let bridge: TelemetryBridge;
+    const logger: ILogger = Logger.nullLogger();
 
     beforeEach(async () => {
       cdpClient = {
@@ -23,7 +28,7 @@ describe('UI', () => {
         createCDPClient: jest.fn(() => cdpClient),
       };
 
-      bridge = new TelemetryBridge(cdpClientAddress, cdpClientProvider);
+      bridge = new TelemetryBridge(cdpClientAddress, cdpClientProvider, logger);
       await bridge.attach();
     });
 
@@ -49,8 +54,8 @@ describe('UI', () => {
 
     describe('enable()', () => {
       test('sends a Runtime.evaluate request via the CDPClient', async () => {
-        const source: Telemetry.ITelemetryEventSource = { character: 1, fileName: 'foo', line: 2 };
-        await bridge.enable(source);
+        const operatorIdentifier: IOperatorIdentifier = { character: 1, fileName: 'foo', line: 2, operatorIndex: 3 };
+        await bridge.enableOperatorLogPoint(operatorIdentifier);
         expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
           expression: `rxJsDebuggerTelemetryBridge.enable({"fileName":"foo","line":2,"character":1});`,
         });
@@ -59,8 +64,8 @@ describe('UI', () => {
 
     describe('disable()', () => {
       test('sends a Runtime.evaluate request via the CDPClient', async () => {
-        const source: Telemetry.ITelemetryEventSource = { character: 1, fileName: 'foo', line: 2 };
-        await bridge.disable(source);
+        const operatorIdentifier: IOperatorIdentifier = { character: 1, fileName: 'foo', line: 2, operatorIndex: 3 };
+        await bridge.disableOperatorLogPoint(operatorIdentifier);
         expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
           expression: `rxJsDebuggerTelemetryBridge.disable({"fileName":"foo","line":2,"character":1});`,
         });
@@ -69,8 +74,8 @@ describe('UI', () => {
 
     describe('update()', () => {
       test('sends a Runtime.evaluate request via the CDPClient', async () => {
-        const source: Telemetry.ITelemetryEventSource = { character: 1, fileName: 'foo', line: 2 };
-        await bridge.update([source]);
+        const operatorIdentifier: IOperatorIdentifier = { character: 1, fileName: 'foo', line: 2, operatorIndex: 3 };
+        await bridge.updateOperatorLogPoints([operatorIdentifier]);
         expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
           expression: 'rxJsDebuggerTelemetryBridge.update([{"fileName":"foo","line":2,"character":1}]);',
         });
@@ -83,16 +88,17 @@ describe('UI', () => {
         bridge.onTelemetryEvent(spy);
 
         const callback = (cdpClient.subscribe as jest.Mock).mock.calls[0][2];
-        const event: Telemetry.TelemetryEvent = {
-          type: Telemetry.TelemetryEventType.Next,
-          source: { character: 1, fileName: 'foo', line: 2 },
+        const event: TelemetryEvent = {
+          type: TelemetryEventType.OperatorLogPoint,
+          observableEvent: ObservableEventType.Next,
           data: {
             value: 'test',
           },
+          operator: { character: 1, fileName: 'foo', line: 2, operatorIndex: 3 },
         };
         callback({
           name: 'sendRxJsDebuggerTelemetry',
-          payload: JSON.stringify(event),
+          payload: serializeTelemetryEvent(event),
         });
 
         expect(spy).toBeCalledWith(event);
