@@ -7,6 +7,9 @@ import tsconfig from './tsconfig.json';
 const doProductionBuild = process.env.NODE_ENV === 'production';
 const terserOptions = { format: { comments: () => false } };
 
+/**
+ * @type {import('rollup').RollupOptions}
+ */
 const extension = {
   input: 'src/extension.ts',
   output: {
@@ -15,8 +18,6 @@ const extension = {
     sourcemap: !doProductionBuild,
   },
   external: [
-    'fs',
-    'path',
     'vscode',
     ...(doProductionBuild ? [] : ['typescript']), // Faster dev builds without including TypeScript
   ],
@@ -24,7 +25,9 @@ const extension = {
     commonJs({
       ignore: ['bufferutil', 'utf-8-validate'], // Ignore optional peer dependencies of ws
     }),
-    nodeResolve(),
+    nodeResolve({
+      preferBuiltins: true,
+    }),
     typescript({
       module: 'esnext',
     }),
@@ -32,13 +35,10 @@ const extension = {
   ],
 };
 
-const nodeRuntime = {
-  input: 'src/runtime/node.ts',
-  output: {
-    file: 'out/runtime.node.js',
-    format: 'commonjs',
-    interop: false,
-  },
+/**
+ * @type {import('rollup').RollupOptions}
+ */
+const baseRuntimeConfig = {
   external: ['module', 'path'],
   plugins: [
     commonJs(),
@@ -70,4 +70,38 @@ const nodeRuntime = {
   ],
 };
 
-export default [extension, nodeRuntime];
+/**
+ * @type {import('rollup').RollupOptions}
+ */
+const nodeRuntime = {
+  ...baseRuntimeConfig,
+  input: 'src/runtime/node/index.ts',
+  output: {
+    file: 'out/node/runtime.js',
+    format: 'commonjs',
+    interop: false,
+    exports: 'auto',
+    sourcemap: !doProductionBuild,
+  },
+};
+
+/**
+ * @type {import('rollup').RollupOptions}
+ */
+const webpackPlugin = {
+  ...baseRuntimeConfig,
+  input: [
+    'src/runtime/webpack/RxJSDebuggingPlugin.ts',
+    'src/runtime/webpack/loader.ts',
+    'src/runtime/webpack/instrumentation.ts',
+  ],
+  output: {
+    dir: 'out/webpack',
+    format: 'commonjs',
+    interop: false,
+    exports: 'auto',
+    sourcemap: !doProductionBuild,
+  },
+};
+
+export default [extension, nodeRuntime, webpackPlugin];

@@ -8,8 +8,8 @@ import {
 import DecorationManager, { IDecorationManager } from '../decoration/decorationManager';
 import Logger, { ILogger, logLevelFromString } from '../logger';
 import ConsoleLogSink from '../logger/console';
-import LogPointManager, { ILogPointManager } from '../logPoint/logPointManager';
-import LogPointRecommender, { ILogPointRecommender } from '../logPoint/logPointRecommender';
+import LogPointManager, { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
+import OperatorLogPointRecommender, { IOperatorLogPointRecommender } from '../operatorLogPoint/recommender';
 import DefaultResourceProvider, { IResourceProvider } from '../resources';
 import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
@@ -48,11 +48,11 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
     .inSingletonScope();
 
   container
-    .bind<ILogPointRecommender>(ILogPointRecommender)
-    .to(LogPointRecommender)
+    .bind<IOperatorLogPointRecommender>(IOperatorLogPointRecommender)
+    .to(OperatorLogPointRecommender)
     .inSingletonScope()
     .onActivation(container.trackDisposableBinding);
-  container.bind<ILogPointManager>(ILogPointManager).to(LogPointManager).inSingletonScope();
+  container.bind<IOperatorLogPointManager>(IOperatorLogPointManager).to(LogPointManager).inSingletonScope();
 
   container
     .bind<IDecorationManager>(IDecorationManager)

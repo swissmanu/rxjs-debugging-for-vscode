@@ -1,57 +1,71 @@
-import * as Telemetry from '../shared/telemetry';
-
-type SourceKey = string;
+import { TelemetryEvent } from '../shared/telemetry';
+import matchTelemetryEvent from '../shared/telemetry/match';
+import { IOperatorIdentifier } from '../shared/telemetry/operatorIdentifier';
+import operatorIdentifierToString from '../shared/telemetry/operatorIdentifier/toString';
 
 /**
- * The `TelemetryBridge` manages a set of enabled `TelemetryEvent` sources. Its management functions (`enable`,
- * `disable` and `update`) are called via CDP from the extension. The runtime can use `forward` to send a
- * `TelemetryEvent` to the extension.
+ * The `TelemetryBridge` manages a `Map` of `IOperatorIdentifier`s. Using a given `send` function, `forward` can send
+ * `TelemetryEvent`s to the vscode extension.
  */
 export default class TelemetryBridge {
-  private enabledSources: Set<SourceKey> = new Set();
-
-  constructor(private readonly send: (event: Telemetry.TelemetryEvent) => void) {}
+  protected enabledOperatorLogPoints: Map<string, IOperatorIdentifier> = new Map();
 
   /**
-   * Enables `TelemetryEvent`s for a given source. This function is called via CDP from the extension.
-   *
-   * @param source
+   * @param send A function to send a TelemetryEvent to the extension
    */
-  enable(source: Telemetry.ITelemetryEventSource): void {
-    this.enabledSources.add(Telemetry.getKeyForEventSource(source));
+  constructor(protected readonly send: (event: TelemetryEvent) => void) {}
+
+  /**
+   * Adds an `IOperatorIdentifier` to enable an operator log point. This function is called via CDP from the extension.
+   *
+   * @param operatorIdentifier
+   */
+  enableOperatorLogPoint(operatorIdentifier: IOperatorIdentifier): void {
+    this.enabledOperatorLogPoints.set(operatorIdentifierToString(operatorIdentifier), operatorIdentifier);
   }
 
   /**
-   * Disables 'TelemetryEvent's for a given source. This function is called via CDP from the extension.
+   * Removes an `IOperatorIdentifier` from the enabled operator log points. This function is called via CDP from the
+   * extension.
    *
-   * @param source
+   * @param operatorIdentifier
    */
-  disable(source: Telemetry.ITelemetryEventSource): void {
-    this.enabledSources.delete(Telemetry.getKeyForEventSource(source));
+  disableOperatorLogPoint(operatorIdentifier: IOperatorIdentifier): void {
+    this.enabledOperatorLogPoints.delete(operatorIdentifierToString(operatorIdentifier));
   }
 
   /**
-   * Replaces all currently enabled `TelemetryEvent` sources with a list of new ones. This function is called via CDP
-   * from the extension.
+   * Replaces all `IOperatorIdentifier`s with a list of new ones. This function is called via CDP from the extension.
    *
-   * @param sources
+   * @param operatorIdentifiers
    */
-  update(sources: ReadonlyArray<Telemetry.ITelemetryEventSource>): void {
-    this.enabledSources = new Set(sources.map((s) => Telemetry.getKeyForEventSource(s)));
+  updateOperatorLogPoints(operatorIdentifiers: ReadonlyArray<IOperatorIdentifier>): void {
+    this.enabledOperatorLogPoints = new Map(operatorIdentifiers.map((s) => [operatorIdentifierToString(s), s]));
   }
 
   /**
    * Forward given `TelemetryEvent` if its source is currently enabled.
    *
-   * @param event
+   * @param telemetryEvent
    */
-  forward(event: Telemetry.TelemetryEvent): void {
-    if (this.isSourceEnabled(event.source)) {
-      this.send(event);
+  forward(telemetryEvent: TelemetryEvent): void {
+    const isEnabled = matchTelemetryEvent({
+      OperatorLogPoint: (o) => !!this.getEnabledOperatorIdentifier(o.operator),
+    })(telemetryEvent);
+
+    if (isEnabled) {
+      this.send(telemetryEvent);
     }
   }
 
-  private isSourceEnabled(source: Telemetry.ITelemetryEventSource): boolean {
-    return this.enabledSources.has(Telemetry.getKeyForEventSource(source));
+  /**
+   * Tries to return an `IOperatorIdentifier` from `enabledOperatorLogPoints`. If no matching entry is present,
+   * `undefined` is returned instead.
+   *
+   * @param operatorIdentifier
+   * @returns
+   */
+  protected getEnabledOperatorIdentifier(operatorIdentifier: IOperatorIdentifier): IOperatorIdentifier | undefined {
+    return this.enabledOperatorLogPoints.get(operatorIdentifierToString(operatorIdentifier));
   }
 }
