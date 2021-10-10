@@ -26,13 +26,14 @@ describe('Session', () => {
       logPoints: [],
       onDidChangeLogPoints: jest.fn(),
       dispose: jest.fn(),
+      logPointForIdentifier: jest.fn(),
     };
     telemetryBridge = {
       attach: jest.fn(() => Promise.resolve()),
       disableOperatorLogPoint: jest.fn(() => Promise.resolve()),
       enableOperatorLogPoint: jest.fn(() => Promise.resolve()),
       updateOperatorLogPoints: jest.fn(() => Promise.resolve()),
-      onRuntimeReady: jest.fn(),
+      onRuntimeReady: jest.fn((handler) => handler()), // immediately ready
       onTelemetryEvent: jest.fn(),
       dispose: jest.fn(),
     };
@@ -48,7 +49,9 @@ describe('Session', () => {
     test('sends log points present in the LogPointManager to the TelemetryBridge', async () => {
       logPointManager.logPoints = logPoints;
       await session.attach();
-      expect(telemetryBridge.updateOperatorLogPoints).toBeCalledWith(logPoints);
+      expect(telemetryBridge.updateOperatorLogPoints).toBeCalledWith(
+        logPoints.map(({ operatorIdentifier }) => operatorIdentifier)
+      );
     });
   });
 
@@ -58,7 +61,9 @@ describe('Session', () => {
 
     const onDidChangeLogPointsHandler = (logPointManager.onDidChangeLogPoints as jest.Mock).mock.calls[0][0];
     onDidChangeLogPointsHandler(logPoints);
-    expect(telemetryBridge.updateOperatorLogPoints).toBeCalledWith(logPoints);
+    expect(telemetryBridge.updateOperatorLogPoints).toBeCalledWith(
+      logPoints.map(({ operatorIdentifier }) => operatorIdentifier)
+    );
   });
 
   test.todo('forwards received telemetry events from the TelemetryBridge to TBD');

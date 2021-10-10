@@ -102,7 +102,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
    */
   async enableOperatorLogPoint(operator: IOperatorIdentifier): Promise<void> {
     await this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${RUNTIME_TELEMETRY_BRIDGE}.enableOperatorLogPoint(${operator});`,
+      expression: `${RUNTIME_TELEMETRY_BRIDGE}.enableOperatorLogPoint(${JSON.stringify(operator)});`,
     });
   }
 
@@ -111,7 +111,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
    */
   async disableOperatorLogPoint(operator: IOperatorIdentifier): Promise<void> {
     await this.cdpClient?.request('Runtime', 'evaluate', {
-      expression: `${RUNTIME_TELEMETRY_BRIDGE}.disableOperatorLogPoint(${operator});`,
+      expression: `${RUNTIME_TELEMETRY_BRIDGE}.disableOperatorLogPoint(${JSON.stringify(operator)});`,
     });
   }
 

@@ -26,21 +26,53 @@ describe('OperatorLogPointManager', () => {
       logPointManager.enable(Uri.file('bar.ts'), new Position(128, 256), {
         operatorIndex: 201,
         fileName: 'bar.ts',
-        line: 201,
-        character: 202,
+        line: 202,
+        character: 203,
       });
       logPointManager.enable(Uri.file('foo.ts'), new Position(42, 84), {
-        operatorIndex: 302,
+        operatorIndex: 100,
         fileName: 'foo.ts',
-        line: 301,
-        character: 302,
+        line: 101,
+        character: 102,
       });
 
       expect(spy).toBeCalledTimes(2);
-      expect(spy).toHaveBeenNthCalledWith(1, [{ fileName: 'foo', line: 42, character: 84 }]);
+      expect(spy).toHaveBeenNthCalledWith(1, [
+        new OperatorLogPoint(
+          Uri.file('foo.ts'),
+          new Position(42, 84),
+          {
+            operatorIndex: 100,
+            fileName: 'foo.ts',
+            line: 101,
+            character: 102,
+          },
+          true
+        ),
+      ]);
       expect(spy).toHaveBeenNthCalledWith(2, [
-        { fileName: 'foo', line: 42, character: 84 },
-        { fileName: 'bar', line: 128, character: 256 },
+        new OperatorLogPoint(
+          Uri.file('foo.ts'),
+          new Position(42, 84),
+          {
+            operatorIndex: 100,
+            fileName: 'foo.ts',
+            line: 101,
+            character: 102,
+          },
+          true
+        ),
+        new OperatorLogPoint(
+          Uri.file('bar.ts'),
+          new Position(128, 256),
+          {
+            operatorIndex: 201,
+            fileName: 'bar.ts',
+            line: 202,
+            character: 203,
+          },
+          true
+        ),
       ]);
     });
   });
@@ -55,7 +87,7 @@ describe('OperatorLogPointManager', () => {
         fileName: 'foo.ts',
         operatorIndex: 103,
       });
-      logPointManager.disable(Uri.file('bar.ts'), new Position(128, 256), {
+      logPointManager.enable(Uri.file('bar.ts'), new Position(128, 256), {
         character: 200,
         line: 201,
         fileName: 'bar.ts',
@@ -76,27 +108,40 @@ describe('OperatorLogPointManager', () => {
       });
 
       expect(spy).toBeCalledTimes(1);
-      expect(spy).toHaveBeenNthCalledWith(1, [{ fileName: 'bar', line: 128, character: 256 }]);
+      expect(spy).toHaveBeenNthCalledWith(1, [
+        new OperatorLogPoint(
+          Uri.file('bar.ts'),
+          new Position(128, 256),
+          {
+            character: 200,
+            line: 201,
+            fileName: 'bar.ts',
+            operatorIndex: 203,
+          },
+          true
+        ),
+      ]);
     });
   });
 
   describe('logPoints', () => {
     test('provides enabled, unique log points as a list', () => {
       expect(logPointManager.logPoints).toEqual([]);
-      logPointManager.enable(Uri.file('foo.ts'), new Position(42, 84), {
+
+      const uri = Uri.file('foo.ts');
+      const sourcePosition = new Position(42, 84);
+      const operatorIdentifier: IOperatorIdentifier = {
         operatorIndex: 100,
         fileName: 'foo.ts',
         line: 101,
         character: 102,
-      });
-      expect(logPointManager.logPoints).toEqual([{ fileName: 'foo', line: 42, character: 84 }]);
-      logPointManager.enable(Uri.file('foo.ts'), new Position(42, 84), {
-        operatorIndex: 100,
-        fileName: 'foo.ts',
-        line: 101,
-        character: 102,
-      });
-      expect(logPointManager.logPoints).toEqual([{ fileName: 'foo', line: 42, character: 84 }]);
+      };
+
+      logPointManager.enable(uri, sourcePosition, operatorIdentifier);
+      expect(logPointManager.logPoints).toEqual([new OperatorLogPoint(uri, sourcePosition, operatorIdentifier, true)]);
+
+      logPointManager.enable(uri, sourcePosition, operatorIdentifier);
+      expect(logPointManager.logPoints).toEqual([new OperatorLogPoint(uri, sourcePosition, operatorIdentifier, true)]);
 
       logPointManager.disable(Uri.file('bar.ts'), new Position(128, 256), {
         operatorIndex: 200,
@@ -104,13 +149,9 @@ describe('OperatorLogPointManager', () => {
         line: 201,
         character: 202,
       });
-      expect(logPointManager.logPoints).toEqual([{ fileName: 'foo', line: 42, character: 84 }]);
-      logPointManager.disable(Uri.file('foo.ts'), new Position(42, 84), {
-        operatorIndex: 100,
-        fileName: 'foo.ts',
-        line: 101,
-        character: 102,
-      });
+      expect(logPointManager.logPoints).toEqual([new OperatorLogPoint(uri, sourcePosition, operatorIdentifier, true)]);
+
+      logPointManager.disable(uri, sourcePosition, operatorIdentifier);
       expect(logPointManager.logPoints).toEqual([]);
     });
   });
@@ -128,7 +169,7 @@ describe('OperatorLogPointManager', () => {
 
       logPointManager.enable(uri, sourcePosition, identifier);
       expect(logPointManager.logPointForIdentifier(identifier)).toEqual(
-        new OperatorLogPoint(uri, sourcePosition, identifier)
+        new OperatorLogPoint(uri, sourcePosition, identifier, true)
       );
     });
 

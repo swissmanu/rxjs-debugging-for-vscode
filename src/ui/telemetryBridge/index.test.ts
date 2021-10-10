@@ -57,7 +57,7 @@ describe('UI', () => {
         const operatorIdentifier: IOperatorIdentifier = { character: 1, fileName: 'foo', line: 2, operatorIndex: 3 };
         await bridge.enableOperatorLogPoint(operatorIdentifier);
         expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
-          expression: `rxJsDebuggerTelemetryBridge.enable({"fileName":"foo","line":2,"character":1});`,
+          expression: `rxJsDebuggerTelemetryBridge.enableOperatorLogPoint({"character":1,"fileName":"foo","line":2,"operatorIndex":3});`,
         });
       });
     });
@@ -67,7 +67,7 @@ describe('UI', () => {
         const operatorIdentifier: IOperatorIdentifier = { character: 1, fileName: 'foo', line: 2, operatorIndex: 3 };
         await bridge.disableOperatorLogPoint(operatorIdentifier);
         expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
-          expression: `rxJsDebuggerTelemetryBridge.disable({"fileName":"foo","line":2,"character":1});`,
+          expression: `rxJsDebuggerTelemetryBridge.disableOperatorLogPoint({"character":1,"fileName":"foo","line":2,"operatorIndex":3});`,
         });
       });
     });
@@ -77,7 +77,8 @@ describe('UI', () => {
         const operatorIdentifier: IOperatorIdentifier = { character: 1, fileName: 'foo', line: 2, operatorIndex: 3 };
         await bridge.updateOperatorLogPoints([operatorIdentifier]);
         expect(cdpClient.request).toHaveBeenLastCalledWith('Runtime', 'evaluate', {
-          expression: 'rxJsDebuggerTelemetryBridge.update([{"fileName":"foo","line":2,"character":1}]);',
+          expression:
+            'rxJsDebuggerTelemetryBridge.updateOperatorLogPoints([{"character":1,"fileName":"foo","line":2,"operatorIndex":3}]);',
         });
       });
     });
