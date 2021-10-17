@@ -8,6 +8,7 @@ import {
 } from '../../shared/telemetry/consts';
 import serializeTelemetryEvent from '../../shared/telemetry/serialize';
 import operatorLogPointInstrumentation from '../instrumentation/operatorLogPoint';
+import patchObservable from '../instrumentation/operatorLogPoint/patchObservable';
 import TelemetryBridge from '../telemetryBridge';
 
 const programPath = process.env[RUNTIME_PROGRAM_ENV_VAR];
@@ -33,17 +34,8 @@ const patchedRequire: NodeJS.Require = function (id) {
     }
 
     const exports = originalRequire.apply(this, [id]);
-
-    const origPipe = exports.Observable.prototype.pipe;
-    exports.Observable.prototype.__RxJSDebugger_originalPipe = origPipe;
-    exports.Observable.prototype.pipe = function (...operators) {
-      return origPipe.apply(
-        this,
-        operators.map((o, i) => wrapOperatorFunction(o, i))
-      );
-    };
+    patchObservable(exports.Observable, wrapOperatorFunction);
     patchedCache = exports;
-
     return exports;
   }
 

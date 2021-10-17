@@ -1,13 +1,14 @@
 import type { OperatorFunction, Subscriber as RxJSSubscriber } from 'rxjs';
+import StackTrace from 'stacktrace-js';
 import TelemetryBridge from '../../telemetryBridge';
 import createOperatorLogPointTelemetryEventSubscriber from './createOperatorLogPointTelemetrySubscriber';
 import operate from './operate';
-import StackTrace from 'stacktrace-js';
+import { ORIGINAL_PIPE_PROPERTY_NAME } from './patchObservable';
 
 /**
  * Wraps an `OperatorFunction<T, R>` so that it produces `OperatorLogPointTelemetryEvent`s.
  */
-type WrapOperatorFn = (
+export type WrapOperatorFn = (
   telemetryBridge: TelemetryBridge
 ) => <T, R>(operator: OperatorFunction<T, R>, operatorIndex: number) => OperatorFunction<T, R>;
 
@@ -30,11 +31,11 @@ export default function (Subscriber: typeof RxJSSubscriber): WrapOperatorFn {
       });
 
       return operate((source, subscriber) => {
-        (source as any) // TODO get rid of any. Add __RxJSDebugger_originalPipe to typing?
-          .__RxJSDebugger_originalPipe(operator)
-          .subscribe(
-            new OperatorLogPointTelemetryEventSubscriber(telemetryBridge, subscriber, sourceLocation, operatorIndex)
-          );
+        // TODO get rid of any. Add __RxJSDebugger_originalPipe to typing?
+        const o = (source as any)[ORIGINAL_PIPE_PROPERTY_NAME](operator);
+        o.subscribe(
+          new OperatorLogPointTelemetryEventSubscriber(telemetryBridge, subscriber, sourceLocation, operatorIndex)
+        );
       });
     };
   };
