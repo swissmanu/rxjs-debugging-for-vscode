@@ -57,6 +57,12 @@ jobs:
           node-version: 14.x
       - name: Install Dependencies
         run: yarn
+      - name: Install Dependencies for Test Bench
+        run: yarn
+        working-directory: test-benches/browser-and-server
+
+      - name: Build
+        run: yarn build
 
       - name: Integration Test on Linux System
         if: runner.os == 'Linux'

@@ -2,11 +2,12 @@
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  globalSetup: './jest/setup.js',
+  globalSetup: './jest/unit/setup.js',
   globals: {
     'ts-jest': {
       tsconfig: './tsconfig.json',
     },
   },
-  testPathIgnorePatterns: ['node_modules', 'src/integrationTest'],
+  testPathIgnorePatterns: ['node_modules', 'src/integrationTests'],
+  modulePathIgnorePatterns: ['.vscode-test/'],
 };
