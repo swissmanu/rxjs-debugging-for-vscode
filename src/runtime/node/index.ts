@@ -7,12 +7,12 @@ import {
   RUNTIME_TELEMETRY_BRIDGE,
 } from '../../shared/telemetry/consts';
 import serializeTelemetryEvent from '../../shared/telemetry/serialize';
-import rx from '../rx';
+import operatorLogPointInstrumentation from '../instrumentation/operatorLogPoint';
 import TelemetryBridge from '../telemetryBridge';
 
 const programPath = process.env[RUNTIME_PROGRAM_ENV_VAR];
 const programModule = Module.createRequire(programPath);
-const createWrapOperatorFunction = rx(programModule('rxjs').Subscriber);
+const createWrapOperatorFunction = operatorLogPointInstrumentation(programModule('rxjs').Subscriber);
 
 const observableRegex = /rxjs\/(_esm5\/)?internal\/Observable/g;
 const originalRequire = Module.prototype.require;
