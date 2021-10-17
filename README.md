@@ -1,8 +1,6 @@
-# ![Archie the Debugger Owl](./docs/brand/archie-small.png)  RxJS Debugger for Visual Studio Code
+# ![Archie the Debugger Owl](./docs/brand/archie-small.png) RxJS Debugger for Visual Studio Code
 
 [![Click to visit marketplace](https://vsmarketplacebadge.apphb.com/version-short/manuelalabor.rxjs-debugging-for-vs-code.svg)](https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code)
-
-
 
 > Never, ever use `tap(console.log)` again.
 
@@ -10,13 +8,13 @@ Add non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applicati
 
 ![Operator Log Points with RxJS Debugger for Visual Studio Code](./docs/demo.gif)
 
-
-
 ## Features
 
 - RxJS debugging, fully integrated with Visual Studio Code
 - Works with RxJS 6
-- Support for NodeJS-based RxJS applications
+- Support for:
+  - NodeJS-based RxJS applications
+  - web applications using RxJS applications
 
 ### Operator Log Points
 
@@ -41,9 +39,12 @@ You can toggle the display of recommended log points via the command palette.
 ## Requirements
 
 - [Visual Studio Code 1.60](https://code.visualstudio.com/) or newer
-- [NodeJS 12](https://nodejs.org/) or newer
 - [TypeScript 4.2](https://www.typescriptlang.org/) or newer
 - [RxJS 6](https://rxjs.dev/)
+- To debug NodeJS-based applications: [NodeJS 12](https://nodejs.org/) or newer
+- To debug web applications:
+  - [Webpack 5.60.0](https://webpack.js.org/) or newer
+  - The [@rxjs-debugging/runtime-webpack](https://www.npmjs.com/package/@rxjs-debugging/runtime-webpack) Webpack plugin
 
 ## Roadmap & Future Development
 
@@ -63,4 +64,3 @@ https://github.com/swissmanu/playground-rxjs-debugging-for-vscode
 ## Research
 
 This extension is based on research by Manuel Alabor. See [RESEARCH.md](./RESEARCH.md) for more information.
-

@@ -1,5 +1,9 @@
 # Change Log
 
+## Next
+
+- Feature: Support Debugging of Browser-based Applications [#43](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/43)
+
 ## v0.1.2
 
 - Fix: Log Point Events not displayed [#54](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/54)

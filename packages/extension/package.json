@@ -1,0 +1,118 @@
+{
+  "name": "rxjs-debugging-for-vs-code",
+  "displayName": "RxJS Debugging for Visual Studio Code",
+  "description": "Add non-intrusive debugging capabilities for RxJS applications to Visual Studio Code.",
+  "icon": "docs/brand/icon.png",
+  "version": "0.1.2",
+  "license": "MIT",
+  "repository": {
+    "url": "https://github.com/swissmanu/rxjs-debugging-for-vscode"
+  },
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Debuggers"
+  ],
+  "publisher": "manuelalabor",
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onDebugResolve:node",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "category": "RxJS",
+        "command": "rxjs-debugging-for-vs-code.command.toggleOperatorLogPointRecommendations",
+        "title": "%rxjs-debugging.command.toggleOperatorLogPointRecommendations%"
+      }
+    ],
+    "configuration": {
+      "title": "%rxjs-debugging.config.title%",
+      "properties": {
+        "debug.rxjs.showOperatorLogPointRecommendations": {
+          "description": "%rxjs-debugging.config.showOperatorLogPointRecommendations%",
+          "type": "boolean",
+          "default": true
+        },
+        "debug.rxjs.hideLiveLogWhenStoppingDebugger": {
+          "description": "%rxjs-debugging.config.hideLiveLogWhenStoppingDebugger%",
+          "type": "boolean",
+          "default": true
+        },
+        "debug.rxjs.logLevel": {
+          "description": "%rxjs-debugging.config.logLevel%",
+          "type": "string",
+          "default": "Never",
+          "enum": [
+            "Info",
+            "Warn",
+            "Error",
+            "Never"
+          ]
+        }
+      }
+    },
+    "colors": [
+      {
+        "id": "rxjsdebugging.liveLogLineBackgroundColor",
+        "description": "Defines the background color for log point events at the end of a line.",
+        "defaults": {
+          "light": "#00000000",
+          "dark": "#00000000",
+          "highContrast": "#00000000"
+        }
+      },
+      {
+        "id": "rxjsdebugging.liveLogLineForegroundColor",
+        "description": "Defines the foreground color for log point events at the end of a line.",
+        "defaults": {
+          "dark": "#999999bd",
+          "light": "#999999bd",
+          "highContrast": "#99999999"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "clean": "rm -rf out",
+    "build": "rollup -c",
+    "build:prod": "NODE_ENV=production yarn build",
+    "watch": "yarn build --watch",
+    "test:integration": "jest -c jest.integration.config.js",
+    "package": "vsce package --yarn",
+    "publish": "vsce publish --yarn"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "21.0.1",
+    "@rollup/plugin-node-resolve": "13.0.6",
+    "@rollup/plugin-typescript": "8.3.0",
+    "@types/jest": "26.0.24",
+    "@types/node": "14.17.18",
+    "@types/stacktrace-js": "2.0.3",
+    "@types/vscode": "1.60.0",
+    "@types/webpack": "5.28.0",
+    "@types/ws": "7.4.4",
+    "jest": "27.2.5",
+    "jest-runner-vscode": "2.0.0",
+    "rollup": "2.58.3",
+    "rollup-plugin-copy": "3.4.0",
+    "rollup-plugin-terser": "7.0.2",
+    "ts-jest": "27.0.7",
+    "tslib": "2.3.1",
+    "typescript": "4.4.4",
+    "vsce": "1.88.0",
+    "vscode-test": "1.6.1"
+  },
+  "dependencies": {
+    "@rxjs-debugging/runtime": "0.0.0",
+    "@rxjs-debugging/telemetry": "0.0.0",
+    "inversify": "5.1.1",
+    "reflect-metadata": "0.1.13",
+    "typescript": "4.4.4",
+    "vscode-nls": "5.0.0",
+    "ws": "7.4.5"
+  }
+}

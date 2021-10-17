@@ -6,11 +6,24 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run Extension",
+      "name": "Testbench: NodeJS",
       "type": "extensionHost",
       "request": "launch",
-      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/test-benches/browser-and-server"],
-      "outFiles": ["${workspaceFolder}/out/**/*.js"]
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension",
+        "${workspaceFolder}/packages/testbench-nodejs"
+      ],
+      "outFiles": ["${workspaceFolder}/packages/extension/out/**/*.js"]
+    },
+    {
+      "name": "Testbench: Webpack",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension",
+        "${workspaceFolder}/packages/testbench-webpack"
+      ],
+      "outFiles": ["${workspaceFolder}/packages/extension/out/**/*.js"]
     }
   ]
 }
