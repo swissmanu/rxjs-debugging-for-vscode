@@ -1,0 +1,153 @@
+{
+  "version": 2,
+  "projects": {
+    "runtime": {
+      "root": "packages/runtime",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "build"
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "dependsOn": [
+            { "target": "test", "projects": "dependencies" },
+            { "target": "build", "projects": "dependencies" }
+          ],
+          "options": {
+            "jestConfig": "packages/runtime/jest.config.js"
+          }
+        }
+      }
+    },
+    "runtime-nodejs": {
+      "root": "packages/runtime-nodejs",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "build"
+          }
+        }
+      }
+    },
+    "runtime-webpack": {
+      "root": "packages/runtime-webpack",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "build"
+          },
+          "configurations": {
+            "prod": {
+              "script": "build:prod"
+            }
+          }
+        },
+        "package": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "package"
+          }
+        },
+        "publish": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "publish-package"
+          }
+        }
+      }
+    },
+    "telemetry": {
+      "root": "packages/telemetry",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "build"
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "options": {
+            "jestConfig": "packages/telemetry/jest.config.js"
+          }
+        }
+      }
+    },
+    "testbench-nodejs": {
+      "root": "packages/testbench-nodejs",
+      "projectType": "application"
+    },
+    "testbench-webpack": {
+      "root": "packages/testbench-webpack",
+      "projectType": "application",
+      "implicitDependencies": ["runtime-webpack"],
+      "targets": {
+        "serve": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "start"
+          },
+          "dependsOn": [{ "target": "build", "projects": "dependencies" }]
+        }
+      }
+    },
+    "extension": {
+      "root": "packages/extension",
+      "projectType": "application",
+      "implicitDependencies": ["runtime-nodejs"],
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "build"
+          },
+          "configurations": {
+            "prod": {
+              "script": "build:prod"
+            }
+          }
+        },
+        "test": {
+          "executor": "@nrwl/jest:jest",
+          "dependsOn": [
+            { "target": "test", "projects": "dependencies" },
+            { "target": "build", "projects": "dependencies" }
+          ],
+          "options": {
+            "jestConfig": "packages/extension/jest.unit.config.js"
+          }
+        },
+
+        "integrationtest": {
+          "executor": "@nrwl/jest:jest",
+          "dependsOn": [{ "target": "build", "projects": "dependencies" }],
+          "options": {
+            "jestConfig": "packages/extension/jest.integration.config.js"
+          }
+        },
+
+        "package": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "package"
+          }
+        },
+        "publish": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "publish"
+          }
+        }
+      }
+    }
+  }
+}

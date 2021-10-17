@@ -4,9 +4,10 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build and Watch",
-      "type": "npm",
-      "script": "watch",
+      "label": "extension: Build and Watch",
+      "type": "nx",
+      "project": "extension",
+      "command": "build --watch",
       "isBackground": true,
       "group": {
         "kind": "build",
@@ -25,7 +26,7 @@
             "regexp": "^bundles .+ → .+\\.\\.\\.$"
           },
           "endsPattern": {
-            "regexp": "^\\[.+\\] waiting for changes\\.\\.\\.$"
+            "regexp": "^created out/extension.js in .*s$"
           }
         }
       }

@@ -38,7 +38,7 @@ jobs:
       - name: Install Dependencies
         run: yarn
       - name: Run Unit Tests
-        run: yarn test:unit
+        run: yarn nx run-many --target=test --all --parallel
 
   integration-test:
     needs:
@@ -57,19 +57,16 @@ jobs:
           node-version: 14.x
       - name: Install Dependencies
         run: yarn
-      - name: Install Dependencies for Test Bench
-        run: yarn
-        working-directory: test-benches/browser-and-server
 
       - name: Build
-        run: yarn build
+        run: yarn nx run-many --target=build --all --parallel
 
       - name: Integration Test on Linux System
         if: runner.os == 'Linux'
-        run: xvfb-run -a yarn test:integration
+        run: xvfb-run -a yarn nx integrationtest extension
       - name: Integration Test on Non-Linux System
         if: runner.os != 'Linux'
-        run: yarn test:integration
+        run: yarn nx integrationtest extension
 
   snapshot:
     if: github.event != 'release'
@@ -88,16 +85,27 @@ jobs:
       - name: Install Dependencies
         run: yarn
 
-      - name: Create VSIX Package
-        run: yarn package
+      - name: Production Build
+        run: yarn nx run-many --target=build --configuration=prod --projects=extension,runtime-webpack
+
+      - name: "extension: Create VSIX"
+        run: yarn nx package extension
         env:
           VSCE_PAT: ${{ secrets.AZURE_ACCESS_TOKEN }}
+      - name: "runtime-wepack: Create TGZ"
+        run: yarn nx package runtime-webpack
 
-      - name: Upload VSIX as Snapshot Artifact
+      - name: "extension: Upload snapshot artifact"
         uses: actions/upload-artifact@v2
         with:
-          name: Extension Snapshot
-          path: '*.vsix'
+          name: extension
+          path: 'packages/extension/*.vsix'
+          retention-days: 10
+      - name: "runtime-webpack: Upload snapshot artifact"
+        uses: actions/upload-artifact@v2
+        with:
+          name: runtime-webpack
+          path: 'packages/runtime-webpack/*.tgz'
           retention-days: 10
 
   publish:
@@ -114,9 +122,15 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
+          registry-url: 'https://registry.npmjs.org'
+
       - name: Install Dependencies
         run: yarn
-      - name: Build & Publish to Marketplace
-        run: yarn deploy
+      - name: Production Build
+        run: yarn nx run-many --target=build --configuration=prod --projects=extension,runtime-webpack
+
+      - name: "Publish"
+        run: yarn nx run-many --target=publish --projects=runtime-webpack
         env:
           VSCE_PAT: ${{ secrets.AZURE_ACCESS_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
