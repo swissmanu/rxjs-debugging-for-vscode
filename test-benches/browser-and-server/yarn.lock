@@ -2629,9 +2629,9 @@ webpack-sources@^3.2.0:
   resolved "https://registry.yarnpkg.com/webpack-sources/-/webpack-sources-3.2.1.tgz#251a7d9720d75ada1469ca07dbb62f3641a05b6d"
   integrity sha512-t6BMVLQ0AkjBOoRTZgqrWm7xbXMBzD+XDq2EZ96+vMfn3qKgsvdXZhbPZ4ElUOpdv4u+iiGe+w3+J75iy/bYGA==
 
-"webpack@git+https://github.com/swissmanu/webpack.git#fix-normalmodule-beforeLoaders-hook":
+"webpack@git+https://github.com/swissmanu/webpack.git#ab8e118497f8cd56ee1bb506526dc70fa4e6b0fc":
   version "5.55.1"
-  resolved "git+https://github.com/swissmanu/webpack.git#262c245a66cfe418d403cda62ce7e8c500115cb5"
+  resolved "git+https://github.com/swissmanu/webpack.git#ab8e118497f8cd56ee1bb506526dc70fa4e6b0fc"
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.50"

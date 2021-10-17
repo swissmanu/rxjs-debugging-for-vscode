@@ -14,7 +14,7 @@
     "ts-loader": "9.2.6",
     "ts-node": "10.2.1",
     "typescript": "4.4.3",
-    "webpack": "git+https://github.com/swissmanu/webpack.git#fix-normalmodule-beforeLoaders-hook",
+    "webpack": "git+https://github.com/swissmanu/webpack.git#ab8e118497f8cd56ee1bb506526dc70fa4e6b0fc",
     "webpack-cli": "4.8.0",
     "webpack-dev-server": "4.3.0"
   }

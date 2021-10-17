@@ -4738,9 +4738,9 @@ webpack@^5:
     watchpack "^2.2.0"
     webpack-sources "^3.2.0"
 
-"webpack@git+https://github.com/swissmanu/webpack.git#fix-normalmodule-beforeLoaders-hook":
+"webpack@git+https://github.com/swissmanu/webpack.git#ab8e118497f8cd56ee1bb506526dc70fa4e6b0fc":
   version "5.55.1"
-  resolved "git+https://github.com/swissmanu/webpack.git#262c245a66cfe418d403cda62ce7e8c500115cb5"
+  resolved "git+https://github.com/swissmanu/webpack.git#ab8e118497f8cd56ee1bb506526dc70fa4e6b0fc"
   dependencies:
     "@types/eslint-scope" "^3.7.0"
     "@types/estree" "^0.0.50"
