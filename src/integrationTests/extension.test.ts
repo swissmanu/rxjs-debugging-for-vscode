@@ -13,3 +13,9 @@
 //     assert.equal(-1, [1, 2, 3].indexOf(0));
 //   });
 // });
+
+describe('Test', () => {
+  test('true', () => {
+    expect(true).toBe(true);
+  });
+});
