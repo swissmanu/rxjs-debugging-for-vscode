@@ -1,7 +1,6 @@
 import * as Module from 'module';
 import { TelemetryEvent } from '../../shared/telemetry';
 import {
-  CDP_BINDING_NAME_READY,
   CDP_BINDING_NAME_SEND_TELEMETRY,
   RUNTIME_PROGRAM_ENV_VAR,
   RUNTIME_TELEMETRY_BRIDGE,
@@ -10,6 +9,7 @@ import serializeTelemetryEvent from '../../shared/telemetry/serialize';
 import operatorLogPointInstrumentation from '../instrumentation/operatorLogPoint';
 import patchObservable from '../instrumentation/operatorLogPoint/patchObservable';
 import TelemetryBridge from '../telemetryBridge';
+import waitForCDPBindings from '../utils/waitForCDPBindings';
 
 const programPath = process.env[RUNTIME_PROGRAM_ENV_VAR];
 const programModule = Module.createRequire(programPath);
@@ -54,21 +54,4 @@ function defaultSend(event: TelemetryEvent): void {
 
 global[RUNTIME_TELEMETRY_BRIDGE] = telemetryBridge;
 
-/**
- * Wait bindings to be present, then signal ready to the extension. If bindings are unavailable, retry
- */
-function waitForBindings(numberOfTries = 0) {
-  if (numberOfTries >= 10) {
-    throw new Error('Bindings still not available after 10 tries. Abort.');
-  }
-
-  if (
-    typeof global[CDP_BINDING_NAME_READY] === 'function' &&
-    typeof global[CDP_BINDING_NAME_SEND_TELEMETRY] === 'function'
-  ) {
-    global[CDP_BINDING_NAME_READY]('');
-  } else {
-    setTimeout(() => waitForBindings(numberOfTries + 1), 500);
-  }
-}
-waitForBindings();
+waitForCDPBindings();
