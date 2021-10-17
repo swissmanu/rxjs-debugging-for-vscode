@@ -149,7 +149,7 @@ export default class SessionManager implements ISessionManager {
 }
 
 function isSupportedDebuggingSession({ type }: vscodeApiType.DebugSession): boolean {
-  return type === 'node' || type == 'pwa-node';
+  return type === 'node' || type === 'pwa-node' || type === 'pwa-chrome';
 }
 
 function hasParentDebugSession(debugSession: vscodeApiType.DebugSession): boolean {

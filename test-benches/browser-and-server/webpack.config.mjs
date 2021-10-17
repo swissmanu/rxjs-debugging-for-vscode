@@ -1,6 +1,7 @@
-import * as path from 'path';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
+import * as path from 'path';
 import * as url from 'url';
+import RxJSDebuggingPlugin from '.plugin/RxJSDebuggingPlugin.js';
 
 const dirname = path.dirname(url.fileURLToPath(import.meta.url));
 
@@ -20,6 +21,7 @@ const config = {
     rules: [{ test: /.ts$/, loader: 'ts-loader' }],
   },
   plugins: [
+    new RxJSDebuggingPlugin(),
     new HtmlWebpackPlugin({
       title: 'RxJS Debugger for vscode | Example Workspace',
     }),
