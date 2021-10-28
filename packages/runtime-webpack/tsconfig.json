@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "esnext",
+    "target": "es6",
+    "declaration": true,
+    "outDir": "out",
+    "lib": ["es6"],
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "strict": true,
+    "noImplicitReturns": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "rootDir": "src"
+  },
+  "exclude": ["node_modules", "**/*.test.ts"]
+}
