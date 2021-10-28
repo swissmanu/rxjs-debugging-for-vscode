@@ -7,6 +7,7 @@ import { map, take } from 'rxjs/operators';
 })
 export class ObservableService {
   public getObservable(): Observable<number> {
+    new Observable();
     return interval(1000).pipe(
       map((i) => i * 2),
       map((i) => i - 1),

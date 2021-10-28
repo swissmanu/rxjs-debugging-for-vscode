@@ -6,23 +6,18 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Run Extension",
+      "name": "Test Bench: NodeJS and Webpack",
       "type": "extensionHost",
       "request": "launch",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/test-benches/browser-and-server"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"]
-      // "preLaunchTask": "${defaultBuildTask}"
     },
     {
-      "name": "Test Extension",
+      "name": "Test Bench: Angular",
       "type": "extensionHost",
       "request": "launch",
-      "args": [
-        "--extensionDevelopmentPath=${workspaceFolder}",
-        "--extensionTestsPath=${workspaceFolder}/out/integrationTest/suite/index"
-      ],
-      "outFiles": ["${workspaceFolder}/out/integrationTest/**/*.js"],
-      "preLaunchTask": "${defaultBuildTask}"
+      "args": ["--extensionDevelopmentPath=${workspaceFolder}", "${workspaceFolder}/test-benches/angular"],
+      "outFiles": ["${workspaceFolder}/out/**/*.js"]
     }
   ]
 }
