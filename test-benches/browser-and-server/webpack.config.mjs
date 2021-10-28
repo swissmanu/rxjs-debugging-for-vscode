@@ -1,7 +1,7 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import * as path from 'path';
 import * as url from 'url';
-import RxJSDebuggingPlugin from '.plugin/RxJSDebuggingPlugin.js';
+import RxJSDebuggingPlugin from './plugin/RxJSDebuggingPlugin.js';
 
 const dirname = path.dirname(url.fileURLToPath(import.meta.url));
 

@@ -114,10 +114,10 @@
     "rollup-plugin-terser": "7.0.2",
     "ts-jest": "27.0.7",
     "tslib": "2.3.1",
-    "typescript": "4.4.3",
+    "typescript": "4.4.4",
     "vsce": "1.88.0",
     "vscode-test": "1.6.1",
-    "webpack": "git+https://github.com/swissmanu/webpack.git#ab8e118497f8cd56ee1bb506526dc70fa4e6b0fc"
+    "webpack": "5.60.0"
   },
   "prettier": {
     "printWidth": 120
