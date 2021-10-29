@@ -92,7 +92,7 @@
     "@types/jest": "26.0.24",
     "@types/node": "14.17.32",
     "@types/stacktrace-js": "2.0.3",
-    "@types/vscode": "1.60.0",
+    "@types/vscode": "1.61.0",
     "@types/webpack": "5.28.0",
     "@types/ws": "7.4.4",
     "jest": "27.2.5",
