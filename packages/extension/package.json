@@ -95,7 +95,7 @@
     "@types/vscode": "1.61.0",
     "@types/webpack": "5.28.0",
     "@types/ws": "7.4.4",
-    "jest": "27.2.5",
+    "jest": "27.3.1",
     "jest-runner-vscode": "2.0.0",
     "rollup": "2.58.3",
     "rollup-plugin-copy": "3.4.0",
