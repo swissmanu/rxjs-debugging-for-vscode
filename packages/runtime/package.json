@@ -1,6 +1,6 @@
 {
   "name": "@rxjs-debugging/runtime",
-  "version": "0.0.0",
+  "version": "0.2.0-alpha.0",
   "license": "MIT",
   "author": "Manuel Alabor <manuel@alabor.me>",
   "private": true,
@@ -10,7 +10,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "@rxjs-debugging/telemetry": "0.0.0",
+    "@rxjs-debugging/telemetry": "^0.2.0-alpha.0",
     "source-map": "0.7.3",
     "stacktrace-js": "2.0.2"
   },
