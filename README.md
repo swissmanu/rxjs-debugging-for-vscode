@@ -14,7 +14,7 @@ Add non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applicati
 - Works with RxJS 6
 - Support for:
   - NodeJS-based RxJS applications
-  - web applications using RxJS applications
+  - browser-based RxJS applications
 
 ### Operator Log Points
 

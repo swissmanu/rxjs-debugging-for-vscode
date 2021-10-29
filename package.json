@@ -6,7 +6,7 @@
   ],
   "scripts": {
     "prepare": "husky install",
-    "lint": "eslint packages --ext ts"
+    "lint": "eslint --ext ts 'packages/*/src/**'"
   },
   "devDependencies": {
     "@nrwl/cli": "13.1.2",

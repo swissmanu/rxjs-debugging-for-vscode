@@ -17,6 +17,8 @@ export default function operate<T, R>(
   };
 }
 
-function hasLift(source: any): source is { lift: InstanceType<typeof Observable>['lift'] } {
+function hasLift(source: {
+  lift: InstanceType<typeof Observable>['lift'];
+}): source is { lift: InstanceType<typeof Observable>['lift'] } {
   return typeof source?.lift === 'function';
 }

@@ -23,9 +23,6 @@ export default function patchObservable(
   const origPipe = Observable.prototype.pipe;
   Observable.prototype[ORIGINAL_PIPE_PROPERTY_NAME] = origPipe;
   Observable.prototype.pipe = function (...operators: OperatorFunction<unknown, unknown>[]) {
-    return origPipe.apply(
-      this,
-      operators.map((o, i) => wrapOperatorFunction(o, i)) as any // TODO Can we circument any?
-    );
+    return origPipe.apply(this, operators.map((o, i) => wrapOperatorFunction(o, i)) as never);
   };
 }

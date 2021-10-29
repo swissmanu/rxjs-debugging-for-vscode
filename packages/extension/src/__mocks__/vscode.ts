@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-empty-function */
+
 /**
  * This file contains a set of fragile mocks of vscode API objects. They allow us to run Jest-based unit tests for our
  * own code.

@@ -1,4 +1,4 @@
-import type { OperatorFunction, Subscriber as RxJSSubscriber } from 'rxjs';
+import type { OperatorFunction, Subscriber as RxJSSubscriber, Observable } from 'rxjs';
 import StackTrace from 'stacktrace-js';
 import TelemetryBridge from '../../telemetryBridge';
 import createOperatorLogPointTelemetryEventSubscriber from './createOperatorLogPointTelemetrySubscriber';
@@ -31,12 +31,19 @@ export default function (Subscriber: typeof RxJSSubscriber): WrapOperatorFn {
       });
 
       return operate((source, subscriber) => {
-        // TODO get rid of any. Add __RxJSDebugger_originalPipe to typing?
-        const o = (source as any)[ORIGINAL_PIPE_PROPERTY_NAME](operator);
-        o.subscribe(
-          new OperatorLogPointTelemetryEventSubscriber(telemetryBridge, subscriber, sourceLocation, operatorIndex)
-        );
+        if (hasOriginalPipe(source)) {
+          const operated = source[ORIGINAL_PIPE_PROPERTY_NAME](operator);
+          operated.subscribe(
+            new OperatorLogPointTelemetryEventSubscriber(telemetryBridge, subscriber, sourceLocation, operatorIndex)
+          );
+        }
       });
     };
   };
+}
+
+function hasOriginalPipe<T>(
+  o: Observable<T> & { [ORIGINAL_PIPE_PROPERTY_NAME]?: typeof Observable.prototype['pipe'] }
+): o is Observable<T> & { [ORIGINAL_PIPE_PROPERTY_NAME]: typeof Observable.prototype['pipe'] } {
+  return typeof o[ORIGINAL_PIPE_PROPERTY_NAME] === 'function';
 }
