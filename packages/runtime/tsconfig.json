@@ -1,7 +1,9 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "es6",
-    "moduleResolution": "node",
+    "target": "ES6",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
     "outDir": "out",
     "sourceMap": true,
     "declaration": true,

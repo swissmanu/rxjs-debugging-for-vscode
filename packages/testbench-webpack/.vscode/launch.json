@@ -5,15 +5,6 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "node",
-      "runtimeVersion": "14.16.1",
-      "request": "launch",
-      "name": "Launch NodeJS",
-      "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/src/node.ts",
-      "runtimeArgs": ["-r", "ts-node/register"]
-    },
-    {
       "type": "chrome",
       "request": "launch",
       "name": "Launch Browser",

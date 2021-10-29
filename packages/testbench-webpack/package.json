@@ -1,7 +1,6 @@
 {
   "name": "@rxjs-debugging/testbench-webpack",
   "version": "0.0.2",
-  "main": "index.js",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {

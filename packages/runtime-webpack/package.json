@@ -1,12 +1,19 @@
 {
   "name": "@rxjs-debugging/runtime-webpack",
+  "description": "Webpack plugin to debug RxJS-based web applications with \"RxJS Debugging for vscode\".",
   "version": "0.0.0",
   "license": "MIT",
   "author": "Manuel Alabor <manuel@alabor.me>",
+  "repository": {
+    "url": "https://github.com/swissmanu/rxjs-debugging-for-vscode"
+  },
   "main": "out/index.js",
   "types": "out/index.d.ts",
   "scripts": {
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "build:prod": "NODE_ENV=production yarn build",
+    "package": "yarn pack",
+    "publish": "npm publish"
   },
   "peerDependencies": {
     "webpack": ">5.60.0"

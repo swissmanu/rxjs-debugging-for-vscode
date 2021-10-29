@@ -79,13 +79,11 @@
   "scripts": {
     "clean": "rm -rf out",
     "build": "rollup -c",
+    "build:prod": "NODE_ENV=production yarn build",
     "watch": "yarn build --watch",
-    "test": "yarn test:unit",
-    "test:unit": "jest -c jest.unit.config.js",
     "test:integration": "jest -c jest.integration.config.js",
-    "vscode:prepublish": "NODE_ENV=production yarn build",
     "package": "vsce package --yarn",
-    "deploy": "vsce publish --yarn"
+    "publish": "vsce publish --yarn"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "21.0.1",
@@ -100,6 +98,7 @@
     "jest": "27.2.5",
     "jest-runner-vscode": "2.0.0",
     "rollup": "2.58.3",
+    "rollup-plugin-copy": "^3.4.0",
     "rollup-plugin-terser": "7.0.2",
     "ts-jest": "27.0.7",
     "tslib": "2.3.1",

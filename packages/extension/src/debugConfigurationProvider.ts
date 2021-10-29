@@ -1,11 +1,11 @@
 import { RUNTIME_PROGRAM_ENV_VAR } from '@rxjs-debugging/runtime/out/consts';
 import { inject, injectable } from 'inversify';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 import { DebugConfiguration, DebugConfigurationProvider, window, WorkspaceFolder } from 'vscode';
 import { ILogger } from './logger';
 import { IRxJSDetector } from './workspaceMonitor/detector';
 
-const nodeRuntimePath = resolve(__dirname, 'node/runtime.js'); // TODO
+const runtimeNodeJsPath = resolve(join(__dirname, 'runtime-nodejs', 'runtime.js'));
 
 export const INodeWithRxJSDebugConfigurationResolver = Symbol('NodeWithRxJSDebugConfigurationResolver');
 
@@ -25,7 +25,7 @@ export class NodeWithRxJSDebugConfigurationResolver implements DebugConfiguratio
     if (!hasParentDebugConfiguration(debugConfiguration) && folder && (await this.rxJsDetector.detect(folder))) {
       this.logger.info('Extension', `Augment debug configuration "${debugConfiguration.name}" with NodeJS Runtime.`);
       const originalRuntimeArgs = debugConfiguration.runtimeArgs ?? [];
-      const augmentedRuntimeArgs = [...originalRuntimeArgs, '-r', nodeRuntimePath];
+      const augmentedRuntimeArgs = [...originalRuntimeArgs, '-r', runtimeNodeJsPath];
 
       const program = debugConfiguration.program ?? '';
       const env = debugConfiguration.env ?? {};

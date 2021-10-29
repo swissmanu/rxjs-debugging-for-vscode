@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Position, Uri } from 'vscode';
 import OperatorLogPoint from '.';
-import { IOperatorIdentifier } from '../../shared/telemetry/operatorIdentifier';
+import { IOperatorIdentifier } from '@rxjs-debugging/telemetry/out/operatorIdentifier';
 import Logger from '../logger';
 import LogPointManager from './logPointManager';
 
