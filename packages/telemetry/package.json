@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@types/jest": "26.0.24",
-    "@types/node": "14.17.18",
+    "@types/node": "14.17.32",
     "jest": "27.2.5",
     "ts-jest": "27.0.7",
     "tslib": "2.3.1",
