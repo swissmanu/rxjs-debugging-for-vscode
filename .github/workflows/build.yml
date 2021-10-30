@@ -40,7 +40,7 @@ jobs:
       - name: Run Unit Tests
         run: yarn nx run-many --target=test --all --parallel
 
-  integration-test:
+  e2e-test:
     needs:
       - unit-test
       - lint
@@ -61,12 +61,12 @@ jobs:
       - name: Build
         run: yarn nx run-many --target=build --all --parallel
 
-      - name: Integration Test on Linux System
+      - name: Test on Linux System
         if: runner.os == 'Linux'
-        run: xvfb-run -a yarn nx integrationtest extension
-      - name: Integration Test on Non-Linux System
+        run: xvfb-run -a yarn nx e2e extension-e2e
+      - name: Test on Non-Linux System
         if: runner.os != 'Linux'
-        run: yarn nx integrationtest extension
+        run: yarn nx e2e extension-e2e
 
   snapshot:
     if: github.event != 'release'
@@ -88,20 +88,20 @@ jobs:
       - name: Production Build
         run: yarn nx run-many --target=build --configuration=prod --projects=extension,runtime-webpack
 
-      - name: "extension: Create VSIX"
+      - name: 'extension: Create VSIX'
         run: yarn nx package extension
         env:
           VSCE_PAT: ${{ secrets.AZURE_ACCESS_TOKEN }}
-      - name: "runtime-wepack: Create TGZ"
+      - name: 'runtime-wepack: Create TGZ'
         run: yarn nx package runtime-webpack
 
-      - name: "extension: Upload snapshot artifact"
+      - name: 'extension: Upload snapshot artifact'
         uses: actions/upload-artifact@v2
         with:
           name: extension
           path: 'packages/extension/*.vsix'
           retention-days: 10
-      - name: "runtime-webpack: Upload snapshot artifact"
+      - name: 'runtime-webpack: Upload snapshot artifact'
         uses: actions/upload-artifact@v2
         with:
           name: runtime-webpack
@@ -129,7 +129,7 @@ jobs:
       - name: Production Build
         run: yarn nx run-many --target=build --configuration=prod --projects=extension,runtime-webpack
 
-      - name: "Publish"
+      - name: 'Publish'
         run: yarn nx run-many --target=publish --projects=runtime-webpack
         env:
           VSCE_PAT: ${{ secrets.AZURE_ACCESS_TOKEN }}

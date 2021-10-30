@@ -123,15 +123,7 @@
             { "target": "build", "projects": "dependencies" }
           ],
           "options": {
-            "jestConfig": "packages/extension/jest.unit.config.js"
-          }
-        },
-
-        "integrationtest": {
-          "executor": "@nrwl/jest:jest",
-          "dependsOn": [{ "target": "build", "projects": "dependencies" }],
-          "options": {
-            "jestConfig": "packages/extension/jest.integration.config.js"
+            "jestConfig": "packages/extension/jest.config.js"
           }
         },
 
@@ -145,6 +137,19 @@
           "executor": "@nrwl/workspace:run-script",
           "options": {
             "script": "publish"
+          }
+        }
+      }
+    },
+    "extension-e2e": {
+      "root": "packages/extension-e2e",
+      "implicitDependencies": ["extension"],
+      "targets": {
+        "e2e": {
+          "executor": "@nrwl/jest:jest",
+          "dependsOn": [{ "target": "build", "projects": "dependencies" }],
+          "options": {
+            "jestConfig": "packages/extension-e2e/jest.config.js"
           }
         }
       }
