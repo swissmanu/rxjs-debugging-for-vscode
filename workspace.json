@@ -145,9 +145,18 @@
       "root": "packages/extension-e2e",
       "implicitDependencies": ["extension"],
       "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-script",
+          "options": {
+            "script": "build"
+          }
+        },
         "e2e": {
           "executor": "@nrwl/jest:jest",
-          "dependsOn": [{ "target": "build", "projects": "dependencies" }],
+          "dependsOn": [
+            { "target": "build", "projects": "dependencies" },
+            { "target": "build", "projects": "self" }
+          ],
           "options": {
             "jestConfig": "packages/extension-e2e/jest.config.js"
           }

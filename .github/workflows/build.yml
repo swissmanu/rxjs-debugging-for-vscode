@@ -72,7 +72,7 @@ jobs:
     if: github.event != 'release'
     needs:
       - unit-test
-      - integration-test
+      - e2e-test
       - lint
     runs-on: ubuntu-latest
     steps:
@@ -112,7 +112,7 @@ jobs:
     if: github.event == 'release' && github.event.action == 'published'
     needs:
       - unit-test
-      - integration-test
+      - e2e-test
       - lint
     runs-on: ubuntu-latest
     steps:
