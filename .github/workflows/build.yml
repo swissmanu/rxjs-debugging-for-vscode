@@ -58,9 +58,6 @@ jobs:
       - name: Install Dependencies
         run: yarn
 
-      - name: Build
-        run: yarn nx run-many --target=build --all --parallel
-
       - name: Test on Linux System
         if: runner.os == 'Linux'
         run: xvfb-run -a yarn nx e2e extension-e2e
