@@ -1,5 +1,7 @@
 import * as vscode from 'vscode';
 import { IDecorationSetter } from '../decoration/decorationSetter';
+import LiveLogDecorationProvider from '../decoration/liveLogDecorationProvider';
+import LogPointDecorationProvider from '../decoration/logPointDecorationProvider';
 import DecorationSetterSpy from './decorationSetterSpy';
 import registerTestCommand from './registerTestCommand';
 import { TestCommands } from './testCommands';
@@ -14,19 +16,14 @@ export default function prepareForIntegrationTest(context: vscode.ExtensionConte
   DecorationSetter: { new (): IDecorationSetter };
 } {
   context.subscriptions.push(
-    registerTestCommand(vscode.commands, TestCommands.GetDecorationSetterRecording, async () => {
-      const dict: {
-        [index: string]: ReadonlyArray<{
-          decorationType: string;
-          ranges: ReadonlyArray<string>;
-          options: ReadonlyArray<string>;
-        }>;
-      } = {};
+    registerTestCommand(vscode.commands, TestCommands.GetDecorationSetterRecording, async (file, decorationType) => {
+      const recordedDecorations = DecorationSetterSpy.recordedCalls.get(file) ?? [];
+      const typeKey =
+        decorationType === 'liveLog'
+          ? LiveLogDecorationProvider.decorationTypeKey
+          : LogPointDecorationProvider.decorationTypeKey;
 
-      DecorationSetterSpy.recordedCalls.forEach((calls, file) => {
-        dict[file] = calls;
-      });
-      return JSON.stringify(dict);
+      return recordedDecorations.filter(({ decorationType }) => decorationType === typeKey);
     })
   );
 

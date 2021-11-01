@@ -17,7 +17,7 @@ export default class DecorationSetterSpy implements IDecorationSetter {
     rangeOrOptions: ReadonlyArray<vscode.Range> | ReadonlyArray<vscode.DecorationOptions>
   ): void {
     const file = path.relative(
-      vscode.workspace.getWorkspaceFolder(textEditor.document.uri)!.uri.fsPath,
+      vscode.workspace.getWorkspaceFolder(textEditor.document.uri)?.uri.fsPath ?? 'n/a',
       textEditor.document.fileName
     );
     const recordedForFile = DecorationSetterSpy.recordedCalls.get(file) || [];

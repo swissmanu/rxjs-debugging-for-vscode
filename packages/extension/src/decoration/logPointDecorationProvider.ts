@@ -172,6 +172,10 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
     this.onRecommendOperatorLogPointsDisposable.dispose();
     this.onDidChangeConfigurationDisposable.dispose();
   }
+
+  static get decorationTypeKey(): string {
+    return RecommendedLogPointDecorationType.key;
+  }
 }
 
 const RecommendedLogPointDecorationType = window.createTextEditorDecorationType({

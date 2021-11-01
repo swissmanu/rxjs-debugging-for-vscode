@@ -3,5 +3,12 @@ export const enum TestCommands {
 }
 
 export interface ITestCommandTypes {
-  [TestCommands.GetDecorationSetterRecording]: () => string;
+  [TestCommands.GetDecorationSetterRecording]: (
+    file: string,
+    decorationType: 'liveLog' | 'logPoints'
+  ) => ReadonlyArray<{
+    decorationType: string;
+    ranges: ReadonlyArray<string>;
+    options: ReadonlyArray<string>;
+  }>;
 }

@@ -1,6 +1,6 @@
 import { DecorationOptions, TextDocument, TextEditor, TextEditorDecorationType } from 'vscode';
 import { IDisposable } from '../util/types';
-import DecorationSetter, { IDecorationSetter } from './decorationSetter';
+import { IDecorationSetter } from './decorationSetter';
 
 export interface IDecorationProvider extends IDisposable {
   /**

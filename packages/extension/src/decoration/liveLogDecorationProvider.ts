@@ -115,6 +115,10 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
     this.onDidTerminateSessionDisposable.dispose();
     this.onTelemetryEventDisposable?.dispose();
   }
+
+  static get decorationTypeKey(): string {
+    return liveLogDecorationType.key;
+  }
 }
 
 const liveLogDecorationType = window.createTextEditorDecorationType({

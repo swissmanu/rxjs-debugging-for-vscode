@@ -48,112 +48,88 @@ describe('RxJS Debugging for vscode', () => {
     const debuggingDone = new Promise<void>((resolve) => {
       vscode.debug.onDidTerminateDebugSession(() => resolve());
     });
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     await vscode.debug.startDebugging(vscode.workspace.workspaceFolders![0], 'Launch NodeJS');
     await debuggingDone;
 
-    const recorded = await executeCommand(vscode.commands, TestCommands.GetDecorationSetterRecording);
+    const decorations = await executeCommand(
+      vscode.commands,
+      TestCommands.GetDecorationSetterRecording,
+      'src/observable.ts',
+      'liveLog'
+    );
 
-    expect(JSON.parse(recorded)).toMatchInlineSnapshot(`
-      Object {
-        "src/observable.ts": Array [
-          Object {
-            "decorationType": "TextEditorDecorationType9",
-            "options": Array [],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType9",
-            "options": Array [],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType9",
-            "options": Array [
-              "(5:4):(5:7)-[object Object]-{\\"before\\":{\\"contentIconPath\\":{\\"$mid\\":1,\\"path\\":\\"/Users/mal/git/private/mse-master-thesis/debugger/packages/extension/resources/debug-breakpoint-log-unverified.svg\\",\\"scheme\\":\\"file\\"}}}",
-              "(6:4):(6:7)-[object Object]-{\\"before\\":{\\"contentIconPath\\":{\\"$mid\\":1,\\"path\\":\\"/Users/mal/git/private/mse-master-thesis/debugger/packages/extension/resources/debug-breakpoint-log-unverified.svg\\",\\"scheme\\":\\"file\\"}}}",
-              "(7:4):(7:7)-[object Object]-{\\"before\\":{\\"contentIconPath\\":{\\"$mid\\":1,\\"path\\":\\"/Users/mal/git/private/mse-master-thesis/debugger/packages/extension/resources/debug-breakpoint-log-unverified.svg\\",\\"scheme\\":\\"file\\"}}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType9",
-            "options": Array [
-              "(5:4):(5:7)-[object Object]-{\\"before\\":{\\"contentIconPath\\":{\\"$mid\\":1,\\"path\\":\\"/Users/mal/git/private/mse-master-thesis/debugger/packages/extension/resources/debug-breakpoint-log.svg\\",\\"scheme\\":\\"file\\"}}}",
-              "(6:4):(6:7)-[object Object]-{\\"before\\":{\\"contentIconPath\\":{\\"$mid\\":1,\\"path\\":\\"/Users/mal/git/private/mse-master-thesis/debugger/packages/extension/resources/debug-breakpoint-log-unverified.svg\\",\\"scheme\\":\\"file\\"}}}",
-              "(7:4):(7:7)-[object Object]-{\\"before\\":{\\"contentIconPath\\":{\\"$mid\\":1,\\"path\\":\\"/Users/mal/git/private/mse-master-thesis/debugger/packages/extension/resources/debug-breakpoint-log-unverified.svg\\",\\"scheme\\":\\"file\\"}}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [
-              "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Subscribe\\"}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [
-              "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 0\\"}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [
-              "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 1\\"}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [
-              "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 2\\"}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [
-              "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 3\\"}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [
-              "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Completed\\"}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [
-              "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Unsubscribe\\"}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [
-              "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Unsubscribe\\"}}",
-            ],
-            "ranges": Array [],
-          },
-          Object {
-            "decorationType": "TextEditorDecorationType8",
-            "options": Array [
-              "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Unsubscribe\\"}}",
-            ],
-            "ranges": Array [],
-          },
-        ],
-      }
+    expect(decorations).toMatchInlineSnapshot(`
+      Array [
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [],
+          "ranges": Array [],
+        },
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [
+            "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Subscribe\\"}}",
+          ],
+          "ranges": Array [],
+        },
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [
+            "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 0\\"}}",
+          ],
+          "ranges": Array [],
+        },
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [
+            "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 1\\"}}",
+          ],
+          "ranges": Array [],
+        },
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [
+            "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 2\\"}}",
+          ],
+          "ranges": Array [],
+        },
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [
+            "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 3\\"}}",
+          ],
+          "ranges": Array [],
+        },
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [
+            "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Completed\\"}}",
+          ],
+          "ranges": Array [],
+        },
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [
+            "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Unsubscribe\\"}}",
+          ],
+          "ranges": Array [],
+        },
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [
+            "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Unsubscribe\\"}}",
+          ],
+          "ranges": Array [],
+        },
+        Object {
+          "decorationType": "TextEditorDecorationType8",
+          "options": Array [
+            "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Unsubscribe\\"}}",
+          ],
+          "ranges": Array [],
+        },
+      ]
     `);
   });
 });
