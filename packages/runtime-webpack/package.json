@@ -12,7 +12,7 @@
   "types": "out/index.d.ts",
   "scripts": {
     "build": "rollup -c",
-    "build:prod": "NODE_ENV=production yarn build",
+    "build:prod": "yarn build --configMode=production",
     "package": "yarn pack",
     "publish-package": "npm publish"
   },

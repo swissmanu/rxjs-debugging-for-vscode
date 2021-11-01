@@ -79,8 +79,8 @@
   "scripts": {
     "clean": "rm -rf out",
     "build": "rollup -c",
-    "build:prod": "NODE_ENV=production yarn build",
-    "build:test": "NODE_ENV=test yarn build",
+    "build:prod": "yarn build --configMode=production",
+    "build:test": "yarn build --configMode=test",
     "watch": "yarn build --watch",
     "package": "vsce package --yarn",
     "publish": "vsce publish --yarn"
