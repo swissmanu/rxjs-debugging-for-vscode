@@ -1,7 +1,8 @@
 import { injectable } from 'inversify';
+import * as path from 'path';
 import 'reflect-metadata';
-import { DecorationOptions, Range, TextEditor, TextEditorDecorationType } from 'vscode';
-import type { IDecorationSetter } from './decorationSetter';
+import * as vscode from 'vscode';
+import type { IDecorationSetter } from '../decoration/decorationSetter';
 
 @injectable()
 export default class DecorationSetterSpy implements IDecorationSetter {
@@ -11,18 +12,21 @@ export default class DecorationSetterSpy implements IDecorationSetter {
   > = new Map();
 
   set(
-    textEditor: TextEditor,
-    decorationType: TextEditorDecorationType,
-    rangeOrOptions: ReadonlyArray<Range> | ReadonlyArray<DecorationOptions>
+    textEditor: vscode.TextEditor,
+    decorationType: vscode.TextEditorDecorationType,
+    rangeOrOptions: ReadonlyArray<vscode.Range> | ReadonlyArray<vscode.DecorationOptions>
   ): void {
-    const file = textEditor.document.fileName;
+    const file = path.relative(
+      vscode.workspace.getWorkspaceFolder(textEditor.document.uri)!.uri.fsPath,
+      textEditor.document.fileName
+    );
     const recordedForFile = DecorationSetterSpy.recordedCalls.get(file) || [];
 
     const ranges: string[] = [];
     const options: string[] = [];
 
     rangeOrOptions.map((x) => {
-      if (x instanceof Range) {
+      if (x instanceof vscode.Range) {
         ranges.push(`(${x.start.line}:${x.start.character}):(${x.end.line}:${x.end.character})`);
       } else {
         options.push(

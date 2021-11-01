@@ -80,12 +80,14 @@
     "clean": "rm -rf out",
     "build": "rollup -c",
     "build:prod": "NODE_ENV=production yarn build",
+    "build:test": "NODE_ENV=test yarn build",
     "watch": "yarn build --watch",
     "package": "vsce package --yarn",
     "publish": "vsce publish --yarn"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "21.0.1",
+    "@rollup/plugin-inject": "4.0.3",
     "@rollup/plugin-node-resolve": "13.0.6",
     "@rollup/plugin-typescript": "8.3.0",
     "@types/jest": "26.0.24",
