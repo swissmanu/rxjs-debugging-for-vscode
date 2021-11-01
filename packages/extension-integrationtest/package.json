@@ -1,5 +1,5 @@
 {
-  "name": "@rxjs-debugging/extension-e2e",
+  "name": "@rxjs-debugging/extension-integrationtest",
   "version": "0.1.2",
   "license": "MIT",
   "private": true,
@@ -8,6 +8,9 @@
   },
   "scripts": {
     "build": "tsc"
+  },
+  "dependencies": {
+    "rxjs-debugging-for-vs-code": "0.1.2"
   },
   "devDependencies": {
     "@types/jest": "26.0.24",

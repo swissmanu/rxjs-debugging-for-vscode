@@ -113,6 +113,9 @@
           "configurations": {
             "prod": {
               "script": "build:prod"
+            },
+            "test": {
+              "script": "build:test"
             }
           }
         },
@@ -141,24 +144,28 @@
         }
       }
     },
-    "extension-e2e": {
-      "root": "packages/extension-e2e",
+    "extension-integrationtest": {
+      "root": "packages/extension-integrationtest",
       "implicitDependencies": ["extension"],
       "targets": {
         "build": {
           "executor": "@nrwl/workspace:run-script",
+          "dependsOn": [{ "target": "build", "projects": "dependencies" }],
           "options": {
             "script": "build"
+          },
+          "configurations": {
+            "test": {}
           }
         },
-        "e2e": {
+        "integrationtest": {
           "executor": "@nrwl/jest:jest",
-          "dependsOn": [
-            { "target": "build", "projects": "dependencies" },
-            { "target": "build", "projects": "self" }
-          ],
+          "dependsOn": [{ "target": "build", "projects": "self" }],
           "options": {
-            "jestConfig": "packages/extension-e2e/jest.config.js"
+            "jestConfig": "packages/extension-integrationtest/jest.config.js"
+          },
+          "configurations": {
+            "test": {}
           }
         }
       }
