@@ -1,5 +1,6 @@
 import { DecorationOptions, TextDocument, TextEditor, TextEditorDecorationType } from 'vscode';
 import { IDisposable } from '../util/types';
+import DecorationSetter, { IDecorationSetter } from './decorationSetter';
 
 export interface IDecorationProvider extends IDisposable {
   /**
@@ -29,7 +30,7 @@ export abstract class DocumentDecorationProvider implements IDecorationProvider 
    */
   abstract decorationType: TextEditorDecorationType;
 
-  constructor(protected readonly document: TextDocument) {}
+  constructor(protected readonly document: TextDocument, private readonly decorationSetter: IDecorationSetter) {}
 
   /**
    * Provide decorations to a new set of text editors. `attach` takes care that decorations are only provided if an
@@ -64,7 +65,7 @@ export abstract class DocumentDecorationProvider implements IDecorationProvider 
    */
   protected setDecorations(decorationOptions: DecorationOptions[]): void {
     for (const editor of this.textEditors) {
-      editor.setDecorations(this.decorationType, decorationOptions);
+      this.decorationSetter.set(editor, this.decorationType, decorationOptions);
     }
   }
 

@@ -6,6 +6,7 @@ import {
   NodeWithRxJSDebugConfigurationResolver,
 } from '../debugConfigurationProvider';
 import DecorationManager, { IDecorationManager } from '../decoration/decorationManager';
+import { default as DefaultDecorationSetter, IDecorationSetter } from '../decoration/decorationSetter';
 import Logger, { ILogger, logLevelFromString } from '../logger';
 import ConsoleLogSink from '../logger/console';
 import LogPointManager, { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
@@ -19,7 +20,18 @@ import { IRxJSDetector, RxJSDetector } from '../workspaceMonitor/detector';
 import DisposableContainer, { IDisposableContainer } from './disposableContainer';
 import { ExtensionContext, RootContainer, VsCodeApi } from './types';
 
-export default function createRootContainer(extensionContext: vscode.ExtensionContext): IDisposableContainer {
+interface Testables {
+  DecorationSetter: { new (): IDecorationSetter };
+}
+
+const defaultTestables: Testables = {
+  DecorationSetter: DefaultDecorationSetter,
+};
+
+export default function createRootContainer(
+  extensionContext: vscode.ExtensionContext,
+  { DecorationSetter }: Testables = defaultTestables
+): IDisposableContainer {
   const container = new DisposableContainer('Root');
 
   container.bind<typeof vscode>(VsCodeApi).toConstantValue(vscode);
@@ -54,6 +66,7 @@ export default function createRootContainer(extensionContext: vscode.ExtensionCo
     .onActivation(container.trackDisposableBinding);
   container.bind<IOperatorLogPointManager>(IOperatorLogPointManager).to(LogPointManager).inSingletonScope();
 
+  container.bind<IDecorationSetter>(IDecorationSetter).to(DecorationSetter).inSingletonScope();
   container
     .bind<IDecorationManager>(IDecorationManager)
     .to(DecorationManager)

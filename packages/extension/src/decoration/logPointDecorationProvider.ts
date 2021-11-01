@@ -20,6 +20,7 @@ import { IOperatorLogPointRecommendationEvent, IOperatorLogPointRecommender } fr
 import { IResourceProvider } from '../resources';
 import { difference } from '../util/map';
 import { IDisposable } from '../util/types';
+import { IDecorationSetter } from './decorationSetter';
 
 const localize = nls.loadMessageBundle();
 
@@ -39,9 +40,10 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
     operatorLogPointRecommender: IOperatorLogPointRecommender,
     private readonly operatorLogPointManager: IOperatorLogPointManager,
     private readonly resourceProvider: IResourceProvider,
+    decorationSetter: IDecorationSetter,
     textDocument: TextDocument
   ) {
-    super(textDocument);
+    super(textDocument, decorationSetter);
 
     this.onRecommendOperatorLogPointsDisposable = operatorLogPointRecommender.onRecommendOperatorLogPoints(
       this.onRecommendOperatorLogPoints
