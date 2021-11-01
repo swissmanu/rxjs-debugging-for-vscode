@@ -11,7 +11,8 @@ import {
 } from 'vscode';
 import * as nls from 'vscode-nls';
 import { DocumentDecorationProvider } from '.';
-import { Commands, getMarkdownCommandWithArgs } from '../commands';
+import { Commands } from '../commands/commands';
+import getMarkdownCommandWithArgs from '../commands/getMarkdownCommandWithArgs';
 import { Configuration } from '../configuration';
 import OperatorLogPoint from '../operatorLogPoint';
 import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
