@@ -6,7 +6,8 @@
   ],
   "scripts": {
     "prepare": "husky install",
-    "lint": "eslint --ext ts 'packages/*/src/**'"
+    "lint": "eslint --ext ts 'packages/*/src/**'",
+    "clean": "lerna exec -- rm -rf out && nx reset"
   },
   "devDependencies": {
     "@nrwl/cli": "13.1.2",

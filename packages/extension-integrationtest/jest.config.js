@@ -9,5 +9,6 @@ module.exports = {
   runner: 'vscode',
   modulePathIgnorePatterns: ['.vscode-test/'],
   testMatch: ['**/out/**/*.test.js'],
-  testTimeout: isCI() ? baseTimeout * 3 : baseTimeout,
+  testTimeout: isCI() ? baseTimeout * 10 : baseTimeout,
+  verbose: true,
 };

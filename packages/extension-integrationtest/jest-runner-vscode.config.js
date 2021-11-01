@@ -5,6 +5,9 @@ function relativePath(...segments) {
   return path.resolve(path.join(__dirname, ...segments));
 }
 
+console.log(relativePath('..', 'testbench-nodejs'));
+console.log(relativePath('..', 'extension'));
+
 /** @type {import('jest-runner-vscode').RunnerOptions} */
 module.exports = {
   version: '1.61.1',

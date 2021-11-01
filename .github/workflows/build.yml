@@ -22,7 +22,7 @@ jobs:
         with:
           node-version: 14.x
       - name: Install Dependencies
-        run: yarn
+        run: yarn --immutable
       - name: Lint Code
         run: yarn lint
 
@@ -41,12 +41,13 @@ jobs:
         run: yarn nx run-many --target=test --all --parallel
 
   integration-test:
-    needs:
-      - unit-test
-      - lint
+    # needs:
+    #   - unit-test
+    #   - lint
     strategy:
       matrix:
-        os: [macos-latest, ubuntu-latest, windows-latest]
+        # os: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -55,8 +56,9 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14.x
+
       - name: Install Dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Test on Linux System
         if: runner.os == 'Linux'
@@ -80,7 +82,7 @@ jobs:
         with:
           node-version: 14.x
       - name: Install Dependencies
-        run: yarn
+        run: yarn --immutable
 
       - name: Production Build
         run: yarn nx run-many --target=build --configuration=prod --projects=extension,runtime-webpack
@@ -122,7 +124,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
-        run: yarn
+        run: yarn --immutable
       - name: Production Build
         run: yarn nx run-many --target=build --configuration=prod --projects=extension,runtime-webpack
 
