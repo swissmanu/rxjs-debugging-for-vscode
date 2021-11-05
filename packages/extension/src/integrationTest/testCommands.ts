@@ -5,7 +5,7 @@ export const enum TestCommands {
 export interface ITestCommandTypes {
   [TestCommands.GetDecorationSetterRecording]: (
     file: string,
-    decorationType: 'liveLog' | 'logPoints'
+    decorationType: 'liveLog' | 'logPoints' | 'logPointGutterIcon'
   ) => ReadonlyArray<{
     decorationType: string;
     ranges: ReadonlyArray<string>;
