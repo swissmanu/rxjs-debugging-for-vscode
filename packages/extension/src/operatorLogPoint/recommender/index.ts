@@ -1,8 +1,8 @@
 import { inject, injectable } from 'inversify';
 import * as vscode from 'vscode';
 import OperatorLogPoint from '..';
-import { IDisposable } from '../../util/types';
 import { ILogger } from '../../logger';
+import { IDisposable } from '../../util/types';
 import { isSupportedDocument } from '../../workspaceMonitor/supportedDocument';
 import getOperatorPositions from './parser';
 
@@ -35,11 +35,16 @@ export default class OperatorLogPointRecommender implements IOperatorLogPointRec
 
     const positions = await getOperatorPositions(document.getText());
     const logPoints = positions.map(
-      ({ position, operatorIdentifier }) =>
-        new OperatorLogPoint(document.uri, new vscode.Position(position.line, position.character), {
-          fileName: document.uri.fsPath,
-          ...operatorIdentifier,
-        })
+      ({ position, operatorName, operatorIdentifier }) =>
+        new OperatorLogPoint(
+          document.uri,
+          new vscode.Position(position.line, position.character),
+          {
+            fileName: document.uri.fsPath,
+            ...operatorIdentifier,
+          },
+          operatorName
+        )
     );
 
     this._onRecommendOperatorLogPoints.fire({

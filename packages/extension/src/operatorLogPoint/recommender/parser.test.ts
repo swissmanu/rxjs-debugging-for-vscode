@@ -14,9 +14,21 @@ export function exampleObservable(): Observable<number> {
   );
 }`;
       await expect(getOperatorPositions(interval)).resolves.toEqual([
-        { position: { line: 5, character: 4 }, operatorIdentifier: { line: 5, character: 25, operatorIndex: 0 } },
-        { position: { line: 6, character: 4 }, operatorIdentifier: { line: 5, character: 25, operatorIndex: 1 } },
-        { position: { line: 7, character: 4 }, operatorIdentifier: { line: 5, character: 25, operatorIndex: 2 } },
+        {
+          position: { line: 5, character: 4 },
+          operatorIdentifier: { line: 5, character: 25, operatorIndex: 0 },
+          operatorName: 'take',
+        },
+        {
+          position: { line: 6, character: 4 },
+          operatorIdentifier: { line: 5, character: 25, operatorIndex: 1 },
+          operatorName: 'map',
+        },
+        {
+          position: { line: 7, character: 4 },
+          operatorIdentifier: { line: 5, character: 25, operatorIndex: 2 },
+          operatorName: 'map',
+        },
       ]);
     });
 
@@ -40,13 +52,41 @@ interval(1000).pipe(
 `;
       await expect(getOperatorPositions(multiplePipes)).resolves.toEqual(
         expect.arrayContaining([
-          { position: { line: 4, character: 2 }, operatorIdentifier: { line: 4, character: 18, operatorIndex: 0 } },
-          { position: { line: 8, character: 2 }, operatorIdentifier: { line: 8, character: 16, operatorIndex: 0 } },
-          { position: { line: 9, character: 2 }, operatorIdentifier: { line: 8, character: 16, operatorIndex: 1 } },
-          { position: { line: 10, character: 2 }, operatorIdentifier: { line: 8, character: 16, operatorIndex: 2 } },
-          { position: { line: 12, character: 2 }, operatorIdentifier: { line: 12, character: 3, operatorIndex: 0 } },
-          { position: { line: 13, character: 2 }, operatorIdentifier: { line: 12, character: 3, operatorIndex: 1 } },
-          { position: { line: 14, character: 2 }, operatorIdentifier: { line: 12, character: 3, operatorIndex: 2 } },
+          {
+            position: { line: 4, character: 2 },
+            operatorIdentifier: { line: 4, character: 18, operatorIndex: 0 },
+            operatorName: 'map',
+          },
+          {
+            position: { line: 8, character: 2 },
+            operatorIdentifier: { line: 8, character: 16, operatorIndex: 0 },
+            operatorName: 'take',
+          },
+          {
+            position: { line: 9, character: 2 },
+            operatorIdentifier: { line: 8, character: 16, operatorIndex: 1 },
+            operatorName: 'map',
+          },
+          {
+            position: { line: 10, character: 2 },
+            operatorIdentifier: { line: 8, character: 16, operatorIndex: 2 },
+            operatorName: 'map',
+          },
+          {
+            position: { line: 12, character: 2 },
+            operatorIdentifier: { line: 12, character: 3, operatorIndex: 0 },
+            operatorName: 'take',
+          },
+          {
+            position: { line: 13, character: 2 },
+            operatorIdentifier: { line: 12, character: 3, operatorIndex: 1 },
+            operatorName: 'map',
+          },
+          {
+            position: { line: 14, character: 2 },
+            operatorIdentifier: { line: 12, character: 3, operatorIndex: 2 },
+            operatorName: 'map',
+          },
         ])
       );
     });
@@ -65,9 +105,21 @@ new Observable().pipe(
 
       await expect(getOperatorPositions(nestedPipes)).resolves.toEqual(
         expect.arrayContaining([
-          { position: { line: 4, character: 2 }, operatorIdentifier: { line: 4, character: 18, operatorIndex: 0 } },
-          { position: { line: 5, character: 2 }, operatorIdentifier: { line: 4, character: 18, operatorIndex: 1 } },
-          { position: { line: 6, character: 4 }, operatorIdentifier: { line: 6, character: 22, operatorIndex: 0 } },
+          {
+            position: { line: 4, character: 2 },
+            operatorIdentifier: { line: 4, character: 18, operatorIndex: 0 },
+            operatorName: 'map',
+          },
+          {
+            position: { line: 5, character: 2 },
+            operatorIdentifier: { line: 4, character: 18, operatorIndex: 1 },
+            operatorName: 'flatMap',
+          },
+          {
+            position: { line: 6, character: 4 },
+            operatorIdentifier: { line: 6, character: 22, operatorIndex: 0 },
+            operatorName: 'map',
+          },
         ])
       );
     });
