@@ -1,4 +1,6 @@
 import { Commands } from '../commands/commands';
+import { Configuration } from '../configuration';
+import { LogLevel } from '../logger';
 import executeCommand from './executeCommand';
 import { TestCommands } from './testCommands';
 
@@ -7,4 +9,4 @@ import { TestCommands } from './testCommands';
  * during a test run.
  */
 
-export { executeCommand, Commands, TestCommands };
+export { executeCommand, Commands, TestCommands, Configuration, LogLevel };

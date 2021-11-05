@@ -1,4 +1,6 @@
 name: Build
+env:
+  NODE_VERSION: 14.18.1
 
 on:
   push:
@@ -20,7 +22,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.18.1
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install Dependencies
         run: yarn --immutable
       - name: Lint Code
@@ -34,20 +36,22 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.18.1
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install Dependencies
         run: yarn
       - name: Run Unit Tests
         run: yarn nx run-many --target=test --all --parallel
 
   integration-test:
-    # needs:
-    #   - unit-test
-    #   - lint
+    needs:
+      - unit-test
+      - lint
     strategy:
       matrix:
-        # os: [macos-latest, ubuntu-latest, windows-latest]
-        os: [macos-latest]
+        os:
+          - macos-latest
+          # - ubuntu-latest TODO Why still timeouts?
+          # - windows-latest TODO Why still timeouts?
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -55,7 +59,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.18.1
+          node-version: ${{ env.NODE_VERSION }}
 
       - name: Install Dependencies
         run: yarn --immutable
@@ -80,7 +84,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.18.1
+          node-version: ${{ env.NODE_VERSION }}
       - name: Install Dependencies
         run: yarn --immutable
 
@@ -120,7 +124,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.18.1
+          node-version: ${{ env.NODE_VERSION }}
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
