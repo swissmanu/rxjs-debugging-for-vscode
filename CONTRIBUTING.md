@@ -13,8 +13,9 @@ To get started with development, follow these four steps:
 1. Clone the repo and run `yarn` to install all dependencies.
 2. Open the repo in Visual Studio Code.
 3. Run the "extension: Build and Watch" task, which will continuously (re-)build the extension.
-4. Run the "Testbench: NodeJS" launch configuration.
-   This opens `packages/testbench-nodejs` as workspace of a new instance of Visual Studio Code, running the development version of the extension.
+4. Run the "Testbench: NodeJS" launch configuration to open a new Visual Studio Code window, which:
+   - loads the RxJS debugging extension in development mode, so you can use the debugger in the original Visual Studio Code window.
+   - uses  `packages/testbench-nodejs` as workspace, so you can test the RxJS debugging extension with a real example.
 
 
 ### Repository Structure
@@ -28,7 +29,24 @@ Following packages can be found in the [`packages`](./packages) directory:
 - [`runtime`](./packages/runtime): Contains rudimentary utilities to augment RxJS in an arbitrary runtime environment.
 - [`runtime-nodejs`](./packages/runtime-nodejs): NodeJS specific augmentation functionalities.
 - [`runtime-webpack`](./packages/runtime-webpack): Webpack plugin, published as `@rxjs-debugging/runtime-webpack`, providing runtime augmentation for web applications built with Webpack.
+- [`extension-integrationtest`](./packages/extension-integrationtest): An integration test suite verifying various aspects of the extension.
 - [`testbench-*`](./packages): Test environments simulating various scenarios to test the debugger.
+
+### Run Test Suites
+
+Unit and integration tests are automatically executed once changes are pushed to Github. You can run them locally using the following commands:
+
+- Unit tests:
+
+  ```shell
+  yarn nx run-many --target=test --all --parallel
+  ```
+
+- Integration tests:
+
+  ```shell
+  yarn nx run extension-integrationtest:integrationtest --configuration=test
+  ```
 
 ### Architecture Concepts
 

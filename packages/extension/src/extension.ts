@@ -6,11 +6,18 @@ import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
 } from './debugConfigurationProvider';
+import type { default as prepareForIntegrationTestType } from './integrationTest/prepareForIntegrationTest';
 import createRootContainer from './ioc/rootContainer';
 import { ILogger } from './logger';
 
+// prepareForIntegrationTest might be injected during build time. See rollup.config.js
+declare const prepareForIntegrationTest: typeof prepareForIntegrationTestType | undefined;
+
 export function activate(context: vscode.ExtensionContext): void {
-  const rootContainer = createRootContainer(context);
+  const rootContainer = createRootContainer(
+    context,
+    typeof prepareForIntegrationTest === 'function' ? prepareForIntegrationTest(context) : undefined
+  );
   context.subscriptions.push(rootContainer);
 
   for (const type of NodeWithRxJSDebugConfigurationResolver.types) {

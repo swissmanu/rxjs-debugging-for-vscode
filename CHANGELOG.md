@@ -3,6 +3,7 @@
 ## Next
 
 - Feature: Support Debugging of Browser-based Applications [#43](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/43)
+- Improvement: Add Integration Test for Operator Log Points [#49](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/49)
 
 ## v0.1.2
 

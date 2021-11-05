@@ -9,6 +9,7 @@ import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
 import { ISessionManager } from '../sessionManager';
 import { ISession } from '../sessionManager/session';
 import { IDisposable } from '../util/types';
+import { IDecorationSetter } from './decorationSetter';
 
 export const ILiveLogDecorationProvider = Symbol('LiveLogDecorationProvider');
 
@@ -27,9 +28,10 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
   constructor(
     private readonly sessionManager: ISessionManager,
     private readonly operatorLogPointManager: IOperatorLogPointManager,
+    decorationSetter: IDecorationSetter,
     textDocument: TextDocument
   ) {
-    super(textDocument);
+    super(textDocument, decorationSetter);
     this.onDidChangeActiveSessionDisposable = sessionManager.onDidChangeActiveSession(this.onDidChangeActiveSession);
     this.onDidTerminateSessionDisposable = sessionManager.onDidTerminateSession(this.onDidTerminateSession);
   }
@@ -112,6 +114,10 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
     this.onDidChangeActiveSessionDisposable.dispose();
     this.onDidTerminateSessionDisposable.dispose();
     this.onTelemetryEventDisposable?.dispose();
+  }
+
+  static get decorationTypeKey(): string {
+    return liveLogDecorationType.key;
   }
 }
 

@@ -31,6 +31,11 @@
           "executor": "@nrwl/workspace:run-script",
           "options": {
             "script": "build"
+          },
+          "configurations": {
+            "prod": {
+              "script": "build:prod"
+            }
           }
         }
       }
@@ -113,6 +118,9 @@
           "configurations": {
             "prod": {
               "script": "build:prod"
+            },
+            "test": {
+              "script": "build:test"
             }
           }
         },
@@ -123,15 +131,7 @@
             { "target": "build", "projects": "dependencies" }
           ],
           "options": {
-            "jestConfig": "packages/extension/jest.unit.config.js"
-          }
-        },
-
-        "integrationtest": {
-          "executor": "@nrwl/jest:jest",
-          "dependsOn": [{ "target": "build", "projects": "dependencies" }],
-          "options": {
-            "jestConfig": "packages/extension/jest.integration.config.js"
+            "jestConfig": "packages/extension/jest.config.js"
           }
         },
 
@@ -145,6 +145,32 @@
           "executor": "@nrwl/workspace:run-script",
           "options": {
             "script": "publish"
+          }
+        }
+      }
+    },
+    "extension-integrationtest": {
+      "root": "packages/extension-integrationtest",
+      "implicitDependencies": ["extension"],
+      "targets": {
+        "build": {
+          "executor": "@nrwl/workspace:run-script",
+          "dependsOn": [{ "target": "build", "projects": "dependencies" }],
+          "options": {
+            "script": "build"
+          },
+          "configurations": {
+            "test": {}
+          }
+        },
+        "integrationtest": {
+          "executor": "@nrwl/jest:jest",
+          "dependsOn": [{ "target": "build", "projects": "self" }],
+          "options": {
+            "jestConfig": "packages/extension-integrationtest/jest.config.js"
+          },
+          "configurations": {
+            "test": {}
           }
         }
       }

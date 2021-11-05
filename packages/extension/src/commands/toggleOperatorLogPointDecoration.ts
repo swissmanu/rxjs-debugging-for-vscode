@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { Commands, registerCommand } from '.';
 import { Configuration } from '../configuration';
+import { Commands } from './commands';
+import registerCommand from './registerCommand';
 
 export default function registerToggleOperatorLogPointDecorationCommand(context: vscode.ExtensionContext): void {
   context.subscriptions.push(

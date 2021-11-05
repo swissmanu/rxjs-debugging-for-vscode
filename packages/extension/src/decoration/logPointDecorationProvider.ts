@@ -11,7 +11,8 @@ import {
 } from 'vscode';
 import * as nls from 'vscode-nls';
 import { DocumentDecorationProvider } from '.';
-import { Commands, getMarkdownCommandWithArgs } from '../commands';
+import { Commands } from '../commands/commands';
+import getMarkdownCommandWithArgs from '../commands/getMarkdownCommandWithArgs';
 import { Configuration } from '../configuration';
 import OperatorLogPoint from '../operatorLogPoint';
 import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
@@ -19,6 +20,7 @@ import { IOperatorLogPointRecommendationEvent, IOperatorLogPointRecommender } fr
 import { IResourceProvider } from '../resources';
 import { difference } from '../util/map';
 import { IDisposable } from '../util/types';
+import { IDecorationSetter } from './decorationSetter';
 
 const localize = nls.loadMessageBundle();
 
@@ -38,9 +40,10 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
     operatorLogPointRecommender: IOperatorLogPointRecommender,
     private readonly operatorLogPointManager: IOperatorLogPointManager,
     private readonly resourceProvider: IResourceProvider,
+    decorationSetter: IDecorationSetter,
     textDocument: TextDocument
   ) {
-    super(textDocument);
+    super(textDocument, decorationSetter);
 
     this.onRecommendOperatorLogPointsDisposable = operatorLogPointRecommender.onRecommendOperatorLogPoints(
       this.onRecommendOperatorLogPoints
@@ -168,6 +171,10 @@ export default class LogPointDecorationProvider extends DocumentDecorationProvid
     this.onDidChangeLogPointsDisposable.dispose();
     this.onRecommendOperatorLogPointsDisposable.dispose();
     this.onDidChangeConfigurationDisposable.dispose();
+  }
+
+  static get decorationTypeKey(): string {
+    return RecommendedLogPointDecorationType.key;
   }
 }
 
