@@ -69,25 +69,31 @@ export class Disposable {
 
 export class Uri implements UriType {
   static parse(value: string, strict?: boolean): Uri {
-    return new Uri('', '', '', '', '');
+    return new Uri('', '', value, '', '');
   }
 
   static file(path: string): Uri {
-    return new Uri('', '', '', '', '');
+    return new Uri('', '', path, '', '');
   }
 
   static joinPath(base: Uri, ...pathSegments: string[]): Uri {
     return new Uri('', '', '', '', '');
   }
 
-  static from(components: {
+  static from({
+    scheme,
+    authority = '',
+    path = '',
+    query = '',
+    fragment = '',
+  }: {
     scheme: string;
     authority?: string;
     path?: string;
     query?: string;
     fragment?: string;
   }): Uri {
-    return new Uri('', '', '', '', '');
+    return new Uri(scheme, authority, path, query, fragment);
   }
 
   private constructor(
@@ -100,8 +106,26 @@ export class Uri implements UriType {
 
   readonly fsPath: string = '';
 
-  with(change: { scheme?: string; authority?: string; path?: string; query?: string; fragment?: string }): Uri {
-    return this;
+  with({
+    scheme,
+    authority,
+    path,
+    query,
+    fragment,
+  }: {
+    scheme?: string;
+    authority?: string;
+    path?: string;
+    query?: string;
+    fragment?: string;
+  }): Uri {
+    return new Uri(
+      scheme || this.scheme,
+      authority || this.authority,
+      path || this.path,
+      query || this.query,
+      fragment || this.fragment
+    );
   }
 
   toString(skipEncoding?: boolean): string {
@@ -109,6 +133,12 @@ export class Uri implements UriType {
   }
 
   toJSON(): any {
-    return {};
+    return {
+      scheme: this.scheme,
+      authority: this.authority,
+      path: this.path,
+      query: this.query,
+      fragment: this.fragment,
+    };
   }
 }

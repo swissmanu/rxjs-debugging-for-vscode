@@ -1,4 +1,9 @@
-import { Commands, executeCommand, TestCommands } from 'rxjs-debugging-for-vs-code/out/integrationTest';
+import {
+  Commands,
+  executeCommand,
+  TestCommands,
+  OperatorLogPoint,
+} from 'rxjs-debugging-for-vs-code/out/integrationTest';
 import * as vscode from 'vscode';
 import openAndShowTextDocument from './util/openAndShowTextDocument';
 import waitForExtension from './util/waitForExtension';
@@ -9,12 +14,21 @@ describe('RxJS Debugging for vscode', () => {
     await waitForExtension();
 
     // Enable Operator Log Point for the first operator, take.
-    await executeCommand(vscode.commands, Commands.EnableOperatorLogPoint, document.uri, new vscode.Position(5, 4), {
-      fileName: document.uri.fsPath,
-      line: 5,
-      character: 25,
-      operatorIndex: 0,
-    });
+    await executeCommand(
+      vscode.commands,
+      Commands.EnableOperatorLogPoint,
+      new OperatorLogPoint(
+        document.uri,
+        new vscode.Position(5, 4),
+        {
+          fileName: document.uri.fsPath,
+          line: 5,
+          character: 25,
+          operatorIndex: 0,
+        },
+        'take'
+      )
+    );
 
     const debuggingDone = new Promise<void>((resolve) => {
       vscode.debug.onDidTerminateDebugSession(() => resolve());
