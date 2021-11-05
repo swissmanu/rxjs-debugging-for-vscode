@@ -20,7 +20,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 14.18.1
       - name: Install Dependencies
         run: yarn --immutable
       - name: Lint Code
@@ -34,7 +34,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 14.18.1
       - name: Install Dependencies
         run: yarn
       - name: Run Unit Tests
@@ -55,7 +55,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 14.18.1
 
       - name: Install Dependencies
         run: yarn --immutable
@@ -80,7 +80,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 14.18.1
       - name: Install Dependencies
         run: yarn --immutable
 
@@ -120,7 +120,7 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: 14.x
+          node-version: 14.18.1
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
