@@ -1,0 +1,42 @@
+{
+  "folders": [
+    {
+      "path": "packages/extension"
+    },
+    {
+      "path": "packages/extension-integrationtest"
+    },
+    {
+      "path": "packages/runtime"
+    },
+    {
+      "path": "packages/runtime-nodejs"
+    },
+    {
+      "path": "packages/runtime-webpack"
+    },
+    {
+      "path": "packages/telemetry"
+    },
+    {
+      "path": "packages/testbench-nodejs"
+    },
+    {
+      "path": "packages/testbench-webpack"
+    },
+    {
+      "path": ".",
+      "name": "Root"
+    }
+  ],
+  "settings": {
+    "typescript.tsc.autoDetect": "off",
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "jest.disabledWorkspaceFolders": [
+      "debugger",
+      "extension-integrationtest",
+      "testbench-nodejs",
+      "testbench-webpack"
+    ]
+  }
+}
