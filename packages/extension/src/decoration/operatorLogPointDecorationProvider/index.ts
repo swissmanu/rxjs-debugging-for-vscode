@@ -29,6 +29,7 @@ export default class OperatorLogPointDecorationProvider extends DocumentDecorati
   private readonly onRecommendOperatorLogPointsDisposable: IDisposable;
   private readonly onDidChangeLogPointsDisposable: IDisposable;
   private readonly onDidChangeConfigurationDisposable: IDisposable;
+  private readonly onDidChangeTextDocumentDisposable: IDisposable;
 
   private showLogPointRecommendations: boolean;
 
@@ -52,7 +53,7 @@ export default class OperatorLogPointDecorationProvider extends DocumentDecorati
       .getConfiguration(Configuration.ShowLogPointRecommendations)
       .get(Configuration.ShowLogPointRecommendations, true);
 
-    workspace.onDidChangeTextDocument(() => this.updateDecorations());
+    this.onDidChangeTextDocumentDisposable = workspace.onDidChangeTextDocument(() => this.updateDecorations());
   }
 
   private onRecommendOperatorLogPoints = ({
@@ -131,6 +132,7 @@ export default class OperatorLogPointDecorationProvider extends DocumentDecorati
     this.onDidChangeLogPointsDisposable.dispose();
     this.onRecommendOperatorLogPointsDisposable.dispose();
     this.onDidChangeConfigurationDisposable.dispose();
+    this.onDidChangeTextDocumentDisposable.dispose();
   }
 
   static get decorationTypeKey(): string {
