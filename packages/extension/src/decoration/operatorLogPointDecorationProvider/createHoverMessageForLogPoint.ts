@@ -10,7 +10,7 @@ export default function createHoverMessageForLogPoint(operatorLogPoint: Operator
   const command: string = operatorLogPoint.enabled
     ? `[${localize(
         'rxjs-debugging.operatorLogPointDecoration.removeOperatorLogPoint.title',
-        `Remove from "{0}"`,
+        `Remove RxJS operator log point for "{0}"`,
         operatorLogPoint.operatorName ?? 'n/a'
       )}](${getMarkdownCommandWithArgs(Commands.DisableOperatorLogPoint, [operatorLogPoint], ([o]) => [
         OperatorLogPoint.serialize(o as OperatorLogPoint),
@@ -20,7 +20,7 @@ export default function createHoverMessageForLogPoint(operatorLogPoint: Operator
       )}")`
     : `[${localize(
         'rxjs-debugging.operatorLogPointDecoration.addOperatorLogPoint.title',
-        `Add to "{0}"`,
+        `Add RxJS operator log point for "{0}"`,
         operatorLogPoint.operatorName ?? 'n/a'
       )}](${getMarkdownCommandWithArgs(Commands.EnableOperatorLogPoint, [operatorLogPoint], ([o]) => [
         OperatorLogPoint.serialize(o as OperatorLogPoint),
