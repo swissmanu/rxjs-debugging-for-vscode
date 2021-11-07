@@ -1,7 +1,6 @@
 import 'reflect-metadata';
-import { Position, Uri } from 'vscode';
 import Logger from '../logger';
-import OperatorLogPoint from '../operatorLogPoint';
+import { logPointFixtureA } from '../operatorLogPoint/index.fixture';
 import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
 import { ITelemetryBridge } from '../telemetryBridge';
 import Session, { ISession } from './session';
@@ -10,14 +9,7 @@ describe('Session', () => {
   let session: ISession;
   let logPointManager: IOperatorLogPointManager;
   let telemetryBridge: ITelemetryBridge;
-  const logPoints = [
-    new OperatorLogPoint(Uri.file('test.ts'), new Position(42, 84), {
-      character: 100,
-      line: 101,
-      fileName: 'test.ts',
-      operatorIndex: 102,
-    }),
-  ];
+  const logPoints = [logPointFixtureA];
 
   beforeEach(() => {
     logPointManager = {

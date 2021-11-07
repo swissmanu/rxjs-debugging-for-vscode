@@ -9304,6 +9304,11 @@ spdy@^4.0.2:
     select-hose "^2.0.0"
     spdy-transport "^3.0.0"
 
+spicery@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/spicery/-/spicery-2.1.2.tgz#272ea23240200494ba29437c06cc7e5acf403240"
+  integrity sha512-iWsAuF4+9CTCzVnkUfnfYQ+99baHPA+5iC43uvEBjURtr2XCwh85oLu1Vnkt22rx6neQ9yUHGnLY5Zr3IaVWRg==
+
 split-on-first@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/split-on-first/-/split-on-first-1.1.0.tgz#f610afeee3b12bce1d0c30425e76398b78249a5f"

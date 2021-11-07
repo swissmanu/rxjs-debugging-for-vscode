@@ -1,3 +1,4 @@
+import { IOperatorIdentifier } from '@rxjs-debugging/telemetry/out/operatorIdentifier';
 import {
   CallExpression,
   createSourceFile,
@@ -8,13 +9,17 @@ import {
   SourceFile,
   SyntaxKind,
 } from 'typescript';
-import { IOperatorIdentifier } from '@rxjs-debugging/telemetry/out/operatorIdentifier';
 
 interface Result {
   /**
    * The actual position of the operator in the source code.
    */
   position: Omit<IOperatorIdentifier, 'fileName' | 'operatorIndex'>;
+
+  /**
+   * The name of the operator, e.g. `map` or `take`.
+   */
+  operatorName: string | null;
 
   /**
    * The `IOperatorIdentifier` (without filename) identifying an operator.
@@ -43,9 +48,11 @@ export default async function getOperatorPositions(sourceCode: string): Promise<
         if (name.getText(sourceFile) === 'pipe') {
           for (let i = 0, l = callExpression.arguments.length; i < l; i++) {
             const operator = callExpression.arguments[i];
+            const operatorName = getOperatorName(operator, sourceFile);
 
             operatorPositions.push({
               position: getStartOf(operator, sourceFile),
+              operatorName,
               operatorIdentifier: { line: nameStart.line + 1, character: nameStart.character + 1, operatorIndex: i },
             });
           }
@@ -73,4 +80,12 @@ function getChildren(parent: Node): ReadonlyArray<Node> {
 
 function getStartOf(node: Node, sourceFile: SourceFile): LineAndCharacter {
   return sourceFile.getLineAndCharacterOfPosition(node.getStart(sourceFile));
+}
+
+function getOperatorName(node: Node, sourceFile: SourceFile): string | null {
+  if (node.kind === SyntaxKind.CallExpression) {
+    const callExpression = node as CallExpression;
+    return callExpression.expression.getText(sourceFile);
+  }
+  return null;
 }

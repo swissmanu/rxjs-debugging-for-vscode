@@ -1,16 +1,16 @@
-import { inject, injectable } from 'inversify';
-import { Event, EventEmitter, Position, Uri } from 'vscode';
-import OperatorLogPoint from '.';
 import { IOperatorIdentifier } from '@rxjs-debugging/telemetry/out/operatorIdentifier';
 import operatorIdentifierToString from '@rxjs-debugging/telemetry/out/operatorIdentifier/toString';
-import { IDisposable } from '../util/types';
+import { inject, injectable } from 'inversify';
+import { Event, EventEmitter } from 'vscode';
+import OperatorLogPoint from '.';
 import { ILogger } from '../logger';
+import { IDisposable } from '../util/types';
 
 export const IOperatorLogPointManager = Symbol('OperatorLogPointManager');
 
 export interface IOperatorLogPointManager extends IDisposable {
-  enable(uri: Uri, position: Position, operatorIdentifier: IOperatorIdentifier): void;
-  disable(uri: Uri, position: Position, operatorIdentifier: IOperatorIdentifier): void;
+  enable(operatorLogPoint: OperatorLogPoint): void;
+  disable(operatorLogPoint: OperatorLogPoint): void;
   logPoints: ReadonlyArray<OperatorLogPoint>;
   logPointForIdentifier(operatorIdentifier: IOperatorIdentifier): OperatorLogPoint | undefined;
   onDidChangeLogPoints: Event<ReadonlyArray<OperatorLogPoint>>;
@@ -27,23 +27,23 @@ export default class LogPointManager implements IOperatorLogPointManager {
 
   constructor(@inject(ILogger) private readonly logger: ILogger) {}
 
-  enable(uri: Uri, position: Position, operatorIdentifier: IOperatorIdentifier): void {
-    const logPoint = new OperatorLogPoint(uri, position, operatorIdentifier, true);
-    const key = logPoint.key;
+  enable(operatorLogPoint: OperatorLogPoint): void {
+    const enabledOperatorLogPoint = operatorLogPoint.with({ enabled: true });
+    const { key } = enabledOperatorLogPoint;
 
     if (!this._logPoints.has(key)) {
-      this.logger.info('LogPointManager', `Enable log point at ${logPoint}`);
-      this._logPoints.set(key, logPoint);
+      this.logger.info('LogPointManager', `Enable log point at ${enabledOperatorLogPoint}`);
+      this._logPoints.set(key, enabledOperatorLogPoint);
       this._onDidChangeLogPoints.fire(this.logPoints);
     }
   }
 
-  disable(uri: Uri, position: Position, operatorIdentifier: IOperatorIdentifier): void {
-    const logPoint = new OperatorLogPoint(uri, position, operatorIdentifier);
-    const key = logPoint.key;
+  disable(operatorLogPoint: OperatorLogPoint): void {
+    const disabledOperatorLogPoint = operatorLogPoint.with({ enabled: false });
+    const { key } = disabledOperatorLogPoint;
 
     if (this._logPoints.has(key)) {
-      this.logger.info('LogPointManager', `Disable log point at ${logPoint}`);
+      this.logger.info('LogPointManager', `Disable log point at ${disabledOperatorLogPoint}`);
       this._logPoints.delete(key);
       this._onDidChangeLogPoints.fire(this.logPoints);
     }

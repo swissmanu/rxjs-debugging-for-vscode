@@ -11,7 +11,7 @@ Before you submit a pull request, please discuss potential changes with the main
 To get started with development, follow these four steps:
 
 1. Clone the repo and run `yarn` to install all dependencies.
-2. Open the repo in Visual Studio Code.
+2. Open `workspace.code-workspace` with Visual Studio Code.
 3. Run the "extension: Build and Watch" task, which will continuously (re-)build the extension.
 4. Run the "Testbench: NodeJS" launch configuration to open a new Visual Studio Code window, which:
    - loads the RxJS debugging extension in development mode, so you can use the debugger in the original Visual Studio Code window.

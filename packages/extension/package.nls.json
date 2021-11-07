@@ -1,7 +1,8 @@
 {
   "rxjs-debugging.config.title": "RxJS Debugging",
   "rxjs-debugging.config.hideLiveLogWhenStoppingDebugger": "When enabled, live log values are hidden automatically after stopping the debugger.",
-  "rxjs-debugging.config.showOperatorLogPointRecommendations": "When enabled, recommended operator log points will be shown automatically. Hint: You can toggle this setting using the related command in the command palette as well.",
+  "rxjs-debugging.config.recommendOperatorLogPointsWithAnIcon": "When enabled, recommended operator log points will be indicated using an icon at the beginning of the line. Hint: You can toggle this setting using the related command in the command palette as well.",
   "rxjs-debugging.config.logLevel": "Internal log level for the extension. (reload required)",
-  "rxjs-debugging.command.toggleOperatorLogPointRecommendations": "Toggle Display of Operator Log Point Recommendations"
+
+  "rxjs-debugging.command.toggleOperatorLogPointGutterIcon": "Toggle gutter icon for recommended operator log points"
 }

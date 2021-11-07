@@ -20,7 +20,7 @@ export default class DecorationSetterSpy implements IDecorationSetter {
       vscode.workspace.getWorkspaceFolder(textEditor.document.uri)?.uri.fsPath ?? 'n/a',
       textEditor.document.fileName
     );
-    const recordedForFile = DecorationSetterSpy.recordedCalls.get(file) || [];
+    const recordedForFile = DecorationSetterSpy.recordedCalls.get(file) ?? [];
 
     const ranges: string[] = [];
     const options: string[] = [];

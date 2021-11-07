@@ -1,7 +1,8 @@
 import 'reflect-metadata';
 import * as vscode from 'vscode';
+import * as nls from 'vscode-nls';
 import registerOperatorLogPointManagementCommands from './commands/operatorLogPointManagement';
-import registerToggleOperatorLogPointDecorationCommand from './commands/toggleOperatorLogPointDecoration';
+import registerToggleOperatorLogPointDecorationCommand from './commands/toggleOperatorLogPointGutterIcon';
 import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
@@ -9,6 +10,8 @@ import {
 import type { default as prepareForIntegrationTestType } from './integrationTest/prepareForIntegrationTest';
 import createRootContainer from './ioc/rootContainer';
 import { ILogger } from './logger';
+
+nls.config({ messageFormat: nls.MessageFormat.file })();
 
 // prepareForIntegrationTest might be injected during build time. See rollup.config.js
 declare const prepareForIntegrationTest: typeof prepareForIntegrationTestType | undefined;

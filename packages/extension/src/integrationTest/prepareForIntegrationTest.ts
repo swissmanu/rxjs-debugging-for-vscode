@@ -1,10 +1,11 @@
 import * as vscode from 'vscode';
 import { IDecorationSetter } from '../decoration/decorationSetter';
 import LiveLogDecorationProvider from '../decoration/liveLogDecorationProvider';
-import LogPointDecorationProvider from '../decoration/logPointDecorationProvider';
+import OperatorLogPointDecorationProvider from '../decoration/operatorLogPointDecorationProvider';
+import OperatorLogPointGutterIconDecorationProvider from '../decoration/operatorLogPointGutterIconDecorationProvider';
 import DecorationSetterSpy from './decorationSetterSpy';
 import registerTestCommand from './registerTestCommand';
-import { TestCommands } from './testCommands';
+import { ITestCommandTypes, TestCommands } from './testCommands';
 
 /**
  * Prepares the extension for an integration test run.
@@ -18,10 +19,7 @@ export default function prepareForIntegrationTest(context: vscode.ExtensionConte
   context.subscriptions.push(
     registerTestCommand(vscode.commands, TestCommands.GetDecorationSetterRecording, async (file, decorationType) => {
       const recordedDecorations = DecorationSetterSpy.recordedCalls.get(file) ?? [];
-      const typeKey =
-        decorationType === 'liveLog'
-          ? LiveLogDecorationProvider.decorationTypeKey
-          : LogPointDecorationProvider.decorationTypeKey;
+      const typeKey = decorationTypeKeyForDecorationType(decorationType);
 
       return recordedDecorations.filter(({ decorationType }) => decorationType === typeKey);
     })
@@ -30,4 +28,17 @@ export default function prepareForIntegrationTest(context: vscode.ExtensionConte
   return {
     DecorationSetter: DecorationSetterSpy,
   };
+}
+
+function decorationTypeKeyForDecorationType(
+  decorationType: Parameters<ITestCommandTypes[TestCommands.GetDecorationSetterRecording]>[1]
+): string {
+  switch (decorationType) {
+    case 'liveLog':
+      return LiveLogDecorationProvider.decorationTypeKey;
+    case 'logPointGutterIcon':
+      return OperatorLogPointGutterIconDecorationProvider.decorationTypeKey;
+    case 'logPoints':
+      return OperatorLogPointDecorationProvider.decorationTypeKey;
+  }
 }

@@ -11,7 +11,8 @@ import { isSupportedDocument } from '../workspaceMonitor/supportedDocument';
 import { IDecorationProvider } from './';
 import { IDecorationSetter } from './decorationSetter';
 import LiveLogDecorationProvider from './liveLogDecorationProvider';
-import LogPointDecorationProvider from './logPointDecorationProvider';
+import OperatorLogPointDecorationProvider from './operatorLogPointDecorationProvider';
+import OperatorLogPointGutterIconDecorationProvider from './operatorLogPointGutterIconDecorationProvider';
 
 export const IDecorationManager = Symbol('DecorationManager');
 
@@ -63,12 +64,20 @@ export default class DecorationManager implements IDecorationManager {
         this.logger.info('DecorationManager', `Create decoration providers for ${uri}`);
         const operatorLogPointManager = this.rootContainer.get<IOperatorLogPointManager>(IOperatorLogPointManager);
         const decorationSetter = this.rootContainer.get<IDecorationSetter>(IDecorationSetter);
+        const operatorLogPointRecommender =
+          this.rootContainer.get<IOperatorLogPointRecommender>(IOperatorLogPointRecommender);
 
         this.decorators.set(uri, [
-          new LogPointDecorationProvider(
-            this.rootContainer.get(IOperatorLogPointRecommender),
+          new OperatorLogPointGutterIconDecorationProvider(
+            operatorLogPointRecommender,
             operatorLogPointManager,
             this.rootContainer.get(IResourceProvider),
+            decorationSetter,
+            document
+          ),
+          new OperatorLogPointDecorationProvider(
+            operatorLogPointRecommender,
+            operatorLogPointManager,
             decorationSetter,
             document
           ),
