@@ -1,13 +1,13 @@
 import 'reflect-metadata';
-import Logger from '../logger';
-import { logPointFixtureA, logPointFixtureB } from './index.fixture';
-import LogPointManager from './logPointManager';
+import Logger from '../../logger';
+import { logPointFixtureA, logPointFixtureB } from '../index.fixture';
+import OperatorLogPointManager from '.';
 
 describe('OperatorLogPointManager', () => {
-  let logPointManager: LogPointManager;
+  let logPointManager: OperatorLogPointManager;
 
   beforeEach(() => {
-    logPointManager = new LogPointManager(Logger.nullLogger());
+    logPointManager = new OperatorLogPointManager(Logger.nullLogger());
   });
 
   describe('enable()', () => {

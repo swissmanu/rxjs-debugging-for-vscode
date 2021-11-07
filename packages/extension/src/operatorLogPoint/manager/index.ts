@@ -2,9 +2,9 @@ import { IOperatorIdentifier } from '@rxjs-debugging/telemetry/out/operatorIdent
 import operatorIdentifierToString from '@rxjs-debugging/telemetry/out/operatorIdentifier/toString';
 import { inject, injectable } from 'inversify';
 import { Event, EventEmitter } from 'vscode';
-import OperatorLogPoint from '.';
-import { ILogger } from '../logger';
-import { IDisposable } from '../util/types';
+import OperatorLogPoint from '..';
+import { ILogger } from '../../logger';
+import { IDisposable } from '../../util/types';
 
 export const IOperatorLogPointManager = Symbol('OperatorLogPointManager');
 
@@ -17,7 +17,7 @@ export interface IOperatorLogPointManager extends IDisposable {
 }
 
 @injectable()
-export default class LogPointManager implements IOperatorLogPointManager {
+export default class OperatorLogPointManager implements IOperatorLogPointManager {
   private readonly _logPoints: Map<string, OperatorLogPoint> = new Map();
 
   private _onDidChangeLogPoints = new EventEmitter<ReadonlyArray<OperatorLogPoint>>();

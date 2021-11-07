@@ -5,7 +5,7 @@ import { DecorationRangeBehavior, Range, TextDocument, TextEditor, ThemeColor, w
 import { DocumentDecorationProvider } from '.';
 import { Colors } from '../colors';
 import { Configuration } from '../configuration';
-import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
+import { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import { ISessionManager } from '../sessionManager';
 import { ISession } from '../sessionManager/session';
 import { IDisposable } from '../util/types';

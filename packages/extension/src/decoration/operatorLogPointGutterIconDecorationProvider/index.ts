@@ -12,7 +12,7 @@ import {
 import { DocumentDecorationProvider } from '..';
 import { Configuration } from '../../configuration';
 import OperatorLogPoint from '../../operatorLogPoint';
-import { IOperatorLogPointManager } from '../../operatorLogPoint/logPointManager';
+import { IOperatorLogPointManager } from '../../operatorLogPoint/manager';
 import { IOperatorLogPointRecommendationEvent, IOperatorLogPointRecommender } from '../../operatorLogPoint/recommender';
 import { IResourceProvider } from '../../resources';
 import { difference } from '../../util/map';
