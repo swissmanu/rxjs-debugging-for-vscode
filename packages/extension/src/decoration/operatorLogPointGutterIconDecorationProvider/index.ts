@@ -52,8 +52,8 @@ export default class OperatorLogPointGutterIconDecorationProvider extends Docume
     this.onDidChangeConfigurationDisposable = workspace.onDidChangeConfiguration(this.onDidChangeConfiguration);
 
     this.showLogPointRecommendations = workspace
-      .getConfiguration(Configuration.ShowLogPointRecommendations)
-      .get(Configuration.ShowLogPointRecommendations, true);
+      .getConfiguration(Configuration.RecommendOperatorLogPointsWithAnIcon)
+      .get(Configuration.RecommendOperatorLogPointsWithAnIcon, true);
 
     workspace.onDidChangeTextDocument(() => this.updateDecorations());
   }
@@ -86,10 +86,10 @@ export default class OperatorLogPointGutterIconDecorationProvider extends Docume
   };
 
   private onDidChangeConfiguration = ({ affectsConfiguration }: ConfigurationChangeEvent) => {
-    if (affectsConfiguration(Configuration.ShowLogPointRecommendations)) {
+    if (affectsConfiguration(Configuration.RecommendOperatorLogPointsWithAnIcon)) {
       this.showLogPointRecommendations = workspace
-        .getConfiguration(Configuration.ShowLogPointRecommendations)
-        .get(Configuration.ShowLogPointRecommendations, true);
+        .getConfiguration(Configuration.RecommendOperatorLogPointsWithAnIcon)
+        .get(Configuration.RecommendOperatorLogPointsWithAnIcon, true);
       this.updateDecorations();
     }
   };

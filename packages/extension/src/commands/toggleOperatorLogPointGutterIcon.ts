@@ -5,11 +5,11 @@ import registerCommand from './registerCommand';
 
 export default function registerToggleOperatorLogPointDecorationCommand(context: vscode.ExtensionContext): void {
   context.subscriptions.push(
-    registerCommand(vscode.commands, Commands.ToggleOperatorLogPointRecommendations, async () => {
+    registerCommand(vscode.commands, Commands.ToggleOperatorLogPointGutterIcon, async () => {
       const newValue = !vscode.workspace
-        .getConfiguration(Configuration.ShowLogPointRecommendations)
-        .get(Configuration.ShowLogPointRecommendations, true);
-      vscode.workspace.getConfiguration().update(Configuration.ShowLogPointRecommendations, newValue, true);
+        .getConfiguration(Configuration.RecommendOperatorLogPointsWithAnIcon)
+        .get(Configuration.RecommendOperatorLogPointsWithAnIcon, true);
+      vscode.workspace.getConfiguration().update(Configuration.RecommendOperatorLogPointsWithAnIcon, newValue);
     })
   );
 }

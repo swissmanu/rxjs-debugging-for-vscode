@@ -1,5 +1,5 @@
 export enum Configuration {
   HideLiveLogWhenStoppingDebugger = 'debug.rxjs.hideLiveLogWhenStoppingDebugger',
-  ShowLogPointRecommendations = 'debug.rxjs.showLogPointRecommendations',
+  RecommendOperatorLogPointsWithAnIcon = 'debug.rxjs.recommendOperatorLogPointsWithAnIcon',
   LogLevel = 'debug.rxjs.logLevel',
 }

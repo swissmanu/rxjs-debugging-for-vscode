@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import * as vscode from 'vscode';
 import registerOperatorLogPointManagementCommands from './commands/operatorLogPointManagement';
-import registerToggleOperatorLogPointDecorationCommand from './commands/toggleOperatorLogPointDecoration';
+import registerToggleOperatorLogPointDecorationCommand from './commands/toggleOperatorLogPointGutterIcon';
 import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
