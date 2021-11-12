@@ -2,7 +2,7 @@ import { inject, injectable, interfaces } from 'inversify';
 import type * as vscodeApiType from 'vscode';
 import { RootContainer, VsCodeApi } from '../ioc/types';
 import { ILogger } from '../logger';
-import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
+import { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import { IOperatorLogPointRecommender } from '../operatorLogPoint/recommender';
 import { IResourceProvider } from '../resources';
 import { ISessionManager } from '../sessionManager';

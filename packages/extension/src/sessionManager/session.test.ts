@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import Logger from '../logger';
 import { logPointFixtureA } from '../operatorLogPoint/index.fixture';
-import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
+import { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import { ITelemetryBridge } from '../telemetryBridge';
 import Session, { ISession } from './session';
 

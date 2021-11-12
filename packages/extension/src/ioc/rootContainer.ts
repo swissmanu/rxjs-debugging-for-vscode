@@ -9,7 +9,7 @@ import DecorationManager, { IDecorationManager } from '../decoration/decorationM
 import { default as DefaultDecorationSetter, IDecorationSetter } from '../decoration/decorationSetter';
 import Logger, { ILogger, logLevelFromString } from '../logger';
 import ConsoleLogSink from '../logger/console';
-import LogPointManager, { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
+import OperatorLogPointManager, { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import OperatorLogPointRecommender, { IOperatorLogPointRecommender } from '../operatorLogPoint/recommender';
 import DefaultResourceProvider, { IResourceProvider } from '../resources';
 import SessionManager, { ISessionManager } from '../sessionManager';
@@ -64,7 +64,7 @@ export default function createRootContainer(
     .to(OperatorLogPointRecommender)
     .inSingletonScope()
     .onActivation(container.trackDisposableBinding);
-  container.bind<IOperatorLogPointManager>(IOperatorLogPointManager).to(LogPointManager).inSingletonScope();
+  container.bind<IOperatorLogPointManager>(IOperatorLogPointManager).to(OperatorLogPointManager).inSingletonScope();
 
   container.bind<IDecorationSetter>(IDecorationSetter).to(DecorationSetter).inSingletonScope();
   container

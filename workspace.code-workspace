@@ -30,13 +30,9 @@
     }
   ],
   "settings": {
-    "typescript.tsc.autoDetect": "off",
-    "typescript.tsdk": "node_modules/typescript/lib",
-    "jest.disabledWorkspaceFolders": [
-      "debugger",
-      "extension-integrationtest",
-      "testbench-nodejs",
-      "testbench-webpack"
-    ]
+    "jest.disabledWorkspaceFolders": ["Root", "extension-integrationtest", "testbench-nodejs", "testbench-webpack"],
+    "search.exclude": {
+      "**/out": true // set this to false to include "out" folder in search results
+    }
   }
 }

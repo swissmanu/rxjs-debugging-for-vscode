@@ -1,9 +1,9 @@
-import { inject, injectable } from 'inversify';
 import { TelemetryEvent } from '@rxjs-debugging/telemetry';
+import { inject, injectable } from 'inversify';
 import { Event } from 'vscode';
 import { ILogger } from '../logger';
 import OperatorLogPoint from '../operatorLogPoint';
-import { IOperatorLogPointManager } from '../operatorLogPoint/logPointManager';
+import { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import { ITelemetryBridge } from '../telemetryBridge';
 import { IDisposable } from '../util/types';
 
