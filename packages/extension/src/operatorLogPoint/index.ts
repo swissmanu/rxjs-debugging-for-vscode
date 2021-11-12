@@ -9,6 +9,7 @@ interface IOperatorLogPoint {
   operatorIdentifier: IOperatorIdentifier;
   operatorName: string | null;
   enabled: boolean;
+  key: string;
 }
 
 export default class OperatorLogPoint implements IOperatorLogPoint {

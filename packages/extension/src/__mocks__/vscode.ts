@@ -129,7 +129,7 @@ export class Uri implements UriType {
   }
 
   toString(skipEncoding?: boolean): string {
-    return '';
+    return `${this.scheme}${this.authority}${this.path}${this.query}${this.fragment}`;
   }
 
   toJSON(): any {
