@@ -12,7 +12,7 @@ import { DocumentDecorationProvider } from '..';
 import OperatorLogPoint from '../../operatorLogPoint';
 import { IOperatorLogPointManager } from '../../operatorLogPoint/manager';
 import { IOperatorLogPointRecommendationEvent, IOperatorLogPointRecommender } from '../../operatorLogPoint/recommender';
-import { difference } from '../../util/map';
+import difference from '../../util/map/difference';
 import { IDisposable } from '../../util/types';
 import { IDecorationSetter } from '../decorationSetter';
 import createHoverMessageForLogPoints from './createHoverMessageForLogPoint';

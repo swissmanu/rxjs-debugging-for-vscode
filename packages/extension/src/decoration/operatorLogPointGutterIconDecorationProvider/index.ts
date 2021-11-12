@@ -15,7 +15,7 @@ import OperatorLogPoint from '../../operatorLogPoint';
 import { IOperatorLogPointManager } from '../../operatorLogPoint/manager';
 import { IOperatorLogPointRecommendationEvent, IOperatorLogPointRecommender } from '../../operatorLogPoint/recommender';
 import { IResourceProvider } from '../../resources';
-import { difference } from '../../util/map';
+import difference from '../../util/map/difference';
 import { IDisposable } from '../../util/types';
 import { IDecorationSetter } from '../decorationSetter';
 import getEnabledState from './getEnabledState';
