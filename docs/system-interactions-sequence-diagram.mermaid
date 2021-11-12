@@ -1,0 +1,40 @@
+sequenceDiagram
+  participant User
+	participant vscode
+	participant jsdebug as js-debug
+	participant Extension as RxJS Debugging Extension
+  participant Program as RxJS Program
+	participant Runtime as Debugging Runtime
+
+
+  User->>+vscode: Open observable.ts
+  vscode-->>User: Show observable.ts
+  vscode-->>+Extension: Opened observable.ts
+  Extension->>Extension: Recommend Operator Log Points
+  Extension->>-vscode: Update Operator Log Point Decorations
+  vscode-->>User: Show Operator Log Point Decorations
+  User->>+Extension: Enable Operator Log Point
+  Extension->>Extension: Enable Operator Log Point
+  Extension->>-vscode: Update Operator Log Point Decorations
+  vscode-->>User: Show Operator Log Point Decorations
+
+  User->>vscode: Start Debug
+  vscode->>+jsdebug: Start Debug Session
+  jsdebug->>+Extension: Will Start Debug Session
+  Extension-->>jsdebug: Customize Debug Session with Debugging Runtime
+  jsdebug->>+Program: Launch and inject Debugging Runtime
+  Runtime->>Program: Patch RxJS
+  Runtime->>Extension: Call Binding "rxJsDebuggerRuntimeReady"
+  Extension->>Runtime: updateOperatorLogPoints()
+  loop
+	  Program->>Runtime: Telemetry Data
+  	Runtime->>Extension: Telemetry Data
+	  Extension->>vscode: Update Live Log Decoration for observable.ts
+	  vscode-->>User: Show Live Log Decoration
+	end
+
+	Program-->>-jsdebug: Process exited
+	jsdebug-->>vscode: Debug Session terminated
+	jsdebug->>-Extension: Debug Session terminated
+	Extension->>-vscode: Clear Live Log Decoration
+	vscode-->>-User: Hide Live Log Decoration

@@ -14,7 +14,7 @@ RxJS-specific debugging reuses debugging sessions started by *Visual Studio Code
 
 ### RxJS Debugging Extension
 
-The [*RxJS Debugging Extension*](./packages/extension) integrates with *Visual Studio Codes* using its extension API and provides the relevant user interfaces and functionalities. It allows developers to use RxJS debugging features like operator log points.
+The [*RxJS Debugging Extension*](./packages/extension) integrates with *Visual Studio Code* using its extension API and provides relevant user interfaces and functionalities. It allows developers to use RxJS debugging features like operator log points.
 
 Furthermore, it ensures that, once a *js-debug* debugging session is started, essential hooks are registered in the *JavaScript VM* using [CDP Bindings](#cdp-bindings).
 
@@ -46,3 +46,11 @@ Once the *RxJS Debugging Extensions* detects a new *js-debug* debugging session,
 | `sendRxJsDebuggerTelemetry` | `string` | Sends a JSON-encoded [TelemetryEvent](./packages/telemetry/src/index.ts) to the *RxJS Debugging Extension*. |
 
 Both the *RxJS Debugging Extension* as well as the *Debugging Runtime* use a well defined communication protocol implemented by their respective telemetry bridges.
+
+## Example System Interaction
+
+Based on [testbench-nodejs](./packages/testbench-nodejs), the following sequence diagram shows typical interactions between the presented system components.
+
+*The JavaScript VM component is omitted for clarity.* 
+
+![Example System Interaction Sequence Diagram](./docs/system-interactions-sequence-diagram.svg)
