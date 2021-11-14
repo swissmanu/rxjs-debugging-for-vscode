@@ -18,7 +18,7 @@ The [*RxJS Debugging Extension*](./packages/extension) integrates with *Visual S
 
 Furthermore, it ensures that, once a *js-debug* debugging session is started, essential hooks are registered in the *JavaScript VM* using [CDP Bindings](#cdp-bindings).
 
-The communication protocol to exchange data with the *Debugging Runtime* is implemented in the extensions [TelemetryBridge](./packages/extension/src/telemetryBridge/index.ts).
+The communication protocol to exchange data with the *Debugging Runtime* is implemented in the extension's [TelemetryBridge](./packages/extension/src/telemetryBridge/index.ts).
 
 ### Debugging Runtime
 
@@ -38,7 +38,7 @@ A binding is a function available in a *JavaScript VM* global scope. It is creat
 
 *RxJS Debugging for Visual Studio Code* uses this form of remote procedure calls (RPC) to communicate with the *Debugging Runtime* in a *JavaScript VM*.
 
-Once the *RxJS Debugging Extensions* detects a new *js-debug* debugging session, following bindings are registered:
+Once the *RxJS Debugging Extension* detects a new *js-debug* debugging session, following bindings are registered:
 
 | Name                        | Payload  | Notes                                                        |
 | --------------------------- | -------- | ------------------------------------------------------------ |
