@@ -15,6 +15,7 @@ import OperatorLogPoint from '../../operatorLogPoint';
 import { IOperatorLogPointManager } from '../../operatorLogPoint/manager';
 import { IOperatorLogPointRecommendationEvent, IOperatorLogPointRecommender } from '../../operatorLogPoint/recommender';
 import { IResourceProvider } from '../../resources';
+import { IConfigurationAccessor } from '../../util/configurationAccessor';
 import difference from '../../util/map/difference';
 import { IDisposable } from '../../util/types';
 import { IDecorationSetter } from '../decorationSetter';
@@ -40,6 +41,7 @@ export default class OperatorLogPointGutterIconDecorationProvider extends Docume
     operatorLogPointRecommender: IOperatorLogPointRecommender,
     private readonly operatorLogPointManager: IOperatorLogPointManager,
     private readonly resourceProvider: IResourceProvider,
+    private readonly configurationAccessor: IConfigurationAccessor,
     decorationSetter: IDecorationSetter,
     textDocument: TextDocument
   ) {
@@ -48,12 +50,16 @@ export default class OperatorLogPointGutterIconDecorationProvider extends Docume
     this.onRecommendOperatorLogPointsDisposable = operatorLogPointRecommender.onRecommendOperatorLogPoints(
       this.onRecommendOperatorLogPoints
     );
-    this.onDidChangeLogPointsDisposable = operatorLogPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints);
-    this.onDidChangeConfigurationDisposable = workspace.onDidChangeConfiguration(this.onDidChangeConfiguration);
+    this.onDidChangeLogPointsDisposable = operatorLogPointManager.onDidChangeLogPoints(this.onDidChangeLogPoints, this);
+    this.onDidChangeConfigurationDisposable = configurationAccessor.onDidChangeConfiguration(
+      this.onDidChangeConfiguration,
+      this
+    );
 
-    this.showLogPointRecommendations = workspace
-      .getConfiguration(Configuration.RecommendOperatorLogPointsWithAnIcon)
-      .get(Configuration.RecommendOperatorLogPointsWithAnIcon, true);
+    this.showLogPointRecommendations = this.configurationAccessor.get(
+      Configuration.RecommendOperatorLogPointsWithAnIcon,
+      true
+    );
 
     workspace.onDidChangeTextDocument(() => this.updateDecorations());
   }
@@ -87,9 +93,10 @@ export default class OperatorLogPointGutterIconDecorationProvider extends Docume
 
   private onDidChangeConfiguration = ({ affectsConfiguration }: ConfigurationChangeEvent) => {
     if (affectsConfiguration(Configuration.RecommendOperatorLogPointsWithAnIcon)) {
-      this.showLogPointRecommendations = workspace
-        .getConfiguration(Configuration.RecommendOperatorLogPointsWithAnIcon)
-        .get(Configuration.RecommendOperatorLogPointsWithAnIcon, true);
+      this.showLogPointRecommendations = this.configurationAccessor.get(
+        Configuration.RecommendOperatorLogPointsWithAnIcon,
+        true
+      );
       this.updateDecorations();
     }
   };

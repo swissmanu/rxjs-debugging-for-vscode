@@ -1,13 +1,14 @@
 import { OperatorLogPointTelemetryEvent, TelemetryEvent } from '@rxjs-debugging/telemetry';
 import matchTelemetryEvent from '@rxjs-debugging/telemetry/out/match';
 import matchObservableEvent from '@rxjs-debugging/telemetry/out/observableEvent/match';
-import { DecorationRangeBehavior, Range, TextDocument, TextEditor, ThemeColor, window, workspace } from 'vscode';
+import { DecorationRangeBehavior, Range, TextDocument, TextEditor, ThemeColor, window } from 'vscode';
 import { DocumentDecorationProvider } from '.';
 import { Colors } from '../colors';
 import { Configuration } from '../configuration';
 import { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import { ISessionManager } from '../sessionManager';
 import { ISession } from '../sessionManager/session';
+import { IConfigurationAccessor } from '../util/configurationAccessor';
 import { IDisposable } from '../util/types';
 import { IDecorationSetter } from './decorationSetter';
 
@@ -28,6 +29,7 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
   constructor(
     private readonly sessionManager: ISessionManager,
     private readonly operatorLogPointManager: IOperatorLogPointManager,
+    private readonly configurationAccessor: IConfigurationAccessor,
     decorationSetter: IDecorationSetter,
     textDocument: TextDocument
   ) {
@@ -44,7 +46,7 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
   };
 
   private onDidTerminateSession = (): void => {
-    const hideLiveLog: boolean = workspace.getConfiguration().get(Configuration.HideLiveLogWhenStoppingDebugger, true);
+    const hideLiveLog: boolean = this.configurationAccessor.get(Configuration.HideLiveLogWhenStoppingDebugger, true);
     if (hideLiveLog) {
       this.setDecorations([]);
     }

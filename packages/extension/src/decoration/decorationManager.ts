@@ -6,6 +6,7 @@ import { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import { IOperatorLogPointRecommender } from '../operatorLogPoint/recommender';
 import { IResourceProvider } from '../resources';
 import { ISessionManager } from '../sessionManager';
+import { IConfigurationAccessor } from '../util/configurationAccessor';
 import { IDisposable } from '../util/types';
 import { isSupportedDocument } from '../workspaceMonitor/supportedDocument';
 import { IDecorationProvider } from './';
@@ -62,6 +63,7 @@ export default class DecorationManager implements IDecorationManager {
       const uri = document.uri.toString();
       if (!this.decorators.has(uri)) {
         this.logger.info('DecorationManager', `Create decoration providers for ${uri}`);
+        const configurationAccessor = this.rootContainer.get<IConfigurationAccessor>(IConfigurationAccessor);
         const operatorLogPointManager = this.rootContainer.get<IOperatorLogPointManager>(IOperatorLogPointManager);
         const decorationSetter = this.rootContainer.get<IDecorationSetter>(IDecorationSetter);
         const operatorLogPointRecommender =
@@ -72,6 +74,7 @@ export default class DecorationManager implements IDecorationManager {
             operatorLogPointRecommender,
             operatorLogPointManager,
             this.rootContainer.get(IResourceProvider),
+            configurationAccessor,
             decorationSetter,
             document
           ),
@@ -84,6 +87,7 @@ export default class DecorationManager implements IDecorationManager {
           new LiveLogDecorationProvider(
             this.rootContainer.get(ISessionManager),
             operatorLogPointManager,
+            configurationAccessor,
             decorationSetter,
             document
           ),
