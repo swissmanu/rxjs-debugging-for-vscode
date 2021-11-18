@@ -5,9 +5,13 @@ import typescript from '@rollup/plugin-typescript';
 import * as path from 'path';
 import copy from 'rollup-plugin-copy';
 import { terser } from 'rollup-plugin-terser';
+import packageJson from './package.json';
 
 const terserOptions = { format: { comments: () => false } };
 
+const intro = `
+const EXTENSION_VERSION = "${packageJson.version}";
+`;
 /**
  * @type {import('rollup').RollupOptions}
  */
@@ -24,6 +28,7 @@ export default ({ configMode }) => {
       dir: 'out',
       format: 'commonjs',
       sourcemap: !doProductionBuild,
+      intro,
     },
     external: [
       'vscode',

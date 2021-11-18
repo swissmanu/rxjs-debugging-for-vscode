@@ -16,6 +16,7 @@ import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
 import { DefaultCDPClientProvider, ICDPClientProvider } from '../telemetryBridge/cdpClientProvider';
 import ConfigurationAccessor, { IConfigurationAccessor } from '../util/configurationAccessor';
+import createEnvironmentInfo, { IEnvironmentInfo } from '../util/environmentInfo';
 import WorkspaceMonitor, { IWorkspaceMonitor } from '../workspaceMonitor';
 import { IRxJSDetector, RxJSDetector } from '../workspaceMonitor/detector';
 import DisposableContainer, { IDisposableContainer } from './disposableContainer';
@@ -36,6 +37,7 @@ export default function createRootContainer(
   const container = new DisposableContainer('Root');
 
   container.bind<typeof vscode>(VsCodeApi).toConstantValue(vscode);
+  container.bind<IEnvironmentInfo>(IEnvironmentInfo).toConstantValue(createEnvironmentInfo(vscode));
   container.bind<IConfigurationAccessor>(IConfigurationAccessor).to(ConfigurationAccessor).inSingletonScope();
 
   container.bind<interfaces.Container>(RootContainer).toConstantValue(container);
