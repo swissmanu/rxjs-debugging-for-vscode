@@ -54,5 +54,4 @@ Usage analytics data is collected and stored at the [Eastern Switzerland Univers
 
 ## Open Source, Open Research and Open Data
 
-[Posthog](https://posthog.com/) does not allow the creation of read-only users at the time of writing this document. Please contact us if you want to access to the collected analytics data for your own research project or contribution to the extension. We happily assist you either with an export of a data set or grant you access to Posthog itself if required.
-
+[Posthog](https://posthog.com/) does not allow the creation of read-only users at the time of writing this document. 🙏 Please [create an issue](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/new?template=request_analytics_data_access.md) using the appropriate template if you want to access to the collected analytics data for your own research project or contribution to the extension. We happily assist you either with an export of a data set or grant you access to Posthog itself if required.
