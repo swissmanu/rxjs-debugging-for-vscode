@@ -42,9 +42,9 @@ The following list documents all tracked analytic events. Feel free to review th
 
 | Data Point                                                   | Reason                                                       | Example Values           |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------ |
-| Operating System                                             | This identifies the operating system you run Visual Studio Code on.<br />This data point allows us to understand if a problem with the extension exists only on a specific operating system, or on multiple. | `windows`, `darwin`, ... |
-| [Visual Studio Application Host](https://code.visualstudio.com/api/references/vscode-api#env) | Visual Studio Code can run as a desktop application as well as in your browser. The application host determines on what you run Visual Studio Code.<br />This data point helps us to understand if a particular problem exists only on one specific application host. | `desktop`, `web`, ...    |
-| Stack Trace                                                  | The technical trace of the reason, why the extension crashed.<br />It helps us to understand what happened on your machine. |                          |
+| **Operating System**                                         | This identifies the operating system you run Visual Studio Code on.<br />This data point allows us to understand if a problem with the extension exists only on a specific operating system, or on multiple. | `windows`, `darwin`, ... |
+| **[Visual Studio Application Host](https://code.visualstudio.com/api/references/vscode-api#env)** | Visual Studio Code can run as a desktop application as well as in your browser. The application host determines on what you run Visual Studio Code.<br />This data point helps us to understand if a particular problem exists only on one specific application host. | `desktop`, `web`, ...    |
+| **Stack Trace**                                              | The technical trace of the reason, why the extension crashed.<br />It helps us to understand what happened on your machine. |                          |
 
 ## Data Transmission and Storage
 

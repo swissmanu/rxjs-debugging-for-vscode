@@ -56,7 +56,7 @@ export default ({ configMode }) => {
         targets: [
           { src: '../runtime-nodejs/out/**/*', dest: './out/runtime-nodejs' },
           { src: '../../docs/*', dest: './docs' },
-          { src: '../../README.md', dest: './' },
+          { src: '../../*.md', dest: './' },
           { src: '../../LICENSE', dest: './' },
         ],
       }),
