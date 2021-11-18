@@ -1,12 +1,14 @@
 import 'reflect-metadata';
+import OperatorLogPointManager from '.';
+import { IAnalyticsReporter } from '../../analytics';
 import Logger from '../../logger';
 import { logPointFixtureA, logPointFixtureB } from '../index.fixture';
-import OperatorLogPointManager from '.';
 import { IOperatorLogPointRecommender } from '../recommender';
 
 describe('OperatorLogPointManager', () => {
   let logPointManager: OperatorLogPointManager;
   let recommender: IOperatorLogPointRecommender;
+  let analyticsReporter: IAnalyticsReporter;
 
   beforeEach(() => {
     recommender = {
@@ -14,7 +16,15 @@ describe('OperatorLogPointManager', () => {
       onRecommendOperatorLogPoints: jest.fn(),
       recommend: jest.fn(),
     };
-    logPointManager = new OperatorLogPointManager(recommender, Logger.nullLogger());
+    analyticsReporter = {
+      captureDebugSessionStarted: jest.fn(),
+      captureDebugSessionStopped: jest.fn(),
+      captureExtensionCrashed: jest.fn(),
+      captureOperatorLogPointDisabled: jest.fn(),
+      captureOperatorLogPointEnabled: jest.fn(),
+      dispose: jest.fn(),
+    };
+    logPointManager = new OperatorLogPointManager(recommender, analyticsReporter, Logger.nullLogger());
   });
 
   describe('enable()', () => {

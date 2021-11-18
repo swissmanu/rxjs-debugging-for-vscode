@@ -3,6 +3,7 @@
   "rxjs-debugging.config.hideLiveLogWhenStoppingDebugger": "When enabled, live log values are hidden automatically after stopping the debugger.",
   "rxjs-debugging.config.recommendOperatorLogPointsWithAnIcon": "When enabled, recommended operator log points will be indicated using an icon at the beginning of the line. Hint: You can toggle this setting using the related command in the command palette as well.",
   "rxjs-debugging.config.logLevel": "Internal log level for the extension. (reload required)",
+  "rxjs-debugging.config.enableUsageAnalytics": "When enabled, anonymized behavior data is collected to further improve RxJS Debugging and fuel future research projects looking into RxJS Debugging.\n\nYour individual identity will neither be revealed nor can be reconstructed at any time.\n\nSee https://github.com/swissmanu/rxjs-debugging-for-vscode/blob/main/ANALYTICS.md for a full disclosure on what data for what reason gets collected, where it is stored and how you can get access to it.\n\nThank you for considering your contribution 🙏",
 
   "rxjs-debugging.command.toggleOperatorLogPointGutterIcon": "Toggle gutter icon for recommended operator log points"
 }

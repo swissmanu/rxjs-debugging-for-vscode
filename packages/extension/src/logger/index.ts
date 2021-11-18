@@ -32,7 +32,8 @@ export type LogDomain =
   | 'OperatorLogPointRecommender'
   | 'WorkspaceMonitor'
   | 'Detector'
-  | 'TelemetryBridge';
+  | 'TelemetryBridge'
+  | 'Analytics';
 
 export const ILogger = Symbol('ILogger');
 

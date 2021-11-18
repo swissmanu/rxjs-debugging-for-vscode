@@ -1,5 +1,6 @@
 import commonjs from '@rollup/plugin-commonjs';
 import inject from '@rollup/plugin-inject';
+import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import typescript from '@rollup/plugin-typescript';
 import * as path from 'path';
@@ -11,7 +12,10 @@ const terserOptions = { format: { comments: () => false } };
 
 const intro = `
 const EXTENSION_VERSION = "${packageJson.version}";
+const POSTHOG_PROJECT_API_KEY = "phc_Itpmq2gkUMiCYKYVVzR18rVItJqkCwUteNDnmOqx67K";
+const POSTHOG_HOST = "http://localhost:3000"
 `;
+
 /**
  * @type {import('rollup').RollupOptions}
  */
@@ -35,6 +39,7 @@ export default ({ configMode }) => {
       ...(doProductionBuild ? [] : ['typescript']), // Faster dev builds without including TypeScript
     ],
     plugins: [
+      json(),
       commonjs({
         ignore: ['bufferutil', 'utf-8-validate'], // Ignore optional peer dependencies of ws
       }),

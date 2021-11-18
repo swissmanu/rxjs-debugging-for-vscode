@@ -3,6 +3,7 @@ import operatorIdentifierToString from '@rxjs-debugging/telemetry/out/operatorId
 import { inject, injectable } from 'inversify';
 import { Event, EventEmitter } from 'vscode';
 import OperatorLogPoint from '..';
+import { IAnalyticsReporter } from '../../analytics';
 import { ILogger } from '../../logger';
 import { IDisposable } from '../../util/types';
 import { IOperatorLogPointRecommender } from '../recommender';
@@ -37,6 +38,7 @@ export default class OperatorLogPointManager implements IOperatorLogPointManager
 
   constructor(
     @inject(IOperatorLogPointRecommender) recommender: IOperatorLogPointRecommender,
+    @inject(IAnalyticsReporter) private readonly analyticsReporter: IAnalyticsReporter,
     @inject(ILogger) private readonly logger: ILogger
   ) {
     const merger = new OperatorLogPointMerger();
@@ -58,6 +60,10 @@ export default class OperatorLogPointManager implements IOperatorLogPointManager
       this.logger.info('LogPointManager', `Enable log point at ${enabledOperatorLogPoint}`);
       this._logPoints.set(key, enabledOperatorLogPoint);
       this._onDidChangeLogPoints.fire(this.logPoints);
+
+      this.analyticsReporter.captureOperatorLogPointEnabled({
+        operatorName: operatorLogPoint.operatorName ?? undefined,
+      });
     }
   }
 
@@ -69,6 +75,10 @@ export default class OperatorLogPointManager implements IOperatorLogPointManager
       this.logger.info('LogPointManager', `Disable log point at ${disabledOperatorLogPoint}`);
       this._logPoints.delete(key);
       this._onDidChangeLogPoints.fire(this.logPoints);
+
+      this.analyticsReporter.captureOperatorLogPointDisabled({
+        operatorName: operatorLogPoint.operatorName ?? undefined,
+      });
     }
   }
 

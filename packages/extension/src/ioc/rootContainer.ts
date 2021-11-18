@@ -1,5 +1,7 @@
 import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
+import PosthogAnalyticsReporter, { IAnalyticsReporter } from '../analytics';
+import createPosthogConfiguration, { IPosthogConfiguration } from '../analytics/posthogConfiguration';
 import { Configuration } from '../configuration';
 import {
   INodeWithRxJSDebugConfigurationResolver,
@@ -49,6 +51,13 @@ export default function createRootContainer(
   );
   container.bind<ILogger>(ILogger).toConstantValue(logger);
 
+  container.bind<IPosthogConfiguration>(IPosthogConfiguration).toConstantValue(createPosthogConfiguration());
+  container
+    .bind<IAnalyticsReporter>(IAnalyticsReporter)
+    .to(PosthogAnalyticsReporter)
+    .inSingletonScope()
+    .onActivation(container.trackDisposableBinding);
+
   container.bind<IResourceProvider>(IResourceProvider).to(DefaultResourceProvider).inTransientScope();
 
   container
@@ -90,6 +99,7 @@ export default function createRootContainer(
   container.bind<ICDPClientProvider>(ICDPClientProvider).to(DefaultCDPClientProvider).inSingletonScope();
 
   // Ensure necessary components are initialized and active by default:
+  container.get<IAnalyticsReporter>(IAnalyticsReporter);
   container.get<ISessionManager>(ISessionManager);
   container.get<IDecorationManager>(IDecorationManager);
   container.get<IWorkspaceMonitor>(IWorkspaceMonitor);
