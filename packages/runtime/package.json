@@ -7,11 +7,12 @@
   "main": "out/index.js",
   "types": "out/index.d.ts",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc && cp src/global.d.ts out/"
   },
   "dependencies": {
     "@rxjs-debugging/telemetry": "0.0.0",
     "source-map": "0.7.3",
+    "spicery": "2.1.2",
     "stacktrace-js": "2.0.2",
     "rxjs": "6.6.7"
   },

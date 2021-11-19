@@ -54,4 +54,4 @@ function defaultSend(event: TelemetryEvent): void {
 
 global[RUNTIME_TELEMETRY_BRIDGE] = telemetryBridge;
 
-waitForCDPBindings();
+waitForCDPBindings('nodejs');
