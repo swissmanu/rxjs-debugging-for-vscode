@@ -90,6 +90,9 @@ jobs:
 
       - name: Production Build
         run: yarn nx run-many --target=build --configuration=prod --projects=extension,runtime-webpack
+        env:
+          POSTHOG_HOST: snapshot
+          POSTHOG_PROJECT_API_KEY: snapshot
 
       - name: 'extension: Create VSIX'
         run: yarn nx package extension
@@ -111,16 +114,20 @@ jobs:
           path: 'packages/runtime-webpack/*.tgz'
           retention-days: 10
 
-  publish:
+  publish-marketplace:
     if: github.event == 'release' && github.event.action == 'published'
     needs:
       - unit-test
-      - integration-test
       - lint
+      - integration-test
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
@@ -129,11 +136,45 @@ jobs:
 
       - name: Install Dependencies
         run: yarn --immutable
-      - name: Production Build
-        run: yarn nx run-many --target=build --configuration=prod --projects=extension,runtime-webpack
 
-      - name: 'Publish'
-        run: yarn nx run-many --target=publish --projects=runtime-webpack
+      - name: Create Production Build
+        run: yarn nx run-many --target=build --configuration=prod --projects=extension
+        env:
+          POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
+          POSTHOG_PROJECT_API_KEY: ${{ secrets.POSTHOG_PROJECT_API_KEY }}
+
+      - name: 'Publish to Marketplace'
+        run: yarn nx run-many --target=publish --projects=extension
         env:
           VSCE_PAT: ${{ secrets.AZURE_ACCESS_TOKEN }}
+
+  publish-npm:
+    if: github.event == 'release' && github.event.action == 'published'
+    needs:
+      - unit-test
+      - lint
+      - integration-test
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://www.npmjs.com/package/@rxjs-debugging/runtime-webpack
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install Dependencies
+        run: yarn --immutable
+
+      - name: Create Production Build
+        run: yarn nx run-many --target=build --configuration=prod --projects=runtime-webpack
+
+      - name: 'Publish to npm'
+        run: yarn nx run-many --target=publish --projects=runtime-webpack
+        env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

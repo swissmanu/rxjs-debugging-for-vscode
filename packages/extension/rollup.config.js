@@ -9,12 +9,8 @@ import { terser } from 'rollup-plugin-terser';
 import packageJson from './package.json';
 
 const terserOptions = { format: { comments: () => false } };
-
-const intro = `
-const EXTENSION_VERSION = "${packageJson.version}";
-const POSTHOG_PROJECT_API_KEY = "phc_Itpmq2gkUMiCYKYVVzR18rVItJqkCwUteNDnmOqx67K";
-const POSTHOG_HOST = "http://localhost:3000"
-`;
+const POSTHOG_PROJECT_API_KEY = process.env['POSTHOG_PROJECT_API_KEY'] ?? null;
+const POSTHOG_HOST = process.env['POSTHOG_HOST'] ?? null;
 
 /**
  * @type {import('rollup').RollupOptions}
@@ -22,6 +18,20 @@ const POSTHOG_HOST = "http://localhost:3000"
 export default ({ configMode }) => {
   const doProductionBuild = configMode === 'production';
   const doTestBuild = configMode === 'test';
+
+  if (doProductionBuild && (POSTHOG_PROJECT_API_KEY === null || POSTHOG_HOST === null)) {
+    console.error(
+      'POSTHOG_PROJECT_API_KEY and/or POSTHOG_HOST environment variables are missing. Cannot create production build.'
+    );
+    process.exit(1);
+    return;
+  }
+
+  const intro = `
+const EXTENSION_VERSION = "${packageJson.version}";
+const POSTHOG_PROJECT_API_KEY = "${POSTHOG_PROJECT_API_KEY}";
+const POSTHOG_HOST = "${POSTHOG_HOST}"
+`;
 
   return {
     input: {
