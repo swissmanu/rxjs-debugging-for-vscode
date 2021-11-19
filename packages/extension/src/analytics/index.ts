@@ -3,7 +3,7 @@ import Posthog from 'posthog-node';
 import type * as vscode from 'vscode';
 import { Configuration } from '../configuration';
 import { ILogger } from '../logger';
-import { IConfigurationAccessor } from '../util/configurationAccessor';
+import { IConfigurationAccessor } from '../configuration/configurationAccessor';
 import { IEnvironmentInfo } from '../util/environmentInfo';
 import { IDisposable } from '../util/types';
 import { AnalyticsEventDataPoints, AnalyticsEvents } from './events';

@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 import * as vscode from 'vscode';
 import * as nls from 'vscode-nls';
+import askToOptInToAnalyticsReporter from './analytics/askToOptInToAnalyticsReporter';
 import registerOperatorLogPointManagementCommands from './commands/operatorLogPointManagement';
 import registerToggleOperatorLogPointDecorationCommand from './commands/toggleOperatorLogPointGutterIcon';
 import {
@@ -10,6 +11,7 @@ import {
 import type { default as prepareForIntegrationTestType } from './integrationTest/prepareForIntegrationTest';
 import createRootContainer from './ioc/rootContainer';
 import { ILogger } from './logger';
+import { IConfigurationAccessor } from './configuration/configurationAccessor';
 
 nls.config({ messageFormat: nls.MessageFormat.file })();
 
@@ -29,8 +31,12 @@ export function activate(context: vscode.ExtensionContext): void {
       rootContainer.get<vscode.DebugConfigurationProvider>(INodeWithRxJSDebugConfigurationResolver)
     );
   }
+
+  const configurationAccessor: IConfigurationAccessor = rootContainer.get(IConfigurationAccessor);
   registerOperatorLogPointManagementCommands(context, rootContainer);
-  registerToggleOperatorLogPointDecorationCommand(context);
+  registerToggleOperatorLogPointDecorationCommand(context, configurationAccessor);
+
+  void askToOptInToAnalyticsReporter(configurationAccessor);
 
   rootContainer.get<ILogger>(ILogger).info('Extension', 'Ready');
 }

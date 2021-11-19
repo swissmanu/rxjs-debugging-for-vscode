@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import 'reflect-metadata';
 import { Configuration } from '../configuration';
+import { IConfigurationAccessor } from '../configuration/configurationAccessor';
 import Logger from '../logger';
-import { IConfigurationAccessor } from '../util/configurationAccessor';
 import { IEnvironmentInfo } from '../util/environmentInfo';
 import PosthogAnalyticsReporter, { IAnalyticsReporter } from './index';
 import { IPosthogConfiguration } from './posthogConfiguration';
@@ -24,6 +25,8 @@ describe('Analytics', () => {
     beforeEach(() => {
       configurationAccessor = {
         get: jest.fn(),
+        hasGlobal: jest.fn(),
+        update: jest.fn(),
         onDidChangeConfiguration: jest.fn(),
       };
     });
@@ -33,16 +36,10 @@ describe('Analytics', () => {
     });
 
     describe('having analytics disabled,', () => {
-      let posthog;
-
       beforeEach(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         configurationAccessor.get = jest.fn(() => false as any);
-        posthog = new PosthogAnalyticsReporter(
-          posthogConfiguration,
-          environmentInfo,
-          configurationAccessor,
-          Logger.nullLogger()
-        );
+        new PosthogAnalyticsReporter(posthogConfiguration, environmentInfo, configurationAccessor, Logger.nullLogger());
       });
 
       test('does not create a Posthog reporter on creation', () => {
@@ -55,6 +52,7 @@ describe('Analytics', () => {
       let posthog: IAnalyticsReporter;
 
       beforeEach(() => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         configurationAccessor.get = jest.fn(() => true as any);
         posthog = new PosthogAnalyticsReporter(
           posthogConfiguration,

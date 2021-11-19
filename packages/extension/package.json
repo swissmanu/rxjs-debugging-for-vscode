@@ -32,22 +32,22 @@
     "configuration": {
       "title": "%rxjs-debugging.config.title%",
       "properties": {
-        "debug.rxjs.recommendOperatorLogPointsWithAnIcon": {
+        "rxjsDebugging.recommendOperatorLogPointsWithAnIcon": {
           "description": "%rxjs-debugging.config.recommendOperatorLogPointsWithAnIcon%",
           "type": "boolean",
           "default": true
         },
-        "debug.rxjs.hideLiveLogWhenStoppingDebugger": {
+        "rxjsDebugging.hideLiveLogWhenStoppingDebugger": {
           "description": "%rxjs-debugging.config.hideLiveLogWhenStoppingDebugger%",
           "type": "boolean",
           "default": true
         },
-        "debug.rxjs.enableUsageAnalytics": {
-          "description": "%rxjs-debugging.config.enableUsageAnalytics%",
+        "rxjsDebugging.enableUsageAnalytics": {
+          "markdownDescription": "%rxjs-debugging.config.enableUsageAnalytics%",
           "type": "boolean",
           "default": false
         },
-        "debug.rxjs.logLevel": {
+        "rxjsDebugging.logLevel": {
           "description": "%rxjs-debugging.config.logLevel%",
           "type": "string",
           "default": "Never",

@@ -8,7 +8,7 @@ import { Configuration } from '../configuration';
 import { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import { ISessionManager } from '../sessionManager';
 import { ISession } from '../sessionManager/session';
-import { IConfigurationAccessor } from '../util/configurationAccessor';
+import { IConfigurationAccessor } from '../configuration/configurationAccessor';
 import { IDisposable } from '../util/types';
 import { IDecorationSetter } from './decorationSetter';
 

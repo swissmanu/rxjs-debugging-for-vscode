@@ -6,7 +6,7 @@ import { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import { IOperatorLogPointRecommender } from '../operatorLogPoint/recommender';
 import { IResourceProvider } from '../resources';
 import { ISessionManager } from '../sessionManager';
-import { IConfigurationAccessor } from '../util/configurationAccessor';
+import { IConfigurationAccessor } from '../configuration/configurationAccessor';
 import { IDisposable } from '../util/types';
 import { isSupportedDocument } from '../workspaceMonitor/supportedDocument';
 import { IDecorationProvider } from './';

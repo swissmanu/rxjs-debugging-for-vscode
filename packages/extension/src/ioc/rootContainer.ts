@@ -3,6 +3,7 @@ import * as vscode from 'vscode';
 import PosthogAnalyticsReporter, { IAnalyticsReporter } from '../analytics';
 import createPosthogConfiguration, { IPosthogConfiguration } from '../analytics/posthogConfiguration';
 import { Configuration } from '../configuration';
+import ConfigurationAccessor, { IConfigurationAccessor } from '../configuration/configurationAccessor';
 import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
@@ -17,7 +18,6 @@ import DefaultResourceProvider, { IResourceProvider } from '../resources';
 import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
 import { DefaultCDPClientProvider, ICDPClientProvider } from '../telemetryBridge/cdpClientProvider';
-import ConfigurationAccessor, { IConfigurationAccessor } from '../util/configurationAccessor';
 import createEnvironmentInfo, { IEnvironmentInfo } from '../util/environmentInfo';
 import WorkspaceMonitor, { IWorkspaceMonitor } from '../workspaceMonitor';
 import { IRxJSDetector, RxJSDetector } from '../workspaceMonitor/detector';
@@ -41,13 +41,14 @@ export default function createRootContainer(
   container.bind<typeof vscode>(VsCodeApi).toConstantValue(vscode);
   container.bind<IEnvironmentInfo>(IEnvironmentInfo).toConstantValue(createEnvironmentInfo(vscode));
   container.bind<IConfigurationAccessor>(IConfigurationAccessor).to(ConfigurationAccessor).inSingletonScope();
+  const configurationAccessor: IConfigurationAccessor = container.get(IConfigurationAccessor);
 
   container.bind<interfaces.Container>(RootContainer).toConstantValue(container);
   container.bind<vscode.ExtensionContext>(ExtensionContext).toConstantValue(extensionContext);
 
   const logger = new Logger(
     [new ConsoleLogSink()],
-    logLevelFromString(vscode.workspace.getConfiguration().get(Configuration.LogLevel, 'Never'))
+    logLevelFromString(configurationAccessor.get(Configuration.LogLevel, 'Never'))
   );
   container.bind<ILogger>(ILogger).toConstantValue(logger);
 
