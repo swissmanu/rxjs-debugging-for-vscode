@@ -3,6 +3,7 @@
 ## Next
 
 - Feature: Support Debugging of Browser-based Applications [#43](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/43)
+- Feature: Collect Analytics Data on Opt-In [#63](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/63)
 - Improvement: Add Integration Test for Operator Log Points [#49](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/49)
 - Bugfix: Enabled Log Point stays where it was enabled once [#102](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/102)
 
