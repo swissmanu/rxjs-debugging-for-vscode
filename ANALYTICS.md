@@ -40,14 +40,6 @@ The following list documents all tracked analytic events. Feel free to review th
 | ----------------- | ------------------------------------------------------------ | --------------------- |
 | **Operator Name** | Identifies **[built-in operators](https://rxjs.dev/api?type=function)** for which you enable/disable a log point. We will **NOT** track the name of a custom operator nor anything else related to your source code (line numbers, structure, etc.)<br />This data point helps us to understand which operators are the most problematic ones for our users. Thus, it helps us to build better debugging tools in the future accordingly. | `map`, `flatMap`, ... |
 
-### Extension Crashed
-
-| Data Point                                                   | Reason                                                       | Example Values           |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------ |
-| **Operating System**                                         | This identifies the operating system you run Visual Studio Code on.<br />This data point allows us to understand if a problem with the extension exists only on a specific operating system, or on multiple. | `windows`, `darwin`, ... |
-| **[Visual Studio Application Host](https://code.visualstudio.com/api/references/vscode-api#env)** | Visual Studio Code can run as a desktop application as well as in your browser. The application host determines on what you run Visual Studio Code.<br />This data point helps us to understand if a particular problem exists only on one specific application host. | `desktop`, `web`, ...    |
-| **Stack Trace**                                              | The technical trace of the reason, why the extension crashed.<br />It helps us to understand what happened on your machine. |                          |
-
 ## Data Transmission and Storage
 
 All analytic events are securely transmitted over an HTTPS connection.

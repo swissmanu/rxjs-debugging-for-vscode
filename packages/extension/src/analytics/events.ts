@@ -5,8 +5,7 @@ export type AnalyticsEvents =
   | 'operator log point enabled'
   | 'operator log point disabled'
   | 'debug session started'
-  | 'debug session stopped'
-  | 'extension crashed';
+  | 'debug session stopped';
 
 type NoDataPoints = Record<string, never>;
 
@@ -23,10 +22,5 @@ export interface AnalyticsEventDataPoints {
   };
   'operator log point disabled': {
     operatorName?: string;
-  };
-  'extension crashed': {
-    os?: string;
-    vscodeAppHost: string;
-    stackTrace?: string;
   };
 }

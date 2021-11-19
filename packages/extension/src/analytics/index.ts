@@ -120,10 +120,6 @@ export default class PosthogAnalyticsReporter implements IAnalyticsReporter {
     this.capture('debug session stopped', {});
   }
 
-  captureExtensionCrashed(dataPoints: AnalyticsEventDataPoints['extension crashed']): void {
-    this.capture('extension crashed', dataPoints);
-  }
-
   dispose(): void {
     this.onDidChangeTelemetryEnabledDisposable.dispose();
     this.stop();

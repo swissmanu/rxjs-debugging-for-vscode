@@ -19,7 +19,6 @@ describe('OperatorLogPointManager', () => {
     analyticsReporter = {
       captureDebugSessionStarted: jest.fn(),
       captureDebugSessionStopped: jest.fn(),
-      captureExtensionCrashed: jest.fn(),
       captureOperatorLogPointDisabled: jest.fn(),
       captureOperatorLogPointEnabled: jest.fn(),
       dispose: jest.fn(),

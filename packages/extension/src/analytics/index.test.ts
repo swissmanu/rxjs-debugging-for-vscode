@@ -141,19 +141,6 @@ describe('Analytics', () => {
           properties: {},
         });
       });
-
-      test('captures "extension crashed" events', () => {
-        posthog.captureExtensionCrashed({ vscodeAppHost: 'desktop', os: 'windows', stackTrace: 'stack' });
-        expect(getPosthogMockInstance()!.capture).toBeCalledWith({
-          distinctId: environmentInfo.machineId,
-          event: 'extension crashed',
-          properties: {
-            vscodeAppHost: 'desktop',
-            os: 'windows',
-            stackTrace: 'stack',
-          },
-        });
-      });
     });
   });
 });
