@@ -1,8 +1,9 @@
 import {
-  CDP_BINDING_NAME_READY,
+  CDP_BINDING_NAME_RUNTIME_READY,
   CDP_BINDING_NAME_SEND_TELEMETRY,
   RUNTIME_TELEMETRY_BRIDGE,
 } from '@rxjs-debugging/runtime/out/consts';
+import { RuntimeType, parseRuntimeType } from '@rxjs-debugging/runtime/out/utils/runtimeType';
 import { TelemetryEvent } from '@rxjs-debugging/telemetry';
 import { IOperatorIdentifier } from '@rxjs-debugging/telemetry/out/operatorIdentifier';
 import { inject, injectable } from 'inversify';
@@ -40,9 +41,10 @@ export interface ITelemetryBridge extends IDisposable {
   updateOperatorLogPoints(operators: ReadonlyArray<IOperatorIdentifier>): Promise<void>;
 
   /**
-   * An event fired once the runtime signals being ready to receive communication.
+   * An event fired once the runtime signals being ready to receive communication. Its only parameter describes the type
+   * of the runtime. It might be `undefined` in case the runtime type is unknown.
    */
-  onRuntimeReady: Event<void>;
+  onRuntimeReady: Event<RuntimeType | undefined>;
 
   /**
    * An event fired every time when the runtime sends a `TelemetryEvent`.
@@ -53,8 +55,8 @@ export interface ITelemetryBridge extends IDisposable {
 export default class TelemetryBridge implements ITelemetryBridge {
   private cdpClient: ICDPClient | undefined;
 
-  private _onRuntimeReady = new EventEmitter<void>();
-  get onRuntimeReady(): Event<void> {
+  private _onRuntimeReady = new EventEmitter<RuntimeType | undefined>();
+  get onRuntimeReady(): Event<RuntimeType | undefined> {
     return this._onRuntimeReady.event;
   }
 
@@ -82,7 +84,7 @@ export default class TelemetryBridge implements ITelemetryBridge {
       await Promise.all([
         await this.cdpClient.request('Runtime', 'enable'),
         await this.cdpClient.request('Runtime', 'addBinding', {
-          name: CDP_BINDING_NAME_READY,
+          name: CDP_BINDING_NAME_RUNTIME_READY,
         }),
         await this.cdpClient.request('Runtime', 'addBinding', {
           name: CDP_BINDING_NAME_SEND_TELEMETRY,
@@ -133,11 +135,17 @@ export default class TelemetryBridge implements ITelemetryBridge {
         this.logger.info('TelemetryBridge', `TelemetryEvent received: ${parameters.payload}`);
         this._onTelemetryEvent.fire(json);
       } catch (e) {
-        console.error(JSON.stringify(e)); // TODO
+        this.logger.error('TelemetryBridge', `Could not parse TelemetryEvent. Raw Event Data: ${parameters.payload}`);
       }
-    } else if (parameters.name === CDP_BINDING_NAME_READY) {
-      this.logger.info('TelemetryBridge', 'Runtime ready');
-      this._onRuntimeReady.fire();
+    } else if (parameters.name === CDP_BINDING_NAME_RUNTIME_READY && typeof parameters.payload === 'string') {
+      try {
+        const runtimeType = parseRuntimeType(parameters.payload);
+        this.logger.info('TelemetryBridge', `${runtimeType} runtime ready`);
+        this._onRuntimeReady.fire(runtimeType);
+      } catch (_) {
+        this.logger.warn('TelemetryBridge', 'Unknown runtime ready');
+        this._onRuntimeReady.fire(undefined);
+      }
     }
   };
 

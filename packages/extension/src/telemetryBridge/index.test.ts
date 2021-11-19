@@ -107,18 +107,25 @@ describe('UI', () => {
     });
 
     describe('onRuntimeReady()', () => {
-      test('is fired when the CDPClient register a call on the runtime ready binding', async () => {
-        const spy = jest.fn();
-        bridge.onRuntimeReady(spy);
+      test.each([
+        ['nodejs', 'nodejs'],
+        ['webpack', 'webpack'],
+        ['unknownRuntimeType', undefined],
+      ])(
+        'is fired when the CDPClient registers a call on the runtime ready binding carrying %s as runtime type',
+        (runtimeType, expectedParameter) => {
+          const spy = jest.fn();
+          bridge.onRuntimeReady(spy);
 
-        const callback = (cdpClient.subscribe as jest.Mock).mock.calls[0][2];
-        callback({
-          name: 'rxJsDebuggerRuntimeReady',
-          payload: {},
-        });
+          const callback = (cdpClient.subscribe as jest.Mock).mock.calls[0][2];
+          callback({
+            name: 'rxJsDebuggerRuntimeReady',
+            payload: runtimeType,
+          });
 
-        expect(spy).toBeCalled();
-      });
+          expect(spy).toBeCalledWith(expectedParameter);
+        }
+      );
     });
   });
 });

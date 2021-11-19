@@ -25,7 +25,7 @@ describe('Session', () => {
       disableOperatorLogPoint: jest.fn(() => Promise.resolve()),
       enableOperatorLogPoint: jest.fn(() => Promise.resolve()),
       updateOperatorLogPoints: jest.fn(() => Promise.resolve()),
-      onRuntimeReady: jest.fn((handler) => handler()), // immediately ready
+      onRuntimeReady: jest.fn((handler) => handler('nodejs')), // immediately ready
       onTelemetryEvent: jest.fn(),
       dispose: jest.fn(),
     };
@@ -36,6 +36,11 @@ describe('Session', () => {
     test('attaches to the TelemetryBridge', async () => {
       await session.attach();
       expect(telemetryBridge.attach).toBeCalled();
+    });
+
+    test('resolves with the RuntimeType provided by the TelemetryBridge', async () => {
+      const runtimeType = await session.attach();
+      expect(runtimeType).toEqual('nodejs');
     });
 
     test('sends log points present in the LogPointManager to the TelemetryBridge', async () => {

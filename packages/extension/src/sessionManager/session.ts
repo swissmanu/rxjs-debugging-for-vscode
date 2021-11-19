@@ -1,3 +1,4 @@
+import { RuntimeType } from '@rxjs-debugging/runtime/out/utils/runtimeType';
 import { TelemetryEvent } from '@rxjs-debugging/telemetry';
 import { inject, injectable } from 'inversify';
 import { Event } from 'vscode';
@@ -10,7 +11,7 @@ import { IDisposable } from '../util/types';
 export const ISession = Symbol('Session');
 
 export interface ISession extends IDisposable {
-  attach(): Promise<void>;
+  attach(): Promise<RuntimeType | undefined>;
   onTelemetryEvent: Event<TelemetryEvent>;
 }
 
@@ -18,8 +19,8 @@ export interface ISession extends IDisposable {
 export default class Session implements ISession {
   private disposables: Array<IDisposable> = [];
 
-  private attached?: Promise<void> | undefined;
-  private resolveAttached?: () => void | undefined;
+  private attached?: Promise<RuntimeType | undefined> | undefined;
+  private resolveAttached?: (runtimeType: RuntimeType | undefined) => void | undefined;
 
   get onTelemetryEvent(): Event<TelemetryEvent> {
     return this.telemetryBridge.onTelemetryEvent;
@@ -31,7 +32,7 @@ export default class Session implements ISession {
     @inject(ILogger) private readonly logger: ILogger
   ) {}
 
-  attach(): Promise<void> {
+  attach(): Promise<RuntimeType | undefined> {
     if (this.attached) {
       return this.attached;
     }
@@ -46,11 +47,15 @@ export default class Session implements ISession {
     return this.attached;
   }
 
-  private onRuntimeReady = (): void => {
-    this.logger.info('Session', 'Runtime ready');
+  private onRuntimeReady = (runtimeType: RuntimeType | undefined): void => {
+    if (runtimeType) {
+      this.logger.info('Session', `${runtimeType} runtime ready`);
+    } else {
+      this.logger.warn('Session', 'Unknown runtime ready');
+    }
 
     if (this.resolveAttached) {
-      this.resolveAttached();
+      this.resolveAttached(runtimeType);
     } else {
       this.logger.warn('Session', 'resolveAttached was not assigned; This should not happen.');
     }

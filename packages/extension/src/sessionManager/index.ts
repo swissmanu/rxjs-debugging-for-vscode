@@ -1,10 +1,11 @@
 import { inject, injectable, interfaces } from 'inversify';
 import * as vscodeApiType from 'vscode';
-import { IDisposable } from '../util/types';
+import { IAnalyticsReporter } from '../analytics';
 import { hasParentDebugConfiguration } from '../debugConfigurationProvider';
 import createSessionContainer from '../ioc/sessionContainer';
 import { RootContainer, VsCodeApi } from '../ioc/types';
 import { ILogger } from '../logger';
+import { IDisposable } from '../util/types';
 import { ICDPClientAddressProvider } from './cdpClientAddressProvider';
 import { ISession } from './session';
 
@@ -54,6 +55,7 @@ export default class SessionManager implements ISessionManager {
   constructor(
     @inject(RootContainer) private readonly rootContainer: interfaces.Container,
     @inject(ICDPClientAddressProvider) private readonly cdpClientAddressProvider: ICDPClientAddressProvider,
+    @inject(IAnalyticsReporter) private readonly analyticsReporter: IAnalyticsReporter,
     @inject(ILogger) private readonly logger: ILogger,
     @inject(VsCodeApi) private readonly vscode: typeof vscodeApiType
   ) {
@@ -97,11 +99,12 @@ export default class SessionManager implements ISessionManager {
 
       try {
         const session = await this.createSession(debugSession.id);
-        await session.attach();
+        const runtimeType = await session.attach();
         this._activeSession = session;
         this._onDidChangeActiveSession.fire(session);
 
         this.logger.info('SessionManager', `Session ready for debug session "${debugSession.id}"`);
+        this.analyticsReporter.captureDebugSessionStarted({ runtime: runtimeType ?? 'unknown' });
       } catch (e) {
         this.logger.error('SessionManager', `Could not start session for debug session "${debugSession.id}"`);
       }
@@ -111,11 +114,13 @@ export default class SessionManager implements ISessionManager {
   private onDidTerminateDebugSession = ({ id }: vscodeApiType.DebugSession) => {
     const session = this.sessions.get(id);
     if (session) {
-      this.logger.info('SessionManager', `Dispose session for Debug Session "${id}"`);
       this.sessions.delete(id);
       session.dispose();
 
       this._onDidTerminateSession.fire(session);
+
+      this.logger.info('SessionManager', `Dispose session for Debug Session "${id}"`);
+      this.analyticsReporter.captureDebugSessionStopped({});
     }
   };
 

@@ -15,7 +15,7 @@ type NoDataPoints = Record<string, never>;
  */
 export interface AnalyticsEventDataPoints {
   'debug session started': {
-    runtime: 'webpack' | 'nodejs';
+    runtime: 'webpack' | 'nodejs' | 'unknown';
   };
   'debug session stopped': NoDataPoints;
   'operator log point enabled': {
