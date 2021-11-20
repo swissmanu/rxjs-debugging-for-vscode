@@ -17,7 +17,6 @@ type EventToMethodMapping = {
   'debug session stopped': 'debugSessionStopped';
   'operator log point enabled': 'operatorLogPointEnabled';
   'operator log point disabled': 'operatorLogPointDisabled';
-  'extension crashed': 'extensionCrashed';
 };
 
 type CaptureEventMethods = {
