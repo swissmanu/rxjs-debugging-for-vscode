@@ -1,8 +1,8 @@
 import {
   Commands,
   executeCommand,
-  TestCommands,
   OperatorLogPoint,
+  TestCommands,
 } from 'rxjs-debugging-for-vs-code/out/integrationTest';
 import * as vscode from 'vscode';
 import openAndShowTextDocument from './util/openAndShowTextDocument';
