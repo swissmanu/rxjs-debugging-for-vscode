@@ -19,9 +19,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: machine echo github
-        env: { CONTENT: '${{ toJson(github) }}' }
-        run: 'echo $CONTENT'
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
@@ -103,7 +100,7 @@ jobs:
         run: yarn nx run extension-integrationtest:integrationtest --configuration=test
 
   snapshot:
-    if: github.event_name != 'release'
+    if: github.event_name != 'release' || (github.event_name == 'release' && github.event.release.prerelease == true)
     needs:
       - unit-test
       - integration-test
@@ -156,7 +153,7 @@ jobs:
           retention-days: 10
 
   publish-marketplace:
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' && github.event.release.prerelease == false
     needs:
       - unit-test
       - lint
