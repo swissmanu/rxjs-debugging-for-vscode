@@ -17,7 +17,7 @@
     "rxjs": "6.6.7"
   },
   "devDependencies": {
-    "@types/jest": "26.0.24",
+    "@types/jest": "27.0.3",
     "@types/node": "14.17.32",
     "jest": "27.3.1",
     "ts-jest": "27.0.7",
