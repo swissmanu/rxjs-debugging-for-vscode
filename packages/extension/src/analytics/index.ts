@@ -68,7 +68,7 @@ export default class PosthogAnalyticsReporter implements IAnalyticsReporter {
 
   private stop() {
     if (this.postHog) {
-      this.logger.info('Analytics', 'Stopping Reporter');
+      this.logger.info('AnalyticsReporter', 'Stopping Reporter');
       this.postHog.shutdown();
       this.postHog = null;
     }
