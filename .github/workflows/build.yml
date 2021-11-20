@@ -19,6 +19,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: machine echo github
+        env: { CONTENT: '${{ toJson(github) }}' }
+        run: 'echo $CONTENT'
       - name: Install Node.js
         uses: actions/setup-node@v2
         with:
@@ -153,7 +156,7 @@ jobs:
           retention-days: 10
 
   publish-marketplace:
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' && github.
     needs:
       - unit-test
       - lint
