@@ -1,6 +1,6 @@
 {
   "name": "@rxjs-debugging/runtime-nodejs",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "license": "MIT",
   "author": "Manuel Alabor <manuel@alabor.me>",
   "private": true,
@@ -14,8 +14,8 @@
     "@rollup/plugin-commonjs": "21.0.1",
     "@rollup/plugin-node-resolve": "13.0.6",
     "@rollup/plugin-typescript": "8.3.0",
-    "@rxjs-debugging/runtime": "^1.0.0-alpha.4",
-    "@rxjs-debugging/telemetry": "^1.0.0-alpha.4",
+    "@rxjs-debugging/runtime": "^1.0.0-alpha.5",
+    "@rxjs-debugging/telemetry": "^1.0.0-alpha.5",
     "@types/jest": "27.0.3",
     "@types/node": "16.11.9",
     "@types/webpack": "5.28.0",
