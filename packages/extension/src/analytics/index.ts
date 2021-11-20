@@ -76,7 +76,7 @@ export default class PosthogAnalyticsReporter implements IAnalyticsReporter {
 
   private capture<E extends AnalyticsEvents>(event: E, dataPoints: AnalyticsEventDataPoints[E]): void {
     if (this.postHog) {
-      this.logger.info('Analytics', `Capture "${event}" with data points: ${JSON.stringify(dataPoints)}`);
+      this.logger.info('AnalyticsReporter', `Capture "${event}" with data points: ${JSON.stringify(dataPoints)}`);
       this.postHog.capture({
         distinctId: this.distinctId,
         event,
