@@ -1,6 +1,6 @@
 {
   "name": "@rxjs-debugging/extension-integrationtest",
-  "version": "0.1.2",
+  "version": "1.0.0-alpha.0",
   "license": "MIT",
   "private": true,
   "engines": {
@@ -10,7 +10,7 @@
     "build": "tsc"
   },
   "dependencies": {
-    "rxjs-debugging-for-vs-code": "0.1.2"
+    "rxjs-debugging-for-vs-code": "^1.0.0-alpha.0"
   },
   "devDependencies": {
     "@types/jest": "27.0.3",
