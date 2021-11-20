@@ -32,17 +32,22 @@
     "configuration": {
       "title": "%rxjs-debugging.config.title%",
       "properties": {
-        "debug.rxjs.recommendOperatorLogPointsWithAnIcon": {
+        "rxjsDebugging.recommendOperatorLogPointsWithAnIcon": {
           "description": "%rxjs-debugging.config.recommendOperatorLogPointsWithAnIcon%",
           "type": "boolean",
           "default": true
         },
-        "debug.rxjs.hideLiveLogWhenStoppingDebugger": {
+        "rxjsDebugging.hideLiveLogWhenStoppingDebugger": {
           "description": "%rxjs-debugging.config.hideLiveLogWhenStoppingDebugger%",
           "type": "boolean",
           "default": true
         },
-        "debug.rxjs.logLevel": {
+        "rxjsDebugging.enableUsageAnalytics": {
+          "markdownDescription": "%rxjs-debugging.config.enableUsageAnalytics%",
+          "type": "boolean",
+          "default": false
+        },
+        "rxjsDebugging.logLevel": {
           "description": "%rxjs-debugging.config.logLevel%",
           "type": "string",
           "default": "Never",
@@ -88,6 +93,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "21.0.1",
     "@rollup/plugin-inject": "4.0.3",
+    "@rollup/plugin-json": "4.1.0",
     "@rollup/plugin-node-resolve": "13.0.6",
     "@rollup/plugin-typescript": "8.3.0",
     "@types/jest": "26.0.24",
@@ -110,6 +116,7 @@
     "@rxjs-debugging/runtime": "0.0.0",
     "@rxjs-debugging/telemetry": "0.0.0",
     "inversify": "5.1.1",
+    "posthog-node": "1.2.0",
     "reflect-metadata": "0.1.13",
     "spicery": "2.1.2",
     "typescript": "4.4.4",

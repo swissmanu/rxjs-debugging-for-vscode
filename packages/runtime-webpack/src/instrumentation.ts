@@ -20,4 +20,4 @@ export default function instrumentation(observable: Parameters<typeof patchObser
   patchObservable(observable, wrapOperatorFunction);
 }
 
-waitForCDPBindings();
+waitForCDPBindings('webpack');

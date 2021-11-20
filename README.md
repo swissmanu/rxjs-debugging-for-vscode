@@ -61,6 +61,10 @@ Jump right in and explore, how "RxJS Debugging for Visual Studio Code" can impro
 
 https://github.com/swissmanu/playground-rxjs-debugging-for-vscode
 
+## Analytics Data
+
+The "RxJS Debugger for Visual Studio Code" extension collects usage analytics data from users who opted-in. See [ANALYTICS.md](./ANALYTICS.md) for more information on what data is collected and why.
+
 ## Research
 
 This extension is based on research by Manuel Alabor. See [RESEARCH.md](./RESEARCH.md) for more information.

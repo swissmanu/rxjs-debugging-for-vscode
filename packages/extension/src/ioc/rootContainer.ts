@@ -1,6 +1,9 @@
 import { interfaces } from 'inversify';
 import * as vscode from 'vscode';
+import PosthogAnalyticsReporter, { IAnalyticsReporter } from '../analytics';
+import createPosthogConfiguration, { IPosthogConfiguration } from '../analytics/posthogConfiguration';
 import { Configuration } from '../configuration';
+import ConfigurationAccessor, { IConfigurationAccessor } from '../configuration/configurationAccessor';
 import {
   INodeWithRxJSDebugConfigurationResolver,
   NodeWithRxJSDebugConfigurationResolver,
@@ -15,6 +18,7 @@ import DefaultResourceProvider, { IResourceProvider } from '../resources';
 import SessionManager, { ISessionManager } from '../sessionManager';
 import DefaultCDPClientAddressProvider, { ICDPClientAddressProvider } from '../sessionManager/cdpClientAddressProvider';
 import { DefaultCDPClientProvider, ICDPClientProvider } from '../telemetryBridge/cdpClientProvider';
+import createEnvironmentInfo, { IEnvironmentInfo } from '../util/environmentInfo';
 import WorkspaceMonitor, { IWorkspaceMonitor } from '../workspaceMonitor';
 import { IRxJSDetector, RxJSDetector } from '../workspaceMonitor/detector';
 import DisposableContainer, { IDisposableContainer } from './disposableContainer';
@@ -35,15 +39,25 @@ export default function createRootContainer(
   const container = new DisposableContainer('Root');
 
   container.bind<typeof vscode>(VsCodeApi).toConstantValue(vscode);
+  container.bind<IEnvironmentInfo>(IEnvironmentInfo).toConstantValue(createEnvironmentInfo(vscode));
+  container.bind<IConfigurationAccessor>(IConfigurationAccessor).to(ConfigurationAccessor).inSingletonScope();
+  const configurationAccessor: IConfigurationAccessor = container.get(IConfigurationAccessor);
 
   container.bind<interfaces.Container>(RootContainer).toConstantValue(container);
   container.bind<vscode.ExtensionContext>(ExtensionContext).toConstantValue(extensionContext);
 
   const logger = new Logger(
     [new ConsoleLogSink()],
-    logLevelFromString(vscode.workspace.getConfiguration().get(Configuration.LogLevel, 'Never'))
+    logLevelFromString(configurationAccessor.get(Configuration.LogLevel, 'Never'))
   );
   container.bind<ILogger>(ILogger).toConstantValue(logger);
+
+  container.bind<IPosthogConfiguration>(IPosthogConfiguration).toConstantValue(createPosthogConfiguration());
+  container
+    .bind<IAnalyticsReporter>(IAnalyticsReporter)
+    .to(PosthogAnalyticsReporter)
+    .inSingletonScope()
+    .onActivation(container.trackDisposableBinding);
 
   container.bind<IResourceProvider>(IResourceProvider).to(DefaultResourceProvider).inTransientScope();
 
@@ -86,6 +100,7 @@ export default function createRootContainer(
   container.bind<ICDPClientProvider>(ICDPClientProvider).to(DefaultCDPClientProvider).inSingletonScope();
 
   // Ensure necessary components are initialized and active by default:
+  container.get<IAnalyticsReporter>(IAnalyticsReporter);
   container.get<ISessionManager>(ISessionManager);
   container.get<IDecorationManager>(IDecorationManager);
   container.get<IWorkspaceMonitor>(IWorkspaceMonitor);
