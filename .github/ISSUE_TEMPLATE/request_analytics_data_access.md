@@ -1,6 +1,6 @@
 ---
-name: Request Access To Analytics Data
-about:
+name: Analytics Data Access
+about: Request access to collected usage analytics data
 title:
 labels: ''
 assignees: ''
