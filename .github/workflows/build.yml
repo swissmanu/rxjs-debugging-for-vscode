@@ -156,7 +156,7 @@ jobs:
           retention-days: 10
 
   publish-marketplace:
-    if: github.event_name == 'release' && github.
+    if: github.event_name == 'release'
     needs:
       - unit-test
       - lint
