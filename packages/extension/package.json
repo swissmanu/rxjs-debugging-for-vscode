@@ -3,7 +3,7 @@
   "displayName": "RxJS Debugging for Visual Studio Code",
   "description": "Add non-intrusive debugging capabilities for RxJS applications to Visual Studio Code.",
   "icon": "docs/brand/icon.png",
-  "version": "1.0.0-alpha.6",
+  "version": "1.0.0-alpha.7",
   "license": "MIT",
   "repository": {
     "url": "https://github.com/swissmanu/rxjs-debugging-for-vscode"
@@ -112,8 +112,8 @@
     "vsce": "1.103.1"
   },
   "dependencies": {
-    "@rxjs-debugging/runtime": "^1.0.0-alpha.6",
-    "@rxjs-debugging/telemetry": "^1.0.0-alpha.6",
+    "@rxjs-debugging/runtime": "^1.0.0-alpha.7",
+    "@rxjs-debugging/telemetry": "^1.0.0-alpha.7",
     "inversify": "5.1.1",
     "posthog-node": "1.2.0",
     "reflect-metadata": "0.1.13",
