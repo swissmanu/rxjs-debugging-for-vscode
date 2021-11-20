@@ -13,8 +13,8 @@
     "rxjs-debugging-for-vs-code": "0.1.2"
   },
   "devDependencies": {
-    "@types/jest": "26.0.24",
-    "@types/node": "14.17.32",
+    "@types/jest": "27.0.3",
+    "@types/node": "16.11.9",
     "@types/vscode": "1.61.0",
     "jest": "27.3.1",
     "jest-runner-vscode": "2.0.0",
