@@ -53,7 +53,7 @@ export default class PosthogAnalyticsReporter implements IAnalyticsReporter {
 
   private start(): void {
     if (!this.postHog) {
-      this.logger.info('Analytics', 'Starting Reporter');
+      this.logger.info('AnalyticsReporter', 'Starting Reporter');
       this.postHog = new Posthog(this.posthogConfiguration.projectApiKey, { host: this.posthogConfiguration.host });
       this.postHog.identify({
         distinctId: this.distinctId,
