@@ -10,7 +10,7 @@ console.log(relativePath('..', 'extension'));
 
 /** @type {import('jest-runner-vscode').RunnerOptions} */
 module.exports = {
-  version: '1.61.1',
+  version: '1.62.2',
   launchArgs: ['--new-window', '--disable-extensions'],
   workspaceDir: relativePath('..', 'testbench-nodejs'),
   extensionDevelopmentPath: relativePath('../extension'),
