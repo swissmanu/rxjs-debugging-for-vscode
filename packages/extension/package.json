@@ -88,7 +88,7 @@
     "build:test": "yarn build --configMode=test",
     "watch": "yarn build --watch",
     "package": "vsce package --yarn",
-    "publish": "vsce publish --yarn"
+    "publish-to-marketplace": "vsce publish --yarn"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "21.0.1",

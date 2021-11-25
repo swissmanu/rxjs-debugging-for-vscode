@@ -144,7 +144,7 @@
         "publish": {
           "executor": "@nrwl/workspace:run-script",
           "options": {
-            "script": "publish"
+            "script": "publish-to-marketplace"
           }
         }
       }
