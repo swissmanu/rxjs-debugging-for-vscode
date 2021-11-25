@@ -176,15 +176,15 @@ jobs:
         run: yarn --pure-lockfile
 
       - name: Create Production Build
-        run: yarn nx run-many --target=build --configuration=prod --projects=extension
+        run: yarn nx run extension:build:prod
         env:
           POSTHOG_HOST: ${{ secrets.POSTHOG_HOST }}
           POSTHOG_PROJECT_API_KEY: ${{ secrets.POSTHOG_PROJECT_API_KEY }}
 
       - name: 'Publish to Marketplace'
-        run: yarn nx run-many --target=publish --projects=extension
+        run: yarn nx run extension:publish
         env:
-          VSCE_PAT: ${{ secrets.AZURE_ACCESS_TOKEN }}
+          VSCE_PAT: ${{ secrets.VSCE_PAT }}
 
   publish-npm:
     if: github.event_name == 'release'
@@ -210,9 +210,9 @@ jobs:
         run: yarn --pure-lockfile
 
       - name: Create Production Build
-        run: yarn nx run-many --target=build --configuration=prod --projects=runtime-webpack
+        run: yarn nx run runtime-webpack:build:prod
 
       - name: 'Publish to npm'
-        run: yarn nx run-many --target=publish --projects=runtime-webpack
+        run: yarn nx run runtime-webpack:publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
