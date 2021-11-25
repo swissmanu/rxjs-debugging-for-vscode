@@ -1,4 +1,4 @@
-# ![Archie the Debugger Owl](./docs/brand/archie-small.png) RxJS Debugger for Visual Studio Code
+# ![Archie the Debugger Owl](./docs/brand/archie-small.png) RxJS Debugging for Visual Studio Code
 
 [![Click to visit marketplace](https://vsmarketplacebadge.apphb.com/version-short/manuelalabor.rxjs-debugging-for-vs-code.svg)](https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code)
 
@@ -6,7 +6,7 @@
 
 Add non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applications to [Visual Studio Code](https://code.visualstudio.com/).
 
-![Operator Log Points with RxJS Debugger for Visual Studio Code](./docs/demo.gif)
+![Operator Log Points with RxJS Debugging for Visual Studio Code](./docs/demo.gif)
 
 ## Features
 
@@ -52,7 +52,7 @@ Refer to the [milestones overview](https://github.com/swissmanu/rxjs-debugging-f
 
 ## Contributing
 
-"RxJS Debugger for Visual Studio Code" welcomes any type of contribution! ❤️
+"RxJS Debugging for Visual Studio Code" welcomes any type of contribution! ❤️
 Have a look at [CONTRIBUTING.md](./CONTRIBUTING.md) for further details.
 
 ## Playground
@@ -63,7 +63,7 @@ https://github.com/swissmanu/playground-rxjs-debugging-for-vscode
 
 ## Analytics Data
 
-The "RxJS Debugger for Visual Studio Code" extension collects usage analytics data from users who opted-in. See [ANALYTICS.md](./ANALYTICS.md) for more information on what data is collected and why.
+The "RxJS Debugging for Visual Studio Code" extension collects usage analytics data from users who opted-in. See [ANALYTICS.md](./ANALYTICS.md) for more information on what data is collected and why.
 
 ## Research
 

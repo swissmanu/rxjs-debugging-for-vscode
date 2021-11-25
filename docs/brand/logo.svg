@@ -24,9 +24,9 @@
     </defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Group" transform="translate(21.000000, 13.000000)">
-            <text id="RxJS-Debugger-for-Vi" font-family="HelveticaNeue-Medium, Helvetica Neue" font-size="16" font-weight="400" fill="#000000">
-                <tspan x="90" y="60">RxJS Debugger</tspan>
-                <tspan x="206.176" y="60" font-family="HelveticaNeue, Helvetica Neue" font-weight="normal"></tspan>
+            <text id="RxJS-Debugging-for-V" font-family="HelveticaNeue-Medium, Helvetica Neue" font-size="16" font-weight="400" fill="#000000">
+                <tspan x="90" y="60">RxJS Debugging</tspan>
+                <tspan x="214.176" y="60" font-family="HelveticaNeue, Helvetica Neue" font-weight="normal"></tspan>
                 <tspan x="90" y="79" font-family="HelveticaNeue, Helvetica Neue" font-weight="normal">for Visual Studio Code</tspan>
             </text>
             <g id="logo">
