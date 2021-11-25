@@ -1,13 +1,13 @@
 {
   "name": "@rxjs-debugging/testbench-webpack",
-  "version": "0.0.9",
+  "version": "0.9.0",
   "license": "UNLICENSED",
   "private": true,
   "scripts": {
     "start": "webpack serve"
   },
   "dependencies": {
-    "@rxjs-debugging/runtime-webpack": "^0.0.9",
+    "@rxjs-debugging/runtime-webpack": "^0.9.0",
     "html-webpack-plugin": "5.5.0",
     "rxjs": "6.6.7",
     "ts-loader": "9.2.6",

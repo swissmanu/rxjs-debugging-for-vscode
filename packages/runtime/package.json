@@ -1,6 +1,6 @@
 {
   "name": "@rxjs-debugging/runtime",
-  "version": "0.0.9",
+  "version": "0.9.0",
   "license": "MIT",
   "author": "Manuel Alabor <manuel@alabor.me>",
   "private": true,
@@ -10,7 +10,7 @@
     "build": "tsc && cp src/global.d.ts out/"
   },
   "dependencies": {
-    "@rxjs-debugging/telemetry": "^0.0.9",
+    "@rxjs-debugging/telemetry": "^0.9.0",
     "rxjs": "6.6.7",
     "source-map": "0.7.3",
     "spicery": "2.1.2",

@@ -1,6 +1,6 @@
 {
   "name": "@rxjs-debugging/testbench-nodejs",
-  "version": "0.0.9",
+  "version": "0.9.0",
   "main": "index.js",
   "license": "UNLICENSED",
   "private": true,

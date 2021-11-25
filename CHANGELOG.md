@@ -1,6 +1,6 @@
 # Change Log
 
-## 0.0.9
+## 0.9.0
 
 - Feature: Support Debugging of Browser-based Applications [#43](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/43)
 - Feature: Collect Analytics Data on Opt-In [#63](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/63)
