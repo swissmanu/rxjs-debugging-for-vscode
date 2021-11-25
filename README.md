@@ -1,6 +1,6 @@
 # ![Archie the Debugger Owl](./docs/brand/archie-small.png) RxJS Debugging for Visual Studio Code
 
-[![Click to visit marketplace](https://vsmarketplacebadge.apphb.com/version-short/manuelalabor.rxjs-debugging-for-vs-code.svg)](https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code)
+[![Click to visit marketplace](https://vsmarketplacebadge.apphb.com/version-short/manuelalabor.rxjs-debugging-for-vs-code.svg)](https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code) [![Twitter](https://img.shields.io/badge/Follow-%40rxjsdebuggung-blue?logo=twitter)](https://twitter.com/rxjsdebugging)
 
 > Never, ever use `tap(console.log)` again.
 
@@ -38,7 +38,7 @@ You can toggle the display of recommended log points via the command palette.
 
 ## Requirements
 
-- [Visual Studio Code 1.60](https://code.visualstudio.com/) or newer
+- [Visual Studio Code 1.61](https://code.visualstudio.com/) or newer
 - [TypeScript 4.2](https://www.typescriptlang.org/) or newer
 - [RxJS 6](https://rxjs.dev/)
 - To debug NodeJS-based applications: [NodeJS 12](https://nodejs.org/) or newer
