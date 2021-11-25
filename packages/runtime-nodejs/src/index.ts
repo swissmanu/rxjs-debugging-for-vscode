@@ -6,16 +6,18 @@ import {
 import operatorLogPointInstrumentation from '@rxjs-debugging/runtime/out/instrumentation/operatorLogPoint';
 import patchObservable from '@rxjs-debugging/runtime/out/instrumentation/operatorLogPoint/patchObservable';
 import TelemetryBridge from '@rxjs-debugging/runtime/out/telemetryBridge';
+import isRxJSImport from '@rxjs-debugging/runtime/out/utils/isRxJSImport';
 import waitForCDPBindings from '@rxjs-debugging/runtime/out/utils/waitForCDPBindings';
 import { TelemetryEvent } from '@rxjs-debugging/telemetry';
 import serializeTelemetryEvent from '@rxjs-debugging/telemetry/out/serialize';
 import * as Module from 'module';
+import type { Subscriber as SubscriberType } from 'rxjs';
 
 const programPath = process.env[RUNTIME_PROGRAM_ENV_VAR];
 const programModule = Module.createRequire(programPath);
-const createWrapOperatorFunction = operatorLogPointInstrumentation(programModule('rxjs').Subscriber);
+const Subscriber = getSubscriber(programModule);
+const createWrapOperatorFunction = operatorLogPointInstrumentation(Subscriber);
 
-const observableRegex = /rxjs\/(_esm5\/)?internal\/Observable/g;
 const originalRequire = Module.prototype.require;
 let patchedCache = null;
 
@@ -28,7 +30,7 @@ const patchedRequire: NodeJS.Require = function (id) {
     this
   );
 
-  if (observableRegex.exec(filename) !== null) {
+  if (isRxJSImport(filename)) {
     if (patchedCache) {
       return patchedCache;
     }
@@ -50,6 +52,18 @@ Module.prototype.require = patchedRequire;
 function defaultSend(event: TelemetryEvent): void {
   const message = serializeTelemetryEvent(event);
   global[CDP_BINDING_NAME_SEND_TELEMETRY](message); // global.sendRxJsDebuggerTelemetry will be provided via CDP Runtime.addBinding eventually:
+}
+
+function getSubscriber(
+  customRequire: (module: string) => { Subscriber: typeof SubscriberType }
+): typeof SubscriberType {
+  try {
+    // Try access Subscriber via /internal first. This works for RxJS >=7.2.0.
+    return customRequire('rxjs/internal/Subscriber').Subscriber;
+  } catch (_) {
+    // If the first attempt failed, fall back to a plain root import:
+    return customRequire('rxjs').Subscriber;
+  }
 }
 
 global[RUNTIME_TELEMETRY_BRIDGE] = telemetryBridge;

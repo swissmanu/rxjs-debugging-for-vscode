@@ -11,7 +11,7 @@ Add non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applicati
 ## Features
 
 - RxJS debugging, fully integrated with Visual Studio Code
-- Works with RxJS 6
+- Works with RxJS 6.6.7 and newer
 - Support for:
   - NodeJS-based RxJS applications
   - browser-based RxJS applications
@@ -40,7 +40,7 @@ You can toggle the display of recommended log points via the command palette.
 
 - [Visual Studio Code 1.61](https://code.visualstudio.com/) or newer
 - [TypeScript 4.2](https://www.typescriptlang.org/) or newer
-- [RxJS 6](https://rxjs.dev/)
+- [RxJS 6.6.7](https://rxjs.dev/) or newer
 - To debug NodeJS-based applications: [NodeJS 12](https://nodejs.org/) or newer
 - To debug web applications:
   - [Webpack 5.60.0](https://webpack.js.org/) or newer

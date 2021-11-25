@@ -67,11 +67,17 @@ jobs:
       - unit-test
       - lint
     strategy:
+      fail-fast: false
       matrix:
         os:
           - macos-latest
           # - ubuntu-latest TODO Why still timeouts?
           # - windows-latest TODO Why still timeouts?
+        rxjs:
+          - '6.6.7' # Last 6.x
+          - '7.0.1' # Latest 7.0.x
+          - '7.2.0' # First Release that changed how operators are imported https://github.com/ReactiveX/rxjs/blob/master/CHANGELOG.md#720-2021-07-05
+          - '7.4.0' # Latest and greatest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -90,8 +96,11 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      - name: Use RxJS ${{ matrix.rxjs }} for Test
+        run: |
+          sed -i '' 's/\"rxjs\":.*/\"rxjs\": \"${{ matrix.rxjs }}\"\,/' packages/*/package.json
       - name: Install Dependencies
-        run: yarn --pure-lockfile
+        run: yarn
       - name: Test on Linux System
         if: runner.os == 'Linux'
         run: xvfb-run -a yarn nx run extension-integrationtest:integrationtest --configuration=test
