@@ -72,6 +72,10 @@ jobs:
           - macos-latest
           # - ubuntu-latest TODO Why still timeouts?
           # - windows-latest TODO Why still timeouts?
+        rxjs:
+          - '6.6.7'
+          - '7.0.1'
+          - '7.4.0'
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
@@ -90,8 +94,11 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
+      - name: Use RxJS ${{ matrix.rxjs }} for Test
+        run: |
+          sed -i '' 's/\"rxjs\":.*/\"rxjs\": \"${{ matrix.rxjs }}\"\,/' packages/*/package.json
       - name: Install Dependencies
-        run: yarn --pure-lockfile
+        run: yarn
       - name: Test on Linux System
         if: runner.os == 'Linux'
         run: xvfb-run -a yarn nx run extension-integrationtest:integrationtest --configuration=test
