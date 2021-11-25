@@ -1,3 +1,4 @@
+import isRxJSImport from '@rxjs-debugging/runtime/out/utils/isRxJSImport';
 import * as path from 'path';
 import type { Compiler } from 'webpack';
 import { NormalModule } from 'webpack';
@@ -5,8 +6,6 @@ import { NormalModule } from 'webpack';
 const PLUGIN_NAME = 'RxJSDebuggingPlugin';
 const loaderPath = require.resolve('./loader.js');
 const here = path.dirname(loaderPath);
-
-const observableRegex = /rxjs\/(_esm5\/)?internal\/Observable(\.js)?$/g;
 
 export default class RxJSDebuggingPlugin {
   apply(compiler: Compiler): void {
@@ -22,7 +21,7 @@ export default class RxJSDebuggingPlugin {
         }
 
         const { userRequest = '' } = normalModule;
-        if (observableRegex.exec(userRequest) !== null) {
+        if (isRxJSImport(userRequest)) {
           loaders.push({
             loader: loaderPath,
             options: {},

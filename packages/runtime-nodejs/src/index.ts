@@ -6,6 +6,7 @@ import {
 import operatorLogPointInstrumentation from '@rxjs-debugging/runtime/out/instrumentation/operatorLogPoint';
 import patchObservable from '@rxjs-debugging/runtime/out/instrumentation/operatorLogPoint/patchObservable';
 import TelemetryBridge from '@rxjs-debugging/runtime/out/telemetryBridge';
+import isRxJSImport from '@rxjs-debugging/runtime/out/utils/isRxJSImport';
 import waitForCDPBindings from '@rxjs-debugging/runtime/out/utils/waitForCDPBindings';
 import { TelemetryEvent } from '@rxjs-debugging/telemetry';
 import serializeTelemetryEvent from '@rxjs-debugging/telemetry/out/serialize';
@@ -15,7 +16,6 @@ const programPath = process.env[RUNTIME_PROGRAM_ENV_VAR];
 const programModule = Module.createRequire(programPath);
 const createWrapOperatorFunction = operatorLogPointInstrumentation(programModule('rxjs').Subscriber);
 
-const observableRegex = /rxjs\/(_esm5\/)?internal\/Observable/g;
 const originalRequire = Module.prototype.require;
 let patchedCache = null;
 
@@ -28,7 +28,7 @@ const patchedRequire: NodeJS.Require = function (id) {
     this
   );
 
-  if (observableRegex.exec(filename) !== null) {
+  if (isRxJSImport(filename)) {
     if (patchedCache) {
       return patchedCache;
     }
