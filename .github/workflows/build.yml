@@ -67,6 +67,7 @@ jobs:
       - unit-test
       - lint
     strategy:
+      fail-fast: false
       matrix:
         os:
           - macos-latest
