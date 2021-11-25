@@ -1,5 +1,9 @@
 # Change Log
 
+## Next
+
+- Feature: Support RxJS 7 [#52](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/52)
+
 ## 0.9.0
 
 - Feature: Support Debugging of Browser-based Applications [#43](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/43)
