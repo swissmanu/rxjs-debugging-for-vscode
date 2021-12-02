@@ -12,15 +12,26 @@ Add non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applicati
 
 - RxJS debugging, fully integrated with Visual Studio Code
 - Works with RxJS 6.6.7 and newer
-- Support for:
-  - NodeJS-based RxJS applications
-  - browser-based RxJS applications
+- Support for Node.js and Webpack-based RxJS applications
+
+## Requirements
+
+- [Visual Studio Code 1.61](https://code.visualstudio.com/) or newer
+- [TypeScript 4.2](https://www.typescriptlang.org/) or newer
+- [RxJS 6.6.7](https://rxjs.dev/) or newer
+- To debug NodeJS-based applications:
+  - [Node.js 12](https://nodejs.org/) or newer
+- To debug Webpack-based web applications:
+  - [Webpack 5.60.0](https://webpack.js.org/) or newer
+  - The [@rxjs-debugging/runtime-webpack](https://www.npmjs.com/package/@rxjs-debugging/runtime-webpack) Webpack plugin
+
+## Usage
 
 ### Operator Log Points
 
-Operator log points make manually added `console.log` statements a thing of the past: RxJS Debugger detects [operators](https://rxjs.dev/guide/operators) automatically and recommends a log point, indicated with an empty diamond. Hover the mouse cursor on the operator to add or remove an operator log point:
+Operator log points make manually added `console.log` statements a thing of the past: RxJS Debugger detects [operators](https://rxjs.dev/guide/operators) automatically and recommends a log point. Hover the mouse cursor on the operator to add or remove a log point to the respective operator:
 
-![Manage Operator Log Points](./docs/manage-operator-log-points.gif)
+<img src="./docs/manage-operator-log-points.gif" alt="Manage Operator Log Points" style="zoom: 50%;" />
 
 Once you launch your application with the JavaScript debugger built-in to Visual Studio Code, enabled log points display [events of interest](https://rxjs.dev/guide/observable#anatomy-of-an-observable) inline in the editor:
 
@@ -28,23 +39,19 @@ Once you launch your application with the JavaScript debugger built-in to Visual
 - Emitted values (next, error, complete)
 - Unsubscribe
 
-![Live Operator Log Points](./docs/live-operator-logs.gif)
+<img src="./docs/live-operator-logs.gif" alt="Live Operator Log Points" style="zoom: 50%;" />
 
 By default, RxJS Debugger clears logged events from the editor after you stop the JavaScript debugger. You can customize this behavior in the settings.
 
-![Toggle Display of Log Point Recommendations](./docs/toggle-log-points.png)
+Finally, you can toggle gutter indicators for recommended log points via the command palette:
 
-You can toggle the display of recommended log points via the command palette.
+<img src="./docs/toggle-log-points.gif" alt="Toggle Display of Log Point Recommendations" style="zoom: 50%;" />
 
-## Requirements
 
-- [Visual Studio Code 1.61](https://code.visualstudio.com/) or newer
-- [TypeScript 4.2](https://www.typescriptlang.org/) or newer
-- [RxJS 6.6.7](https://rxjs.dev/) or newer
-- To debug NodeJS-based applications: [NodeJS 12](https://nodejs.org/) or newer
-- To debug web applications:
-  - [Webpack 5.60.0](https://webpack.js.org/) or newer
-  - The [@rxjs-debugging/runtime-webpack](https://www.npmjs.com/package/@rxjs-debugging/runtime-webpack) Webpack plugin
+
+----
+
+
 
 ## Roadmap & Future Development
 
@@ -63,7 +70,7 @@ https://github.com/swissmanu/playground-rxjs-debugging-for-vscode
 
 ## Analytics Data
 
-The "RxJS Debugging for Visual Studio Code" extension collects usage analytics data from users who opted-in. See [ANALYTICS.md](./ANALYTICS.md) for more information on what data is collected and why.
+The "RxJS Debugging for Visual Studio Code" extension collects usage analytics data from users who opt-in. See [ANALYTICS.md](./ANALYTICS.md) for more information on what data is collected and why.
 
 ## Research
 
