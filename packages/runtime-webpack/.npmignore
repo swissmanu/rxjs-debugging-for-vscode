@@ -2,3 +2,6 @@ src
 tsconfig.json
 rollup.config.js
 *.tgx
+docs/*.mp4
+docs/*.mov
+docs/*.gif

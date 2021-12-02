@@ -8,6 +8,10 @@ In order to debug an RxJS-based web application bundled using Webpack with [RxJS
 
 The plugin augments RxJS so the debugger can communicate with your application at runtime. This augmentation happens *only* during development, hence your production builds will stay clear of any debugging augmentation.
 
+![runtime-webpack Demo](https://github.com/swissmanu/rxjs-debugging-for-vscode/raw/main/packages/runtime-webpack/docs/demo.gif)
+
+
+
 ## Usage
 
 1. Install `@rxjs-debugging/runtime-webpack`:
