@@ -77,7 +77,7 @@ jobs:
           - '6.6.7' # Last 6.x
           - '7.0.1' # Latest 7.0.x
           - '7.2.0' # First Release that changed how operators are imported https://github.com/ReactiveX/rxjs/blob/master/CHANGELOG.md#720-2021-07-05
-          - '7.4.0' # Latest and greatest
+          - 'latest' # Latest and greatest
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout
