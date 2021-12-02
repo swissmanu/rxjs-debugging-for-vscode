@@ -1,7 +1,7 @@
 {
   "name": "@rxjs-debugging/runtime-webpack",
   "description": "Webpack plugin to debug RxJS-based web applications with \"RxJS Debugging for Visual Studio Code\".",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "author": "Manuel Alabor <manuel@alabor.me>",
   "homepage": "https://github.com/swissmanu/rxjs-debugging-for-vscode/tree/main/packages/runtime-webpack",
