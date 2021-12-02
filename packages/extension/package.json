@@ -27,6 +27,11 @@
         "category": "RxJS",
         "command": "rxjs-debugging-for-vs-code.command.toggleOperatorLogPointGutterIcon",
         "title": "%rxjs-debugging.command.toggleOperatorLogPointGutterIcon%"
+      },
+      {
+        "category": "RxJS",
+        "command": "rxjs-debugging-for-vs-code.command.toggleOperatorLogPointInRange",
+        "title": "%rxjs-debugging.command.toggleOperatorLogPointInRange%"
       }
     ],
     "configuration": {

@@ -4,6 +4,7 @@ import { IAnalyticsReporter } from '../../analytics';
 import Logger from '../../logger';
 import { logPointFixtureA, logPointFixtureB } from '../index.fixture';
 import { IOperatorLogPointRecommender } from '../recommender';
+import {Selection} from 'vscode';
 
 describe('OperatorLogPointManager', () => {
   let logPointManager: OperatorLogPointManager;
@@ -89,4 +90,14 @@ describe('OperatorLogPointManager', () => {
       expect(logPointManager.logPointForIdentifier(logPointFixtureA.operatorIdentifier)).toBeUndefined();
     });
   });
+
+  describe('logPointsForSelection()', () => {
+    test('returns a log point with a source position contained in given selection', () => {
+      expect(logPointManager.logPointsForSelection(new Selection()))
+    })
+
+    test('does not return a log point which is not contained in given selection', () => {
+
+    })
+  })
 });

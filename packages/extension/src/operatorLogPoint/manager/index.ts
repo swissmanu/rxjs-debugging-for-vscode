@@ -1,7 +1,7 @@
 import { IOperatorIdentifier } from '@rxjs-debugging/telemetry/out/operatorIdentifier';
 import operatorIdentifierToString from '@rxjs-debugging/telemetry/out/operatorIdentifier/toString';
 import { inject, injectable } from 'inversify';
-import { Event, EventEmitter } from 'vscode';
+import { Event, EventEmitter, Selection } from 'vscode';
 import OperatorLogPoint from '..';
 import { IAnalyticsReporter } from '../../analytics';
 import { ILogger } from '../../logger';
@@ -16,6 +16,7 @@ export interface IOperatorLogPointManager extends IDisposable {
   disable(operatorLogPoint: OperatorLogPoint): void;
   logPoints: ReadonlyArray<OperatorLogPoint>;
   logPointForIdentifier(operatorIdentifier: IOperatorIdentifier): OperatorLogPoint | undefined;
+  logPointsForSelection(selection: Selection): ReadonlyArray<OperatorLogPoint>;
   onDidChangeLogPoints: Event<ReadonlyArray<OperatorLogPoint>>;
 }
 
@@ -88,6 +89,18 @@ export default class OperatorLogPointManager implements IOperatorLogPointManager
 
   logPointForIdentifier(operatorIdentifier: IOperatorIdentifier): OperatorLogPoint | undefined {
     return this._logPoints.get(operatorIdentifierToString(operatorIdentifier));
+  }
+
+  logPointsForSelection(selection: Selection): ReadonlyArray<OperatorLogPoint> {
+    const logPoints: OperatorLogPoint[] = [];
+
+    for (const [, logPoint] of this._logPoints) {
+      if (selection.contains(logPoint.sourcePosition)) {
+        logPoints.push(logPoint);
+      }
+    }
+
+    return logPoints;
   }
 
   dispose(): void {
