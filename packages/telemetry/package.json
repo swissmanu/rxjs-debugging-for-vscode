@@ -1,6 +1,6 @@
 {
   "name": "@rxjs-debugging/telemetry",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "license": "MIT",
   "author": "Manuel Alabor <manuel@alabor.me>",
   "private": true,
