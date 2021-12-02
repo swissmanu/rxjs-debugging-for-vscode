@@ -10,17 +10,17 @@
     "clean": "lerna exec -- rm -rf out && nx reset"
   },
   "devDependencies": {
-    "@nrwl/cli": "13.2.1",
-    "@nrwl/tao": "13.2.1",
-    "@nrwl/workspace": "13.2.1",
-    "@typescript-eslint/eslint-plugin": "5.4.0",
-    "@typescript-eslint/parser": "5.4.0",
-    "eslint": "8.2.0",
+    "@nrwl/cli": "13.2.3",
+    "@nrwl/tao": "13.2.3",
+    "@nrwl/workspace": "13.2.3",
+    "@typescript-eslint/eslint-plugin": "5.5.0",
+    "@typescript-eslint/parser": "5.5.0",
+    "eslint": "8.3.0",
     "eslint-plugin-prettier": "4.0.0",
     "husky": "7.0.4",
     "lerna": "4.0.0",
-    "lint-staged": "12.0.3",
-    "prettier": "2.4.1",
+    "lint-staged": "12.1.2",
+    "prettier": "2.5.0",
     "typescript": "4.5.2"
   }
 }
