@@ -3,6 +3,7 @@
 ## Next
 
 - Feature: Support RxJS 7 [#52](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/52)
+- Bugfix: Operator Log Point Decorations change Line Height [#118](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/118)
 
 ## 0.9.0
 
