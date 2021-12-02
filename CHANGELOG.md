@@ -1,5 +1,9 @@
 # Change Log
 
+## Next
+
+- Bugfix: Live Logs from Previous Debug Session shown again in a new Debug Session [#123](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/123)
+
 ## 1.0.0
 
 - Feature: Support RxJS 7 [#52](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/52)

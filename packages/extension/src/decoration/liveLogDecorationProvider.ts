@@ -46,6 +46,8 @@ export default class LiveLogDecorationProvider extends DocumentDecorationProvide
   };
 
   private onDidTerminateSession = (): void => {
+    this.lastLogForLine.clear();
+
     const hideLiveLog: boolean = this.configurationAccessor.get(Configuration.HideLiveLogWhenStoppingDebugger, true);
     if (hideLiveLog) {
       this.setDecorations([]);
