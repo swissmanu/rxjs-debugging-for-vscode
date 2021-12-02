@@ -1,6 +1,6 @@
 # Change Log
 
-## Next
+## 1.0.1 
 
 - Bugfix: Live Logs from Previous Debug Session shown again in a new Debug Session [#123](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/123)
 
