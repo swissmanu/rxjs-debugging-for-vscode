@@ -8,9 +8,9 @@ assignees: ''
 
 ## Version Overview
 
-- OS: <!-- e.g. Windows 10, MacOS 11.2.3, Ubuntu 12.04, etc. -->
-- Visual Studio Code Version: <!-- e.g. 1.55.0 -->
-- "RxJS Debugging for Visual Studio Code" Extension: <!-- eg 0.1.2 -->
+- Operating System: <!-- e.g. Windows 10, MacOS 11.2.3, Ubuntu 12.04, etc. -->
+- Visual Studio Code: <!-- e.g. 1.55.0 -->
+- "RxJS Debugging for Visual Studio Code": <!-- eg 0.1.2 -->
 <!-- - NodeJS: <!-- e.g. 14.16.1, if applicable] -->
 <!-- - Browser: <!-- e.g. Firefox 88.0, if applicable] -->
 
