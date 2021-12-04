@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RxJS Debugging for vscode shows operator life cycle events as text editor decoration 1`] = `
+Array [
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [],
+    "ranges": Array [],
+  },
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [
+      "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 0\\"}}",
+    ],
+    "ranges": Array [],
+  },
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [
+      "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 1\\"}}",
+    ],
+    "ranges": Array [],
+  },
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [
+      "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 2\\"}}",
+    ],
+    "ranges": Array [],
+  },
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [
+      "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Next: 3\\"}}",
+    ],
+    "ranges": Array [],
+  },
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [
+      "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Completed\\"}}",
+    ],
+    "ranges": Array [],
+  },
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [
+      "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Unsubscribe\\"}}",
+    ],
+    "ranges": Array [],
+  },
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [
+      "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Unsubscribe\\"}}",
+    ],
+    "ranges": Array [],
+  },
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [
+      "(5:9007199254740991):(5:9007199254740991)-undefined-{\\"after\\":{\\"contentText\\":\\"Unsubscribe\\"}}",
+    ],
+    "ranges": Array [],
+  },
+  Object {
+    "decorationType": "TextEditorDecorationType8",
+    "options": Array [],
+    "ranges": Array [],
+  },
+]
+`;
