@@ -3,7 +3,7 @@ import * as vscode from 'vscode';
 import OperatorLogPoint from '..';
 import { ILogger } from '../../logger';
 import { IDisposable } from '../../util/types';
-import { isSupportedDocument } from '../../workspaceMonitor/supportedDocument';
+import isSupportedDocument from '../../workspaceMonitor/isSupportedDocument';
 import getOperatorPositions from './parser';
 
 export const IOperatorLogPointRecommender = Symbol('LogPointRecommender');

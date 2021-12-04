@@ -1,14 +1,14 @@
 import { inject, injectable, interfaces } from 'inversify';
 import type * as vscodeApiType from 'vscode';
+import { IConfigurationAccessor } from '../configuration/configurationAccessor';
 import { RootContainer, VsCodeApi } from '../ioc/types';
 import { ILogger } from '../logger';
 import { IOperatorLogPointManager } from '../operatorLogPoint/manager';
 import { IOperatorLogPointRecommender } from '../operatorLogPoint/recommender';
 import { IResourceProvider } from '../resources';
 import { ISessionManager } from '../sessionManager';
-import { IConfigurationAccessor } from '../configuration/configurationAccessor';
 import { IDisposable } from '../util/types';
-import { isSupportedDocument } from '../workspaceMonitor/supportedDocument';
+import isSupportedDocument from '../workspaceMonitor/isSupportedDocument';
 import { IDecorationProvider } from './';
 import { IDecorationSetter } from './decorationSetter';
 import LiveLogDecorationProvider from './liveLogDecorationProvider';

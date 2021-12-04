@@ -18,6 +18,8 @@
   "main": "./out/extension.js",
   "activationEvents": [
     "onDebugResolve:node",
+    "onLanguage:javascript",
+    "onLanguage:javascriptreact",
     "onLanguage:typescript",
     "onLanguage:typescriptreact"
   ],
