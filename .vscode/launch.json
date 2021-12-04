@@ -16,6 +16,16 @@
       "outFiles": ["${workspaceFolder}/packages/extension/out/**/*.js"]
     },
     {
+      "name": "Testbench: NodeJS with TypeScript",
+      "type": "extensionHost",
+      "request": "launch",
+      "args": [
+        "--extensionDevelopmentPath=${workspaceFolder}/packages/extension",
+        "${workspaceFolder}/packages/testbench-nodejs-typescript"
+      ],
+      "outFiles": ["${workspaceFolder}/packages/extension/out/**/*.js"]
+    },
+    {
       "name": "Testbench: Webpack",
       "type": "extensionHost",
       "request": "launch",

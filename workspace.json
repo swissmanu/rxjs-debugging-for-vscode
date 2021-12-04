@@ -91,6 +91,10 @@
       "root": "packages/testbench-nodejs",
       "projectType": "application"
     },
+    "testbench-nodejs-typescript": {
+      "root": "packages/testbench-nodejs-typescript",
+      "projectType": "application"
+    },
     "testbench-webpack": {
       "root": "packages/testbench-webpack",
       "projectType": "application",
@@ -153,21 +157,11 @@
       "root": "packages/extension-integrationtest",
       "implicitDependencies": ["extension"],
       "targets": {
-        "build": {
+        "integrationtest": {
           "executor": "@nrwl/workspace:run-script",
           "dependsOn": [{ "target": "build", "projects": "dependencies" }],
           "options": {
-            "script": "build"
-          },
-          "configurations": {
-            "test": {}
-          }
-        },
-        "integrationtest": {
-          "executor": "@nrwl/jest:jest",
-          "dependsOn": [{ "target": "build", "projects": "self" }],
-          "options": {
-            "jestConfig": "packages/extension-integrationtest/jest.config.js"
+            "script": "test"
           },
           "configurations": {
             "test": {}

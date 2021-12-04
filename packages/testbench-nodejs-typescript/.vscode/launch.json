@@ -8,17 +8,10 @@
       "type": "node",
       "runtimeVersion": "14.18.1",
       "request": "launch",
-      "name": "Launch CommonJS",
+      "name": "Launch NodeJS",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/src/commonjs/index.js"
-    },
-    {
-      "type": "node",
-      "runtimeVersion": "14.18.1",
-      "request": "launch",
-      "name": "Launch ESModules",
-      "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/src/esmodules/index.mjs"
+      "program": "${workspaceFolder}/src/node.ts",
+      "runtimeArgs": ["-r", "ts-node/register"]
     }
   ]
 }
