@@ -1,6 +1,8 @@
 # Change Log
 
-## 1.1.0 
+Install the latest version from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code).
+
+## 1.1.0
 
 - Improvement: Support for Plain JavaScript [#126](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/126)
 
