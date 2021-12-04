@@ -1,0 +1,5 @@
+{
+  "rxjsDebugging.hideLiveLogWhenStoppingDebugger": true,
+  "rxjsDebugging.logLevel": "Info",
+  "rxjsDebugging.recommendOperatorLogPointsWithAnIcon": false
+}

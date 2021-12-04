@@ -91,6 +91,10 @@
       "root": "packages/testbench-nodejs",
       "projectType": "application"
     },
+    "testbench-nodejs-typescript": {
+      "root": "packages/testbench-nodejs-typescript",
+      "projectType": "application"
+    },
     "testbench-webpack": {
       "root": "packages/testbench-webpack",
       "projectType": "application",
