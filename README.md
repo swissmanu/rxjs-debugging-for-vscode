@@ -17,7 +17,6 @@ Add non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applicati
 ## Requirements
 
 - [Visual Studio Code 1.61](https://code.visualstudio.com/) or newer
-- [TypeScript 4.2](https://www.typescriptlang.org/) or newer
 - [RxJS 6.6.7](https://rxjs.dev/) or newer
 - To debug NodeJS-based applications:
   - [Node.js 12](https://nodejs.org/) or newer
