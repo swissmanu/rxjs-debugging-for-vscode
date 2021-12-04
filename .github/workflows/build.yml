@@ -98,7 +98,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Use RxJS ${{ matrix.rxjs }} for Test
         run: |
-          sed -i '' 's/\"rxjs\":.*/\"rxjs\": \"${{ matrix.rxjs }}\"\,/' packages/*/package.json
+          sed -i '' 's/\"rxjs\": \".*\"/\"rxjs\": \"${{ matrix.rxjs }}\"/' packages/*/package.json
       - name: Install Dependencies
         run: yarn
       - name: Test on Linux System
