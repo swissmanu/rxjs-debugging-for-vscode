@@ -1,6 +1,6 @@
 # Change Log
 
-## Next
+## 1.1.0 
 
 - Improvement: Support for Plain JavaScript [#126](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/126)
 
