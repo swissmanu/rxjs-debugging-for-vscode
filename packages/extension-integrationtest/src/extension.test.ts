@@ -10,7 +10,7 @@ import waitForExtension from './util/waitForExtension';
 
 describe('RxJS Debugging for vscode', () => {
   test('shows operator life cycle events as text editor decoration', async () => {
-    const document = await openAndShowTextDocument('**/observable.ts');
+    const document = await openAndShowTextDocument('**/commonjs/observable.js');
     await waitForExtension();
 
     // Enable Operator Log Point for the first operator, take.
@@ -34,13 +34,13 @@ describe('RxJS Debugging for vscode', () => {
       vscode.debug.onDidTerminateDebugSession(() => resolve());
     });
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    await vscode.debug.startDebugging(vscode.workspace.workspaceFolders![0], 'Launch NodeJS');
+    await vscode.debug.startDebugging(vscode.workspace.workspaceFolders![0], 'Launch CommonJS');
     await debuggingDone;
 
     const decorations = await executeCommand(
       vscode.commands,
       TestCommands.GetDecorationSetterRecording,
-      'src/observable.ts',
+      'src/commonjs/observable.js',
       'liveLog'
     );
 
