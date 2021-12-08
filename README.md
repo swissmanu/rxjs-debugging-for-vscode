@@ -22,7 +22,7 @@ Add non-intrusive debugging capabilities for [RxJS](https://rxjs.dev/) applicati
   - [Node.js 12](https://nodejs.org/) or newer
 - To debug Webpack-based web applications:
   - [Webpack 5.60.0](https://webpack.js.org/) or newer
-  - The [@rxjs-debugging/runtime-webpack](https://www.npmjs.com/package/@rxjs-debugging/runtime-webpack) Webpack plugin
+  - The latest [@rxjs-debugging/runtime-webpack](https://www.npmjs.com/package/@rxjs-debugging/runtime-webpack) Webpack plugin (see [here](https://www.npmjs.com/package/@rxjs-debugging/runtime-webpack) for setup instructions)
 
 ## Usage
 

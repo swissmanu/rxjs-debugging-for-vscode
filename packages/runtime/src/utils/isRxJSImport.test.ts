@@ -14,6 +14,7 @@ describe('Runtime', () => {
       [true, '/node_modules/rxjs/internal/Observable.js'],
       [true, '/node_modules/rxjs/internal/Observable'],
       [true, 'rxjs/internal/Observable'],
+      [true, 'C:\\projects\\rxjsdebugger\\rxjs\\internal\\Observable.js'],
       [false, 'rxjs'],
       [false, 'rxjs/Observable'],
       [false, 'Observable'],

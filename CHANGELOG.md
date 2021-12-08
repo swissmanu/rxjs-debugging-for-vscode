@@ -2,6 +2,10 @@
 
 Install the latest version from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code).
 
+## 1.1.1
+
+- Bugfix: RxJS is not detected on Windows Systems [#139](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/139)
+
 ## 1.1.0
 
 - Improvement: Support for Plain JavaScript [#126](https://github.com/swissmanu/rxjs-debugging-for-vscode/issues/126)

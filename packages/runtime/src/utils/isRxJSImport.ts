@@ -1,4 +1,5 @@
-const OBSERVABLE_MODULE_REGEX = /rxjs\/(dist\/|esm\/|esm5\/|_esm5\/|_esm2015\/|cjs\/)*internal\/Observable(\.js)?$/;
+const OBSERVABLE_MODULE_REGEX =
+  /rxjs(\/|\\)(dist(\/|\\)|esm(\/|\\)|esm5(\/|\\)|_esm5(\/|\\)|_esm2015(\/|\\)|cjs(\/|\\))*internal(\/|\\)Observable(\.js)?$/;
 
 /**
  * Tests if a given path is leads to RxJS' `Observable.js` file.
