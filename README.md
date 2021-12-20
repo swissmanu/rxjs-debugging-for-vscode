@@ -1,6 +1,6 @@
 # ![Archie the Debugger Owl](./docs/brand/archie-small.png) RxJS Debugging for Visual Studio Code
 
-[![Click to visit marketplace](https://vsmarketplacebadge.apphb.com/version-short/manuelalabor.rxjs-debugging-for-vs-code.svg)](https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code) [![Twitter](https://img.shields.io/badge/Follow-%40rxjsdebuggung-blue?logo=twitter)](https://twitter.com/rxjsdebugging)
+[![Click to visit marketplace](https://vsmarketplacebadge.apphb.com/version-short/manuelalabor.rxjs-debugging-for-vs-code.svg)](https://marketplace.visualstudio.com/items?itemName=manuelalabor.rxjs-debugging-for-vs-code) [![Twitter](https://img.shields.io/badge/Follow-%40rxjsdebugging-blue?logo=twitter)](https://twitter.com/rxjsdebugging)
 
 > Never, ever use `tap(console.log)` again.
 
