@@ -29,4 +29,8 @@ Any violation may be punished with a snarky comment and finally a "plonk", which
 
 
 
+----
+
+
+
 >This Code of Conduct was adapted from [PhotoPrism](https://github.com/photoprism/photoprism/blob/develop/CODE_OF_CONDUCT.md). Thank you for a great product 🙏
