@@ -10,9 +10,9 @@
     "clean": "lerna exec -- rm -rf out && nx reset"
   },
   "devDependencies": {
-    "@nrwl/cli": "13.2.3",
-    "@nrwl/tao": "13.2.3",
-    "@nrwl/workspace": "13.2.3",
+    "@nrwl/cli": "13.10.6",
+    "@nrwl/tao": "13.10.6",
+    "@nrwl/workspace": "13.10.6",
     "@typescript-eslint/eslint-plugin": "5.5.0",
     "@typescript-eslint/parser": "5.5.0",
     "eslint": "8.4.0",
