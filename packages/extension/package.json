@@ -103,7 +103,7 @@
     "@types/stacktrace-js": "2.0.3",
     "@types/vscode": "1.61.0",
     "@types/webpack": "5.28.0",
-    "@types/ws": "8.2.1",
+    "@types/ws": "8.5.12",
     "jest": "27.4.3",
     "rollup": "2.60.2",
     "rollup-plugin-copy": "3.4.0",
@@ -122,6 +122,6 @@
     "spicery": "2.1.2",
     "typescript": "4.5.2",
     "vscode-nls": "5.0.0",
-    "ws": "8.3.0"
+    "ws": "8.18.0"
   }
 }
