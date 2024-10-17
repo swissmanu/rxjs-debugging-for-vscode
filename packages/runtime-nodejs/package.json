@@ -17,7 +17,7 @@
     "@rxjs-debugging/runtime": "^1.1.1",
     "@rxjs-debugging/telemetry": "^1.1.1",
     "@types/jest": "27.0.3",
-    "@types/node": "16.11.11",
+    "@types/node": "16.18.114",
     "@types/webpack": "5.28.0",
     "jest": "27.4.3",
     "rollup": "2.60.2",

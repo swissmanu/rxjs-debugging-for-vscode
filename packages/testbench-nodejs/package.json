@@ -10,7 +10,7 @@
     "start:esmodules": "node ./src/esmodules/index.mjs"
   },
   "dependencies": {
-    "@types/node": "16.11.11",
+    "@types/node": "16.18.114",
     "rxjs": "6.6.7"
   }
 }
