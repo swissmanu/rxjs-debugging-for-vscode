@@ -12,7 +12,7 @@
   "dependencies": {
     "@rxjs-debugging/telemetry": "^1.1.1",
     "rxjs": "6.6.7",
-    "source-map": "0.7.3",
+    "source-map": "0.8.0",
     "spicery": "2.1.2",
     "stacktrace-js": "2.0.2"
   },
